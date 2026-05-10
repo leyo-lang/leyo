@@ -1,0 +1,7 @@
+.leyo - src code
+.lybc - leyo bc 
+.lylog - logs
+.lyobj - objects
+.lyconf - compiler config
+.lypkg - zip
+.lydet - package details
