@@ -1,0 +1,9 @@
+[CONTROLLER] Logger initialized
+[CONTROLLER] Fetching Version...
+[CONTROLLER] Version Fetched.
+[CONTROLLER] Running Leyo
+[CONTROLLER] Version:
+[CONTROLLER] 0.1.0-alpha
+[RUNTIME] VM START
+[RUNTIME] VM STARTED
+[ERROR] Line:0 Collumn:0 Missing 0xFF start marker

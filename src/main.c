@@ -4,6 +4,9 @@
 #include "../include/lexer.h"
 #include "../include/parser.h"
 #include "../include/errors.h"
+#include "../include/vm.h"
+#include "../include/version.h"
+#include "../include/headerer.h"
 
 const char *tokenTypeName(TokenType t) {
     switch (t) {
@@ -55,21 +58,9 @@ void printByteCode(ByteCodeResult* bc) {
     logController("Finished printing bytecode output");
 }
 
-char *getVersion() {
-    logController("Fetching Version...");
-    FILE *vfile = fopen("VERSION.txt", "r");
-    if (!vfile) {
-        logController("Failed to open input file");
-        raise("File open error", 0, 0);
-        callAllErr();
-    }
-    logController("Version Fetched.");
-    static char buff[64];
-    fgets(buff, 64, vfile);
-    return buff;
-}
 
-int build(char *filename) {
+
+int build(char *filename, char *bcrfilename) {
     logController("Build started");
 
     FILE *file = fopen(filename, "rb");
@@ -109,7 +100,8 @@ int build(char *filename) {
         callAllErr();
     }
 
-    ByteCodeResult bcr = parseToByteCode(ts);
+    ByteCodeResult bcr = headThis(parseToByteCode(ts));
+
     logController("Parsing to bytecode completed");
 
     if (!(bcr.data == NULL || bcr.length == 0)) {
@@ -127,15 +119,83 @@ int build(char *filename) {
 
     logController("Program built successfully");
 
+    FILE* filebcr = fopen(bcrfilename, "wb");
+
+    if (!filebcr) {
+        logController("Fail to open bcr file");
+        raise("Failed to open file", 0,0);
+        callAllErr();
+    }
+
+    fwrite(bcr.data, 1, bcr.length, filebcr);
+
+    fclose(filebcr);
+
     return 0;
 }
 
-int run() {
-    
+int run(char *filename) {
+    FILE *file = fopen(filename, "rb");
+    if (!file) {
+        raise("Failed to open .lybc file", 0, 0);
+        callAllErr();
+        return -1;
+    }
+
+    // Read header
+    LeyoHeader header;
+    if (fread(&header, sizeof(LeyoHeader), 1, file) != 1) {
+        raise("Failed to read header", 0, 0);
+        callAllErr();
+        fclose(file);
+        return -1;
+    }
+
+    // Validate magic
+    if (memcmp(header.magic, "LYBC", 4) != 0) {
+        raise("Invalid bytecode magic", 0, 0);
+        callAllErr();
+        fclose(file);
+        return -1;
+    }
+
+    // Allocate bytecode buffer
+    uint8_t *code = malloc(header.code_size);
+    if (!code) {
+        raise("Memory allocation failed", 0, 0);
+        callAllErr();
+        fclose(file);
+        return -1;
+    }
+
+    // Read bytecode
+    if (fread(code, 1, header.code_size, file) != header.code_size) {
+        raise("Failed to read bytecode", 0, 0);
+        callAllErr();
+        free(code);
+        fclose(file);
+        return -1;
+    }
+
+    fclose(file);
+
+    // Build VM input (strip 0xFF before execution if you want)
+    ByteCodeResult bcr;
+    bcr.length = header.code_size - 1;
+    bcr.data = code + 1;
+
+    logRuntime("VM START");
+
+    int result = runByteCode(bcr);
+
+    // IMPORTANT: only free original pointer
+    free(code);
+
+    return result;
 }
 
 int main(int argc, char *argv[]) {
-    initLog("test.log");
+    initLog("logs/latest.lylog");
     logController("Logger initialized");
     
     const char *version = getVersion();
@@ -151,14 +211,21 @@ int main(int argc, char *argv[]) {
     }
 
     if (strcmp(argv[1], "build") == 0) {
+        if (argc == 3) {
+            argv[argc++] = "a.lybc";
+        } else if (argc != 4) {
+            logController("Too little command line args");
+            raise("Too little command line args", 0,0);
+            callAllErr();
+        }
+        return build(argv[2], argv[3]);
+    } else if (strcmp(argv[1], "run") == 0) {
         if (argc != 3) {
             logController("Too little command line args");
             raise("Too little command line args", 0,0);
             callAllErr();
         }
-        return build(argv[2]);
-    } else if (strcmp(argv[1], "run") == 0) {
-        run();
+        return run(argv[2]);
     } else if (strcmp(argv[1], "repl") == 0) {
         ;
     } else if (strcmp(argv[1], "test") == 0) {

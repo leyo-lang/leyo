@@ -1,9 +1,8 @@
 #ifndef BYTECODE_H
 #define BYTECODE_H
 
-#define BC_START_END 0x00
+#define BC_START_END 0xFF
 #define BC_END_OF_LINE 0xF0
-#define BC_END_DELIM 0xFF
 #define BC_IDENT_DELIM 0xFE
 #define BC_EXPR_DELIM 0xFD
 #define BC_VAR_DECL_COMMON 0x1
