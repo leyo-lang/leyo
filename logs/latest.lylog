@@ -6,7 +6,7 @@
 [CONTROLLER] 0.1.0-alpha
 [RUNTIME] VM START
 [RUNTIME] ========== VM START ==========
-[RUNTIME] Bytecode length = 23
+[RUNTIME] Bytecode length = 10
 [RUNTIME] Initial byte = 0xFF
 [RUNTIME] Found BC_START_END
 [RUNTIME] Advanced VM byte cursor -> 1
@@ -27,199 +27,18 @@
 [RUNTIME] readExpr() result = "x"
 [RUNTIME] expectCurrent() expecting 0xFD got 0xFD
 [RUNTIME] Advanced VM byte cursor -> 6
-[RUNTIME] Advanced VM byte cursor -> 7
 [RUNTIME] Evaluating expr
-[RUNTIME] readExpr() length = 53
+[RUNTIME] readExpr() length = 1
+[RUNTIME] Advanced VM byte cursor -> 7
+[RUNTIME] readExpr() char[0] = '5' (0x35)
 [RUNTIME] Advanced VM byte cursor -> 8
-[RUNTIME] readExpr() char[0] = 'ð' (0xF0)
-[RUNTIME] Advanced VM byte cursor -> 9
-[RUNTIME] readExpr() char[1] = '' (0x16)
-[RUNTIME] Advanced VM byte cursor -> 10
-[RUNTIME] readExpr() char[2] = 'þ' (0xFE)
-[RUNTIME] Advanced VM byte cursor -> 11
-[RUNTIME] readExpr() char[3] = '' (0x05)
-[RUNTIME] Advanced VM byte cursor -> 12
-[RUNTIME] readExpr() char[4] = 'a' (0x61)
-[RUNTIME] Advanced VM byte cursor -> 13
-[RUNTIME] readExpr() char[5] = 'r' (0x72)
-[RUNTIME] Advanced VM byte cursor -> 14
-[RUNTIME] readExpr() char[6] = 'r' (0x72)
-[RUNTIME] Advanced VM byte cursor -> 15
-[RUNTIME] readExpr() char[7] = 'a' (0x61)
-[RUNTIME] Advanced VM byte cursor -> 16
-[RUNTIME] readExpr() char[8] = 'y' (0x79)
-[RUNTIME] Advanced VM byte cursor -> 17
-[RUNTIME] readExpr() char[9] = 'ý' (0xFD)
-[RUNTIME] Advanced VM byte cursor -> 18
-[RUNTIME] readExpr() char[10] = '' (0x02)
-[RUNTIME] Advanced VM byte cursor -> 19
-[RUNTIME] readExpr() char[11] = '[' (0x5B)
-[RUNTIME] Advanced VM byte cursor -> 20
-[RUNTIME] readExpr() char[12] = ']' (0x5D)
-[RUNTIME] Advanced VM byte cursor -> 21
-[RUNTIME] readExpr() char[13] = 'ð' (0xF0)
-[RUNTIME] Advanced VM byte cursor -> 22
-[RUNTIME] readExpr() char[14] = 'ÿ' (0xFF)
-[RUNTIME] Advanced VM byte cursor -> 23
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[15] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[16] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[17] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[18] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[19] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[20] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[21] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[22] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[23] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[24] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[25] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[26] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[27] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[28] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[29] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[30] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[31] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[32] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[33] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[34] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[35] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[36] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[37] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[38] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[39] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[40] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[41] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[42] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[43] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[44] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[45] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[46] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[47] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[48] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[49] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[50] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[51] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] readExpr() char[52] = '
-[RUNTIME] advanceByte() prevented overflow
-[RUNTIME] readExpr() result = "ðþarrayý[]ðÿ"
+[RUNTIME] readExpr() result = "5"
 [RUNTIME] Variable declared -> x
 [RUNTIME] runVarDecl() finished
-[RUNTIME] currentByte() hit EOF
 [RUNTIME] Expecting BC_END_OF_LINE
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] expectCurrent() expecting 0xF0 got 0x00
-[RUNTIME] currentByte() hit EOF
-[RUNTIME] Expect failed (current mismatch)
-[ERROR] Line:0 Collumn:0 No EndOfLine
+[RUNTIME] expectCurrent() expecting 0xF0 got 0xF0
+[RUNTIME] Advanced VM byte cursor -> 9
+[RUNTIME] Statement complete -> 1
+[RUNTIME] VM LOOP | pos=9 stmt=1 byte=0xFF
+[RUNTIME] Reached BC_START_END
+[RUNTIME] ========== VM END ==========

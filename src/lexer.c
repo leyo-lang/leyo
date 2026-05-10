@@ -320,7 +320,7 @@ void handleComment() {
     logBuildLexer("Entering COMMENT mode");
 
     while (true) {
-        if (current() == '\n' || current() == '~') {
+        if (current() == '~') {
             l->mode = M_NORMAL;
             advance();
             break;

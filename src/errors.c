@@ -3,7 +3,7 @@
 #include <string.h>
 #include "../include/errors.h"
 
-#define STRICT_MODE true
+#define STRICT_MODE 1
 
 static Error errors[100];
 static int error_count = 0;

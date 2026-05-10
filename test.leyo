@@ -1,2 +1,2 @@
 str x = 5;
-chr arr array = [];
+~chr arr array = [];~

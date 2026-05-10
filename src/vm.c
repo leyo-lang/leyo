@@ -294,8 +294,6 @@ void runVarDecl() {
     var.name = readExpr();
 
     expectCurrent(BC_EXPR_DELIM, "Missing expr delimiter");
-    advanceByte();
-
     logRuntime("Evaluating expr");
     char *expr = readExpr();
 
