@@ -155,8 +155,10 @@ int runByteCode(ByteCodeResult bcr) {
 
     logRuntime("VM STARTED");
 
+    printf("Current byte = %d", currentByte());
+
     // validate start marker ONCE
-    if (currentByte() != 0xFF) {
+    if (currentByte() != BC_START_END) {
         raise("Missing 0xFF start marker", 0, 0);
         callAllErr();
         return -1;
@@ -168,9 +170,8 @@ int runByteCode(ByteCodeResult bcr) {
     while (vm.pos < vm.dataCount) {
         uint8_t byte = currentByte();
 
-        if (byte == 0xF0) {
-            advanceByte(); // consume EOL
-            continue;
+        if (byte == BC_START_END) {
+            break;
         }
 
         if (highNibble(byte) == 1) {
@@ -180,7 +181,7 @@ int runByteCode(ByteCodeResult bcr) {
             callAllErr();
             return -1;
         }
-
+        expectCurrent(BC_END_OF_LINE, "No EndOfLine");
         vm.stmt++;
     }
 

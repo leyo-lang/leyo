@@ -12,12 +12,14 @@
 
 
 ByteCodeResult headThis(ByteCodeResult bcr) {
+    
     LeyoHeader header = {
         .magic = {'L', 'Y', 'B', 'C'},
-        .version = getVersion(),
         .flags = 0,
         .code_size = bcr.length
     };
+
+    snprintf(header.version, sizeof(header.version), "%s", getVersion());
 
     int header_size = sizeof(LeyoHeader);
     int total_size = header_size + bcr.length;
