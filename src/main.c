@@ -181,8 +181,8 @@ int run(char *filename) {
 
     // Build VM input (strip 0xFF before execution if you want)
     ByteCodeResult bcr;
-    bcr.length = header.code_size - 1;
-    bcr.data = code + 1;
+    bcr.length = header.code_size;
+    bcr.data = code;
 
     logRuntime("VM START");
 
