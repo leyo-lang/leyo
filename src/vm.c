@@ -33,7 +33,7 @@ typedef struct {
 
 typedef struct {
     int amount;
-    Variable *value;
+    Variable value[2048];
 } VariableList;
 
 typedef struct {
@@ -302,6 +302,8 @@ void runVarDecl() {
     sprintf(buf, "Variable declared -> %s", var.name);
     logRuntime(buf);
 
+    vars->value[vars->amount++] = var;
+
     logRuntime("runVarDecl() finished");
 }
 
@@ -378,6 +380,12 @@ int runByteCode(ByteCodeResult bcr) {
             v->stmt);
 
         logRuntime(buf);
+    }
+
+    for (int i=0; i < vars->amount; i++) {
+        logRuntime("Variable:");
+        logRuntime(vars->value[i].name);
+        logRuntime("");
     }
 
     logRuntime("========== VM END ==========");

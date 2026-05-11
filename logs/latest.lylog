@@ -41,4 +41,7 @@
 [RUNTIME] Statement complete -> 1
 [RUNTIME] VM LOOP | pos=9 stmt=1 byte=0xFF
 [RUNTIME] Reached BC_START_END
+[RUNTIME] Variable:
+[RUNTIME] x
+[RUNTIME] 
 [RUNTIME] ========== VM END ==========
