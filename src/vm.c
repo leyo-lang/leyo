@@ -7,6 +7,13 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+static char *charToStr(char c) {
+    static char tmp[2];
+    tmp[0] = c;
+    tmp[1] = '\0';
+    return tmp;
+}
+
 typedef enum {
     TYPE_CHAR,
     TYPE_STRING,
@@ -155,6 +162,21 @@ static void expectAndPass(uint8_t type, char *errorStr) {
     advanceByte();
 }
 
+static Variable getVar(char *name, int *pos) {
+    logRuntime("Getting Var: ");
+    logRuntime(name);
+    for (int i = 0; i < vars->amount; i++) {
+        if (strcmp(name, vars->value[i].name) == 0) {
+            logRuntime("Found var");
+            *pos = i;
+            return vars->value[i];
+        }
+    }
+
+    raise("No var under name", v->stmt,0);
+    callAllErr();
+}
+
 void evaluateExpr(Variable *var, char *expr) {
     switch (var->type) {
 
@@ -218,6 +240,24 @@ static char* readExpr() {
     logRuntime(buf);
 
     return str;
+}
+
+void runAssignment() {
+    logRuntime("runAssignment() entered");
+    advanceByte();
+    int pos;
+    advanceByte();
+    Variable var = getVar(readExpr(), &pos);
+    advanceByte();
+    switch (var.type) {
+        case TYPE_CHAR:
+            var.value.chr = (char)readExpr();
+            break;
+        
+        default:
+            break;
+    }
+    vars->value[pos] = var;
 }
 
 void runVarDecl() {
@@ -358,6 +398,16 @@ int runByteCode(ByteCodeResult bcr) {
         if (highNibble(byte) == 1) {
             logRuntime("Dispatching runVarDecl()");
             runVarDecl();
+        } else if (currentByte() == BC_ASSIGN) {
+            logRuntime("Dispatching runAssignment()");
+            runAssignment();
+        } else if (currentByte() == BC_TRACE) {
+            logRuntime("Dumping VM data");
+            fprintf(stderr, "Pos: %d\n", v->pos);
+            for (int i=0; i < vars->amount; i++) {
+                fprintf(stderr, "Variable %s: %c\n", vars->value[i].name, vars->value[i].value.chr);
+            }
+            advanceByte();
         } else {
             logRuntime("Unknown opcode encountered");
             raise("Unknown opcode", v->stmt, 0);
@@ -385,7 +435,7 @@ int runByteCode(ByteCodeResult bcr) {
     for (int i=0; i < vars->amount; i++) {
         logRuntime("Variable:");
         logRuntime(vars->value[i].name);
-        logRuntime("");
+        logRuntime(charToStr(vars->value[i].value.chr));
     }
 
     logRuntime("========== VM END ==========");

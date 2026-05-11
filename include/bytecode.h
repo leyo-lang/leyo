@@ -10,5 +10,9 @@
 #define BC_VAR_DECL_FLT 0x3
 #define BC_VAR_DECL_CHR 0x5
 #define BC_VAR_DECL_STR 0x7
+#define BC_ASSIGN 0x21
+#define BC_TRACE 0x80
+#define BC_PRINT 0x81
+#define BC_ALLOW 0x82
 
 #endif

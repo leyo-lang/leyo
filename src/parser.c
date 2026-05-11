@@ -78,11 +78,11 @@ static void expect(TokenType type, char *errorStr) {
 }
 
 static void expectAndPass(TokenType type, char *errorStr) {
-    if (type != peek().type) {
-        logBuildParser("ExpectAndPass failed");
-        raise(errorStr, peek().line, peek().collumn);
-    }
     advance();
+    if (type != current().type) {
+        logBuildParser("ExpectAndPass failed");
+        raise(errorStr, current().line, current().collumn);
+    }
     advance();
 }
 
@@ -130,6 +130,45 @@ static bool strInVarDef(char *str) {
         }
     }
     return false;
+}
+
+static void parseAssign() {
+    logBuildParser("Parsing assignments");
+
+    writeByte(BC_ASSIGN);
+    writeRawExpr(current().value, BC_IDENT_DELIM);
+    expectAndPass(EQUALS, "Internal parser error");
+    
+    logBuildParser("Parsing expression for variable assignment");
+
+    char expr[1024];
+    int exprLoc = 0;
+
+    while (current().type != SEMICOLON) {
+        if (current().type == ENDOFSTREAM) {
+            logBuildParser("No semicolom before EndOfStream");
+            raise("No semicolon before EndOfStream", previous().line, previous().collumn);
+            callAllErr();
+        }
+        char *val = current().value;
+        for (int j = 0; val[j] != '\0'; j++) {
+            expr[exprLoc++] = val[j];
+        }
+        if (current().type != SEMICOLON) {
+            advance();
+        }
+        
+    }
+
+    expr[exprLoc] = '\0';
+
+    writeRawExpr(expr, BC_EXPR_DELIM);
+    /*if (previous().type != SEMICOLON) {
+        raise("No semicolon after statement", previous().line, previous().collumn);
+        callAllErr()
+    }*/
+    expectCurrent(SEMICOLON, "No semicolon after statement");
+    logBuildParser("Finished assignment");
 }
 
 static void parseVarDecl() {
@@ -206,6 +245,16 @@ static void parseStatement() {
         case IDENTIFIER:
             if (strInVarDef(current().value)) {
                 parseVarDecl();
+            } else if (peek().type == EQUALS) { // assignments
+                parseAssign();
+            } else if (strcmp(current().value, "trace") == 0) {
+                writeByte(BC_TRACE);
+                expectAndPass(SEMICOLON, "No semicolon after statement");
+            } else if (strcmp(current().value, "allow") == 0) {
+                writeByte(BC_ALLOW);
+                expect(IDENTIFIER, "NO ALLOWED ITEMS");
+                writeRawExpr(current().value, BC_IDENT_DELIM);
+                expectAndPass(SEMICOLON, "No semicolon after statement");
             } else {
                 logBuildParser("Unknown identifier in body");
                 raise("Unknown identifier in body", current().line, current().collumn);
