@@ -1,0 +1,8 @@
+1x = var decl
+2x = assignment + var logic
+    21 = var assign
+8x = std
+    80 = trace 
+    81 = print 
+    82 = allow
+    83 = log 

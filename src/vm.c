@@ -30,11 +30,16 @@ typedef union {
     char *str;
     int num;
     float flt;
+    char *char_arr;
+    char **string_arr;
+    int *int_arr;
+    float *float_arr;
 } Value;
 
 typedef struct {
     ValueType type;
     Value value;
+    int length;
     char *name;
 } Variable;
 
@@ -162,6 +167,87 @@ static void expectAndPass(uint8_t type, char *errorStr) {
     advanceByte();
 }
 
+void printVar(Variable var) {
+    switch (var.type) {
+
+        case TYPE_CHAR:
+            fprintf(stderr, "%c", var.value.chr);
+            break;
+
+        case TYPE_STRING:
+            fprintf(stderr, "%s", var.value.str);
+            break;
+
+        case TYPE_INT:
+            fprintf(stderr, "%d", var.value.num);
+            break;
+
+        case TYPE_FLOAT:
+            fprintf(stderr, "%f", var.value.flt);
+            break;
+
+        case TYPE_CHAR_ARR:
+            if (var.value.char_arr != NULL) {
+                for (int i = 0; i < var.length; i++) {
+                    fprintf(stderr, "%c", var.value.char_arr[i]);
+                }
+            }
+            break;
+
+        case TYPE_STRING_ARR:
+            if (var.value.string_arr != NULL) {
+                fprintf(stderr, "[");
+
+                for (int i = 0; i < var.length; i++) {
+                    fprintf(stderr, "\"%s\"", var.value.string_arr[i]);
+
+                    if (i < var.length - 1) {
+                        fprintf(stderr, ", ");
+                    }
+                }
+
+                fprintf(stderr, "]");
+            }
+            break;
+
+        case TYPE_INT_ARR:
+            if (var.value.int_arr != NULL) {
+                fprintf(stderr, "[");
+
+                for (int i = 0; i < var.length; i++) {
+                    fprintf(stderr, "%d", var.value.int_arr[i]);
+
+                    if (i < var.length - 1) {
+                        fprintf(stderr, ", ");
+                    }
+                }
+
+                fprintf(stderr, "]");
+            }
+            break;
+
+        case TYPE_FLOAT_ARR:
+            if (var.value.float_arr != NULL) {
+                fprintf(stderr, "[");
+
+                for (int i = 0; i < var.length; i++) {
+                    fprintf(stderr, "%f", var.value.float_arr[i]);
+
+                    if (i < var.length - 1) {
+                        fprintf(stderr, ", ");
+                    }
+                }
+
+                fprintf(stderr, "]");
+            }
+            break;
+
+        default:
+            fprintf(stderr, "<unknown>");
+            break;
+    }
+}
+
 static Variable getVar(char *name, int *pos) {
     logRuntime("Getting Var: ");
     logRuntime(name);
@@ -177,29 +263,76 @@ static Variable getVar(char *name, int *pos) {
     callAllErr();
 }
 
-void evaluateExpr(Variable *var, char *expr) {
-    switch (var->type) {
+ValueType detectType(char *expr) {
+
+    int len = strlen(expr);
+
+    // arrays
+    if (expr[0] == '[' && expr[len - 1] == ']') {
+
+        // string array
+        if (strstr(expr, "\"") != NULL) {
+            return TYPE_STRING_ARR;
+        }
+
+        // char array
+        if (strstr(expr, "'") != NULL) {
+            return TYPE_CHAR_ARR;
+        }
+
+        // float array
+        if (strchr(expr, '.') != NULL) {
+            return TYPE_FLOAT_ARR;
+        }
+
+        // int array
+        return TYPE_INT_ARR;
+    }
+
+    // string
+    if (expr[0] == '"' && expr[len - 1] == '"') {
+        return TYPE_STRING;
+    }
+
+    // char
+    if (expr[0] == '\'' && expr[2] == '\'') {
+        return TYPE_CHAR;
+    }
+
+    // float
+    if (strchr(expr, '.') != NULL) {
+        return TYPE_FLOAT;
+    }
+
+    // int
+    return TYPE_INT;
+}
+
+Value parseValue(char *expr, ValueType type) {
+
+    Value v;
+
+    switch (type) {
 
         case TYPE_INT:
-            var->value.num = atoi(expr);
+            v.num = atoi(expr);
             break;
 
         case TYPE_FLOAT:
-            var->value.flt = atof(expr);
+            v.flt = atof(expr);
             break;
 
         case TYPE_STRING:
-            var->value.str = strdup(expr);
+            expr[strlen(expr) - 1] = '\0';
+            v.str = strdup(expr + 1);
             break;
 
         case TYPE_CHAR:
-            var->value.chr = expr[0];
+            v.chr = expr[0];
             break;
-
-        default:
-            raise("Unsupported expression type", 0,0);
-            callAllErr();
     }
+
+    return v;
 }
 
 static char* readExpr() {
@@ -249,14 +382,12 @@ void runAssignment() {
     advanceByte();
     Variable var = getVar(readExpr(), &pos);
     advanceByte();
-    switch (var.type) {
-        case TYPE_CHAR:
-            var.value.chr = (char)readExpr();
-            break;
-        
-        default:
-            break;
+    char *value = readExpr();
+    if (detectType(value) != var.type) {
+        raise("Type Error: Type Mismatch", v->stmt, 0);
+        callAllErr();
     }
+    var.value = parseValue(value, detectType(value));
     vars->value[pos] = var;
 }
 
@@ -345,6 +476,17 @@ void runVarDecl() {
     vars->value[vars->amount++] = var;
 
     logRuntime("runVarDecl() finished");
+}
+
+void printVars() {
+    for (int i = 0; i < vars->amount; i++) {
+        printVar(vars->value[i]);
+    }
+}
+
+void dumpVM() {
+    fprintf(stderr, "VM TRACE CALL\npos->%d\nstmt->%d\nnibble->", v->pos, v->stmt, v->nibblePos);
+    printVars();
 }
 
 int runByteCode(ByteCodeResult bcr) {
