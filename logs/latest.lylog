@@ -4,71 +4,89 @@
 [CONTROLLER] Running Leyo
 [CONTROLLER] Version:
 [CONTROLLER] 0.1.0-alpha
-[RUNTIME] VM START
-[RUNTIME] ========== VM START ==========
-[RUNTIME] Bytecode length = 29
-[RUNTIME] Initial byte = 0xFF
-[RUNTIME] Found BC_START_END
-[RUNTIME] Advanced VM byte cursor -> 1
-[RUNTIME] VM LOOP | pos=1 stmt=0 byte=0x15
-[RUNTIME] Dispatching runVarDecl()
-[RUNTIME] runVarDecl() entered
-[RUNTIME] runVarDecl() opcode = 0x15
-[RUNTIME] Variable type -> CHAR
-[RUNTIME] Checking identifier delimiter
-[RUNTIME] expect() expecting 0xFE got 0xFE
-[RUNTIME] Advanced VM byte cursor -> 2
-[RUNTIME] Advanced VM byte cursor -> 3
-[RUNTIME] Reading variable identifier
-[RUNTIME] readExpr() length = 1
-[RUNTIME] Advanced VM byte cursor -> 4
-[RUNTIME] readExpr() char[0] = 'x' (0x78)
-[RUNTIME] Advanced VM byte cursor -> 5
-[RUNTIME] readExpr() result = "x"
-[RUNTIME] expectCurrent() expecting 0xFD got 0xFD
-[RUNTIME] Advanced VM byte cursor -> 6
-[RUNTIME] Evaluating expr
-[RUNTIME] readExpr() length = 1
-[RUNTIME] Advanced VM byte cursor -> 7
-[RUNTIME] readExpr() char[0] = 'a' (0x61)
-[RUNTIME] Advanced VM byte cursor -> 8
-[RUNTIME] readExpr() result = "a"
-[RUNTIME] Variable declared -> x
-[RUNTIME] runVarDecl() finished
-[RUNTIME] Expecting BC_END_OF_LINE
-[RUNTIME] expectCurrent() expecting 0xF0 got 0xF0
-[RUNTIME] Advanced VM byte cursor -> 9
-[RUNTIME] Statement complete -> 1
-[RUNTIME] VM LOOP | pos=9 stmt=1 byte=0x21
-[RUNTIME] Dispatching runAssignment()
-[RUNTIME] runAssignment() entered
-[RUNTIME] Advanced VM byte cursor -> 10
-[RUNTIME] Advanced VM byte cursor -> 11
-[RUNTIME] readExpr() length = 1
-[RUNTIME] Advanced VM byte cursor -> 12
-[RUNTIME] readExpr() char[0] = 'x' (0x78)
-[RUNTIME] Advanced VM byte cursor -> 13
-[RUNTIME] readExpr() result = "x"
-[RUNTIME] Getting Var: 
-[RUNTIME] x
-[RUNTIME] Found var
-[RUNTIME] Advanced VM byte cursor -> 14
-[RUNTIME] readExpr() length = 1
-[RUNTIME] Advanced VM byte cursor -> 15
-[RUNTIME] readExpr() char[0] = 'b' (0x62)
-[RUNTIME] Advanced VM byte cursor -> 16
-[RUNTIME] readExpr() result = "b"
-[RUNTIME] Expecting BC_END_OF_LINE
-[RUNTIME] expectCurrent() expecting 0xF0 got 0xF0
-[RUNTIME] Advanced VM byte cursor -> 17
-[RUNTIME] Statement complete -> 2
-[RUNTIME] VM LOOP | pos=17 stmt=2 byte=0x80
-[RUNTIME] Dumping VM data
-[RUNTIME] Advanced VM byte cursor -> 18
-[RUNTIME] Expecting BC_END_OF_LINE
-[RUNTIME] expectCurrent() expecting 0xF0 got 0xF0
-[RUNTIME] Advanced VM byte cursor -> 19
-[RUNTIME] Statement complete -> 3
-[RUNTIME] VM LOOP | pos=19 stmt=3 byte=0x82
-[RUNTIME] Unknown opcode encountered
-[ERROR] Line:3 Collumn:0 Unknown opcode
+[CONTROLLER] Build started
+[CONTROLLER] Input file opened successfully
+[CONTROLLER] File loaded into memory
+[BUILD][LEXER] Lexer started
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Handling Char
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Handling Char
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to COMMENT mode
+[BUILD][LEXER] Entering COMMENT mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Lexer finished
+[CONTROLLER] Tokenisation completed
+[CONTROLLER] Printing token stream
+[CONTROLLER] Finished printing token stream
+[BUILD][PARSER] Parser started
+[BUILD][PARSER] Parsing statement
+[BUILD][PARSER] Parsing variable declaration
+[BUILD][PARSER] Stored first half-byte
+[BUILD][PARSER] Flushed half-byte pair into byte
+[BUILD][PARSER] Parsing identifier for variable declaration
+[BUILD][PARSER] Writing raw expression
+[BUILD][PARSER] Parsing expression for variable assignment
+[BUILD][PARSER] No semicolom before EndOfStream
+[ERROR] Line:1 Collumn:6 No semicolon before EndOfStream

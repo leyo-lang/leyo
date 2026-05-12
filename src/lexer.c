@@ -114,6 +114,12 @@ void handleNormal() {
         advance();
         return;
     } 
+    else if (c == '\'') {
+        logBuildLexer("Handling Char");
+        advance();
+        push(token(charToStr(current()), CHR));
+        return;
+    } 
     else if (isalpha(c)) {
         l->mode = M_IDENTIFIER;
         logBuildLexer("Switching to IDENTIFIER mode");
