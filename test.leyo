@@ -1,4 +1,4 @@
-chr x = 'a';
+chr x = 5;
 ~chr arr array = [];~
 x = b;
 trace;

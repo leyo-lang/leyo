@@ -18,9 +18,9 @@ typedef enum {
     CONDITION,
     COMMA,
     STRING,
-    CHR,
     ENDOFSTREAM,
-    UNKNOWN
+    UNKNOWN,
+    CHR,
 } TokenType;
 
 typedef struct {

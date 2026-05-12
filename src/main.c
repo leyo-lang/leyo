@@ -26,6 +26,7 @@ const char *tokenTypeName(TokenType t) {
         case EQUALS: return "EQUALS";
         case UNKNOWN: return "UNKNOWN";
         case ENDOFSTREAM: return "ENDOFSTREAM";
+        case CHR: return "CHAR";
         default: return "???";
     }
 }
