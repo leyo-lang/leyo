@@ -19,6 +19,6 @@ typedef struct {
     int length;
 } ByteCodeResult;
 
-ByteCodeResult parseToByteCode(TokenStream ts);
+ByteCodeResult parse(TokenStream ts);
 
 #endif

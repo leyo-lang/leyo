@@ -101,7 +101,7 @@ int build(char *filename, char *bcrfilename) {
         callAllErr();
     }
 
-    ByteCodeResult bcr = headThis(parseToByteCode(ts));
+    ByteCodeResult bcr = headThis(parse(ts));
 
     logController("Parsing to bytecode completed");
 
@@ -187,7 +187,7 @@ int run(char *filename) {
 
     logRuntime("VM START");
 
-    int result = runByteCode(bcr);
+    int result = runVM(bcr);
 
     // IMPORTANT: only free original pointer
     free(code);
