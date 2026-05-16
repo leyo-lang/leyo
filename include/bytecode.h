@@ -1,20 +1,31 @@
 #ifndef BYTECODE_H
 #define BYTECODE_H
 
-#define BC_START_END 0xFF
-#define BC_END_OF_LINE 0xF0
-#define BC_IDENT_DELIM 0xFE
-#define BC_EXPR_DELIM 0xFD
-#define BC_CHAR_DELIM 0xFE
-#define BC_STRING_DELIM 0xFE
-#define BC_VAR_DECL_COMMON 0x1
-#define BC_VAR_DECL_INT 0x1
-#define BC_VAR_DECL_FLT 0x3
-#define BC_VAR_DECL_CHR 0x5
-#define BC_VAR_DECL_STR 0x7
-#define BC_ASSIGN 0x21
-#define BC_TRACE 0x80
-#define BC_PRINT 0x81
-#define BC_ALLOW 0x82
+
+#define OP_PUSH_CONST      0x01
+
+#define OP_ADD             0x10
+#define OP_SUB             0x11
+#define OP_MUL             0x12
+#define OP_DIV             0x13
+
+#define OP_STORE_GLOBAL    0x20
+#define OP_LOAD_GLOBAL     0x21
+
+#define OP_JMP             0x30
+#define OP_JMP_IF_FALSE    0x31
+
+#define OP_EQ              0x40
+#define OP_NEQ             0x41
+#define OP_GT              0x42
+#define OP_LT              0x43
+
+#define OP_CALL_NATIVE     0x50
+
+#define OP_CALL            0x60
+#define OP_RETURN          0x61
+
+#define OP_HALT            0xFF
+
 
 #endif
