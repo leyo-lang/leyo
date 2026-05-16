@@ -1,6 +1,4 @@
-chr x = 'a';
+int x = 3;
 ~chr arr array = [];~
-chr b = 'c';
-x = b;
-trace;
-allow hello;
+int b = 7;
+x = b+b+x;

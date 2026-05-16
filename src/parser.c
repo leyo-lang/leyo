@@ -202,7 +202,9 @@ static void parseAssign() {
 static void parseVarDecl() {
     logBuildParser("Parsing variable declaration");
 
-    expect(IDENTIFIER, "Expected type");
+    if (current().type != IDENTIFIER) {
+        raise("Expected type", current().line, current().collumn);
+    };
 
     char *type = current().value;
 

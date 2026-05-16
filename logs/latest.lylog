@@ -5,34 +5,3 @@
 [CONTROLLER] Version:
 [CONTROLLER] 0.1.0-alpha
 [RUNTIME] VM START
-[RUNTIME] ========== VM START ==========
-[RUNTIME] Bytecode length = 37
-[RUNTIME] Initial byte = 0xFF
-[RUNTIME] Found BC_START_END
-[RUNTIME] Advanced VM byte cursor -> 1
-[RUNTIME] VM LOOP | pos=1 stmt=0 byte=0x15
-[RUNTIME] Dispatching runVarDecl()
-[RUNTIME] runVarDecl() entered
-[RUNTIME] runVarDecl() opcode = 0x15
-[RUNTIME] Variable type -> CHAR
-[RUNTIME] Checking identifier delimiter
-[RUNTIME] expect() expecting 0xFE got 0xFE
-[RUNTIME] Advanced VM byte cursor -> 2
-[RUNTIME] Advanced VM byte cursor -> 3
-[RUNTIME] Reading variable identifier
-[RUNTIME] readExpr() length = 1
-[RUNTIME] Advanced VM byte cursor -> 4
-[RUNTIME] readExpr() char[0] = 'x' (0x78)
-[RUNTIME] Advanced VM byte cursor -> 5
-[RUNTIME] readExpr() result = "x"
-[RUNTIME] expectCurrent() expecting 0xFD got 0xFD
-[RUNTIME] Advanced VM byte cursor -> 6
-[RUNTIME] Evaluating expr
-[RUNTIME] readExpr() length = 1
-[RUNTIME] Advanced VM byte cursor -> 7
-[RUNTIME] readExpr() char[0] = 'a' (0x61)
-[RUNTIME] Advanced VM byte cursor -> 8
-[RUNTIME] readExpr() result = "a"
-[RUNTIME] Getting Var: 
-[RUNTIME] a
-[ERROR] Line:0 Collumn:0 No var under name
