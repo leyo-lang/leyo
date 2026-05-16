@@ -6,7 +6,7 @@
 [CONTROLLER] 0.1.0-alpha
 [RUNTIME] VM START
 [RUNTIME] ========== VM START ==========
-[RUNTIME] Bytecode length = 29
+[RUNTIME] Bytecode length = 37
 [RUNTIME] Initial byte = 0xFF
 [RUNTIME] Found BC_START_END
 [RUNTIME] Advanced VM byte cursor -> 1
@@ -30,34 +30,9 @@
 [RUNTIME] Evaluating expr
 [RUNTIME] readExpr() length = 1
 [RUNTIME] Advanced VM byte cursor -> 7
-[RUNTIME] readExpr() char[0] = '5' (0x35)
+[RUNTIME] readExpr() char[0] = 'a' (0x61)
 [RUNTIME] Advanced VM byte cursor -> 8
-[RUNTIME] readExpr() result = "5"
-[RUNTIME] Variable declared -> x
-[RUNTIME] runVarDecl() finished
-[RUNTIME] Expecting BC_END_OF_LINE
-[RUNTIME] expectCurrent() expecting 0xF0 got 0xF0
-[RUNTIME] Advanced VM byte cursor -> 9
-[RUNTIME] Statement complete -> 1
-[RUNTIME] VM LOOP | pos=9 stmt=1 byte=0x21
-[RUNTIME] Dispatching runAssignment()
-[RUNTIME] runAssignment() entered
-[RUNTIME] Advanced VM byte cursor -> 10
-[RUNTIME] Advanced VM byte cursor -> 11
-[RUNTIME] readExpr() length = 1
-[RUNTIME] Advanced VM byte cursor -> 12
-[RUNTIME] readExpr() char[0] = 'x' (0x78)
-[RUNTIME] Advanced VM byte cursor -> 13
-[RUNTIME] readExpr() result = "x"
+[RUNTIME] readExpr() result = "a"
 [RUNTIME] Getting Var: 
-[RUNTIME] x
-[RUNTIME] Found var
-[RUNTIME] Advanced VM byte cursor -> 14
-[RUNTIME] readExpr() length = 1
-[RUNTIME] Advanced VM byte cursor -> 15
-[RUNTIME] readExpr() char[0] = 'b' (0x62)
-[RUNTIME] Advanced VM byte cursor -> 16
-[RUNTIME] readExpr() result = "b"
-[RUNTIME] Getting Var: 
-[RUNTIME] b
-[ERROR] Line:1 Collumn:0 No var under name
+[RUNTIME] a
+[ERROR] Line:0 Collumn:0 No var under name

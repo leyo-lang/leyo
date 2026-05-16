@@ -1,5 +1,6 @@
-chr x = 5;
+chr x = 'a';
 ~chr arr array = [];~
+chr b = 'c';
 x = b;
 trace;
 allow hello;

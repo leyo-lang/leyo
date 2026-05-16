@@ -118,6 +118,8 @@ void handleNormal() {
         logBuildLexer("Handling Char");
         advance();
         push(token(charToStr(current()), CHR));
+        advance();
+        advance();
         return;
     } 
     else if (isalpha(c)) {

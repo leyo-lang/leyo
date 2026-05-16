@@ -123,6 +123,17 @@ static void writeRawExpr(char *expr, uint8_t opcode) {
     // delim - writeByte(BC_END_DELIM);
 }
 
+static void writeToken(Token tok) {
+    switch (tok.type) {
+        case CHR:
+            writeRawExpr(tok.value, )
+            break;
+        
+        default:
+            break;
+    }
+}
+
 static bool strInVarDef(char *str) {
     for (int i = 0; i < VARDEFCOUNT; i++) {
         if (strcmp(VARDEFS[i], str) == 0) {
@@ -141,28 +152,7 @@ static void parseAssign() {
     
     logBuildParser("Parsing expression for variable assignment");
 
-    char expr[1024];
-    int exprLoc = 0;
-
-    while (current().type != SEMICOLON) {
-        if (current().type == ENDOFSTREAM) {
-            logBuildParser("No semicolom before EndOfStream");
-            raise("No semicolon before EndOfStream", previous().line, previous().collumn);
-            callAllErr();
-        }
-        char *val = current().value;
-        for (int j = 0; val[j] != '\0'; j++) {
-            expr[exprLoc++] = val[j];
-        }
-        if (current().type != SEMICOLON) {
-            advance();
-        }
-        
-    }
-
-    expr[exprLoc] = '\0';
-
-    writeRawExpr(expr, BC_EXPR_DELIM);
+    writeRawExpr(current().value, BC_EXPR_DELIM);
     /*if (previous().type != SEMICOLON) {
         raise("No semicolon after statement", previous().line, previous().collumn);
         callAllErr()

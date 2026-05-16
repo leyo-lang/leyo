@@ -5,6 +5,8 @@
 #define BC_END_OF_LINE 0xF0
 #define BC_IDENT_DELIM 0xFE
 #define BC_EXPR_DELIM 0xFD
+#define BC_CHAR_DELIM 0xFE
+#define BC_STRING_DELIM 0xFE
 #define BC_VAR_DECL_COMMON 0x1
 #define BC_VAR_DECL_INT 0x1
 #define BC_VAR_DECL_FLT 0x3
