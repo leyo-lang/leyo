@@ -24,9 +24,7 @@ typedef struct {
     Value globals[GLOBAL_MAX];
 } VM;
 
-// ===================== STACK OPS =====================
-
-static void push(VM *vm, Value v) {
+static void push(Value v) {
     if (vm->sp >= STACK_MAX) {
         printf("Stack overflow\n");
         exit(1);
@@ -34,7 +32,7 @@ static void push(VM *vm, Value v) {
     vm->stack[vm->sp++] = v;
 }
 
-static Value pop(VM *vm) {
+static Value pop() {
     if (vm->sp <= 0) {
         printf("Stack underflow\n");
         exit(1);
@@ -42,91 +40,78 @@ static Value pop(VM *vm) {
     return vm->stack[--vm->sp];
 }
 
-// ===================== BYTE READ =====================
-
-static uint8_t readByte(VM *vm) {
+static uint8_t readByte() {
     return vm->code[vm->ip++];
 }
 
-// ===================== VM EXECUTION =====================
+VM vmStd = {0};
+VM *vm;
+
 void runVM(ByteCodeResult bc) {
+    vmStd.code = bc.data;
+    vmStd.ip = 0;
+    vmStd.sp = 0;
+    vm = &vmStd
 
-    VM vm = {0};
-    vm.code = bc.data;
-    vm.ip = 0;
-    vm.sp = 0;
-
-    for (;;) {
-
-        uint8_t op = readByte(&vm);
+    while (1) {
+        uint8_t op = readByte();
 
         switch (op) {
-
             case OP_PUSH_CONST: {
                 Value v;
-                v.asInt = readByte(&vm);
-                push(&vm, v);
+                v.asInt = readByte();
+                push(v);
                 break;
             }
 
             case OP_ADD: {
-                Value b = pop(&vm);
-                Value a = pop(&vm);
-
+                Value b = pop();
+                Value a = pop();
                 Value r;
                 r.asInt = a.asInt + b.asInt;
-
-                push(&vm, r);
+                push(r);
                 break;
             }
-
             case OP_SUB: {
-                Value b = pop(&vm);
-                Value a = pop(&vm);
-
+                Value b = pop();
+                Value a = pop();
                 Value r;
                 r.asInt = a.asInt - b.asInt;
-
-                push(&vm, r);
+                push(r);
                 break;
             }
 
             case OP_MUL: {
-                Value b = pop(&vm);
-                Value a = pop(&vm);
-
+                Value b = pop();
+                Value a = pop();
                 Value r;
                 r.asInt = a.asInt * b.asInt;
-
-                push(&vm, r);
+                push(r);
                 break;
             }
 
             case OP_DIV: {
-                Value b = pop(&vm);
-                Value a = pop(&vm);
-
+                Value b = pop();
+                Value a = pop();
                 if (b.asInt == 0) {
                     printf("Runtime error: division by zero\n");
                     exit(1);
                 }
-
                 Value r;
                 r.asInt = a.asInt / b.asInt;
-
-                push(&vm, r);
+                push(r);
                 break;
             }
 
             case OP_STORE_GLOBAL: {
-                uint8_t slot = readByte(&vm);
-                vm.globals[slot] = pop(&vm);
+                uint8_t slot = readByte();
+                vm->globals[slot] = pop();
                 break;
             }
 
             case OP_LOAD_GLOBAL: {
-                uint8_t slot = readByte(&vm);
-                push(&vm, vm.globals[slot]);
+                uint8_t slot = readByte();
+                push(vm->globals[slot]);
                 break;
             }
 
@@ -134,7 +119,7 @@ void runVM(ByteCodeResult bc) {
                 return;
 
             default:
-                printf("Unknown opcode: 0x%02X at %d\n", op, vm.ip - 1);
+                printf("Unknown opcode: 0x%02X at %d\n", op, vm->ip - 1);
                 exit(1);
         }
     }
