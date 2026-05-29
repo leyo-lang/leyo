@@ -24,6 +24,9 @@ typedef struct {
     Value globals[GLOBAL_MAX];
 } VM;
 
+VM vmStd = {0};
+VM *vm;
+
 static void push(Value v) {
     if (vm->sp >= STACK_MAX) {
         printf("Stack overflow\n");
@@ -44,14 +47,11 @@ static uint8_t readByte() {
     return vm->code[vm->ip++];
 }
 
-VM vmStd = {0};
-VM *vm;
-
 void runVM(ByteCodeResult bc) {
     vmStd.code = bc.data;
     vmStd.ip = 0;
     vmStd.sp = 0;
-    vm = &vmStd
+    vm = &vmStd;
 
     while (1) {
         uint8_t op = readByte();
