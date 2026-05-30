@@ -1,31 +1,20 @@
 #ifndef BYTECODE_H
 #define BYTECODE_H
 
+#define OP_PUT_A              0x01 // put onto next use stack A
+#define OP_PUT_B              0x02 // put onto next use stack B
 
-#define OP_PUSH_CONST      0x01
+#define OP_OPERATE_MUL        0x11 // mul A B -> R
+#define OP_OPERATE_DIV        0x12 // div A B -> R
+#define OP_OPERATE_ADD        0x13 // add A B -> R
+#define OP_OPERATE_SUB        0x14 // sub A B -> R
+#define OP_OPERATE_EXP        0x15 // exp A B -> R
 
-#define OP_ADD             0x10
-#define OP_SUB             0x11
-#define OP_MUL             0x12
-#define OP_DIV             0x13
+#define OP_STORE              0x21 // store A into slot B
+#define OP_LOAD               0x22 // load from slot A into R
 
-#define OP_STORE_GLOBAL    0x20
-#define OP_LOAD_GLOBAL     0x21
 
-#define OP_JMP             0x30
-#define OP_JMP_IF_FALSE    0x31
 
-#define OP_EQ              0x40
-#define OP_NEQ             0x41
-#define OP_GT              0x42
-#define OP_LT              0x43
-
-#define OP_CALL_NATIVE     0x50
-
-#define OP_CALL            0x60
-#define OP_RETURN          0x61
-
-#define OP_HALT            0xFF
-
+#define OP_FINISH             0xFF
 
 #endif

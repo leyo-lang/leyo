@@ -99,7 +99,7 @@ static void writeByte(uint8_t value) {
 }
 
 
-static int defineGlobal(char *name) {
+static int define(char *name) {
     for (int i = 0; i < b->globalCount; i++) {
         if (strcmp(b->globals[i].name, name) == 0) {
             return b->globals[i].slot;
@@ -115,7 +115,7 @@ static int defineGlobal(char *name) {
     return slot;
 }
 
-static int resolveGlobal(char *name) {
+static int resolve(char *name) {
     for (int i = 0; i < b->globalCount; i++) {
         if (strcmp(b->globals[i].name, name) == 0) {
             return b->globals[i].slot;
@@ -127,75 +127,17 @@ static int resolveGlobal(char *name) {
     return -1;
 }
 
-static void parsePrimary(void) {
-
-    // number literal
-    if (current().type == NUMBER) {
-
-        int value = atoi(current().value);
-
-        writeByte(OP_PUSH_CONST);
-        writeByte((uint8_t)value);
-
-        advance();
-        return;
-    }
-
-    // variable
-    if (current().type == IDENTIFIER) {
-
-        uint16_t slot = resolveGlobal(current().value);
-
-        writeByte(OP_LOAD_GLOBAL);
-        writeByte((uint8_t)slot);
-
-        advance();
-        return;
-    }
-
-    raise("Invalid expression", current().line, current().collumn);
-}
-
-static void parseExpression(void) {
-
-    parsePrimary();
-
-    while (current().type == OPERATION) {
-
-        char *op = current().value;
-        advance();
-
-        parsePrimary();
-
-        if (strcmp(op, "+") == 0) {
-            writeByte(OP_ADD);
-        }
-        else if (strcmp(op, "-") == 0) {
-            writeByte(OP_SUB);
-        }
-        else if (strcmp(op, "*") == 0) {
-            writeByte(OP_MUL);
-        }
-        else if (strcmp(op, "/") == 0) {
-            writeByte(OP_DIV);
-        }
-        else {
-            raise("Unknown operator", current().line, current().collumn);
-        }
-    }
-}
-
 static void parseAssign(void) {
     logBuildParser("Parsing assignment");
 
     char *name = current().value;
-    uint16_t slot = resolveGlobal(name);
+    uint16_t slot = resolve(name);
 
     expectAndPass(EQUALS, "Expected '='");
 
     parseExpression();
 
-    writeByte(OP_STORE_GLOBAL);
+    writeByte(OP_STORE);
     writeByte((uint8_t)slot);
 
     expectCurrent(SEMICOLON, "Expected ';'");
@@ -221,14 +163,13 @@ static void parseVarDecl(void) {
 
     char *name = current().value;
 
-    uint16_t slot = defineGlobal(name);
+    uint16_t slot = define(name);
 
     expectAndPass(EQUALS, "Expected '='");
 
-    // IMPORTANT: expression compiler must leave value on stack
     parseExpression();
 
-    writeByte(OP_STORE_GLOBAL);
+    writeByte(OP_STORE);
     writeByte((uint8_t)slot);
 
     expectCurrent(SEMICOLON, "Expected ';'");
@@ -282,7 +223,7 @@ ByteCodeResult parse(TokenStream ts) {
     }
     
 
-    writeByte(OP_HALT); // end mark
+    writeByte(OP_FINISH); // end mark
 
     ByteCodeResult res = {0};
     res.length = b->byteIndex;
