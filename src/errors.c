@@ -70,7 +70,7 @@ void raise(const char *msg, int line, int col) {
     }
 }
 
-void callAllErr() {
+void callAllErr(void) {
     for (int i = 0; i < error_count; i++) {
         Error currErr = errors[i];
         printf("Error at position %d:%d: %s\n\n",

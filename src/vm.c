@@ -35,7 +35,7 @@ static void push(Value v) {
     vm->stack[vm->sp++] = v;
 }
 
-static Value pop() {
+static Value pop(void) {
     if (vm->sp <= 0) {
         printf("Stack underflow\n");
         exit(1);
@@ -43,11 +43,12 @@ static Value pop() {
     return vm->stack[--vm->sp];
 }
 
-static uint8_t readByte() {
+static uint8_t readByte(void) {
     return vm->code[vm->ip++];
 }
 
 void runVM(ByteCodeResult bc) {
+    logRuntime("Starting VM execution");
     vmStd.code = bc.data;
     vmStd.ip = 0;
     vmStd.sp = 0;
@@ -72,6 +73,7 @@ void runVM(ByteCodeResult bc) {
                 push(r);
                 break;
             }
+
             case OP_SUB: {
                 Value b = pop();
                 Value a = pop();

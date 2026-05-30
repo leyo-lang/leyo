@@ -72,19 +72,19 @@ static void push(Token token) {
     lexRes.stream[lexRes.count++] = token;
 }
 
-static char peek() {
+static char peek(void) {
     return src[l->i+1];
 }
 
-static char current() {
+static char current(void) {
     return src[l->i];
 }
 
-static char previous() {
+static char previous(void) {
     return src[l->i-1];
 }
 
-static void advance() {
+static void advance(void) {
     l->i++;
     if (current() == '\n') {
         l->line++;
@@ -95,7 +95,7 @@ static void advance() {
     }
 }
 
-void handleNormal() {
+void handleNormal(void) {
     char c = current();
 
     logBuildLexer("Entering NORMAL mode");
@@ -176,7 +176,7 @@ void handleNormal() {
     advance();
 }
 
-void handleString() {
+void handleString(void) {
     logBuildLexer("Entering STRING mode");
 
     int buffSize = 0;
@@ -226,7 +226,7 @@ void handleString() {
     free(buff);
 }
 
-void handleIdentifier() {
+void handleIdentifier(void) {
     logBuildLexer("Entering IDENTIFIER mode");
 
     int buffSize = 0;
@@ -270,7 +270,7 @@ void handleIdentifier() {
     free(buff);
 }
 
-void handleNumber() {
+void handleNumber(void) {
     logBuildLexer("Entering NUMBER mode");
 
     int buffSize = 0;
@@ -324,7 +324,7 @@ void handleNumber() {
     free(buff);
 }
 
-void handleComment() {
+void handleComment(void) {
     logBuildLexer("Entering COMMENT mode");
 
     while (true) {

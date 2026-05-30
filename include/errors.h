@@ -10,7 +10,7 @@ typedef struct {
 } Error;
 
 void raise(const char *msg, int line, int col);
-void callAllErr();
+void callAllErr(void);
 
 extern bool isErr;
 

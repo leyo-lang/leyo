@@ -38,7 +38,12 @@ run: all
 
 # clean build files
 clean:
+ifeq ($(OS),Windows_NT)
 	del /Q $(BUILD_DIR)\*.o 2> nul
 	del /Q $(BIN_DIR)\*.exe 2> nul
+else
+	rm -f $(BUILD_DIR)/*.o
+	rm -f $(BIN_DIR)/*
+endif
 
 .PHONY: all clean run

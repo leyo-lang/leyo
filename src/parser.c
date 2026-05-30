@@ -36,11 +36,12 @@ typedef struct {
 ByteCoder bytecoder = {0};
 ByteCoder *b;
 
-static Token current() {
+static Token current(void) {
     return b->tokens[b->pos];
 }
 
-static Token previous() {
+/*
+static Token previous(void) {
     if (b->count-1==b->pos) {
         logBuildParser("Too far - previoused into eos");
         raise("Internal Parser Error: Too far - previoused into eos", current().line, current().collumn);
@@ -48,8 +49,9 @@ static Token previous() {
     }
     return b->tokens[b->pos-1];
 }
+*/
 
-static Token peek() {
+static Token peek(void) {
     if (b->count-1==b->pos) {
         logBuildParser("Too far - peeked into eos");
         raise("Internal Parser Error: Too far - peeked into eos", current().line, current().collumn);
@@ -58,7 +60,7 @@ static Token peek() {
     return b->tokens[b->pos+1];
 }
 
-static void advance() {
+static void advance(void) {
     b->pos++;
 }
 
@@ -125,7 +127,7 @@ static int resolveGlobal(char *name) {
     return -1;
 }
 
-static void parsePrimary() {
+static void parsePrimary(void) {
 
     // number literal
     if (current().type == NUMBER) {
@@ -154,7 +156,7 @@ static void parsePrimary() {
     raise("Invalid expression", current().line, current().collumn);
 }
 
-static void parseExpression() {
+static void parseExpression(void) {
 
     parsePrimary();
 
@@ -183,7 +185,7 @@ static void parseExpression() {
     }
 }
 
-static void parseAssign() {
+static void parseAssign(void) {
     logBuildParser("Parsing assignment");
 
     char *name = current().value;
@@ -199,7 +201,7 @@ static void parseAssign() {
     expectCurrent(SEMICOLON, "Expected ';'");
 }
 
-static void parseVarDecl() {
+static void parseVarDecl(void) {
     logBuildParser("Parsing variable declaration");
 
     if (current().type != IDENTIFIER) {
@@ -232,7 +234,7 @@ static void parseVarDecl() {
     expectCurrent(SEMICOLON, "Expected ';'");
 }
 
-static void parseStatement() {
+static void parseStatement(void) {
     logBuildParser("Parsing statement");
 
     switch (current().type) {

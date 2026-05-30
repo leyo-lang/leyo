@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "../include/errors.h"
 
-char *getVersion() {
+char *getVersion(void) {
     logController("Fetching Version...");
     FILE *vfile = fopen("VERSION.txt", "r");
     if (!vfile) {
