@@ -15,7 +15,7 @@ typedef struct {
 typedef struct {
     char *name;
     uint16_t slot;
-} Symbol;
+} Global;
 
 typedef struct {
     Token *tokens;
@@ -25,11 +25,7 @@ typedef struct {
     uint8_t bytebuff[2048];
     int byteIndex;
 
-    int hasHalfByte;
-    uint8_t halfByte;
-
-    // NEW: variable system
-    Symbol globals[256];
+    Global globals[65535];
     int globalCount;
 } ByteCoder;
 
@@ -127,6 +123,13 @@ static int resolve(char *name) {
     return -1;
 }
 
+
+static void parseExpression(void) {
+    logBuildParser("Expr Parsing now");
+
+    
+}
+
 static void parseAssign(void) {
     logBuildParser("Parsing assignment");
 
@@ -216,7 +219,6 @@ ByteCodeResult parse(TokenStream ts) {
 
     b->byteIndex = 0;
     b->globalCount = 0;
-    b->hasHalfByte = 0;
 
     while (current().type != ENDOFSTREAM) {
         parseStatement();
