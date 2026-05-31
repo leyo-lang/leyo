@@ -7,6 +7,7 @@
 #include "../include/vm.h"
 #include "../include/version.h"
 #include "../include/headerer.h"
+#include "../include/disassembler.h"
 
 const char *tokenTypeName(TokenType t) {
     switch (t) {
@@ -59,7 +60,50 @@ void printByteCode(ByteCodeResult* bc) {
     logController("Finished printing bytecode output");
 }
 
+int dis(char *filename) {
+    logController("Disassembly started");
 
+    FILE* fp = fopen(filename, "rb");
+
+    if (!fp)
+    {
+        perror("fopen");
+        return 1;
+    }
+
+    fseek(fp, 0, SEEK_END);
+    long size = ftell(fp);
+    rewind(fp);
+
+    uint8_t* data = malloc(size);
+
+    if (!data)
+    {
+        fclose(fp);
+        return 1;
+    }
+
+    fread(data, 1, size, fp);
+    fclose(fp);
+
+    const size_t ENTRY_POINT = 0x4C;
+
+    if ((size_t)size <= ENTRY_POINT)
+    {
+        fprintf(stderr, "File too small\n");
+        free(data);
+        return 1;
+    }
+
+    disassemble(
+        data + ENTRY_POINT,
+        size - ENTRY_POINT
+    );
+
+    free(data);
+
+    return 0;
+}
 
 int build(char *filename, char *bcrfilename) {
     logController("Build started");
@@ -231,6 +275,8 @@ int main(int argc, char *argv[]) {
         ;
     } else if (strcmp(argv[1], "test") == 0) {
         ;
+    } else if (strcmp(argv[1], "disassemble") == 0) {
+        return dis(argv[2]);
     } else {
         logController("Unkown command line argument");
         raise("Unkown command line argument", 0,0);
