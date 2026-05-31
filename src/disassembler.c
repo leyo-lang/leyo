@@ -4,10 +4,18 @@
 
 #include "../include/bytecode.h"
 
-const char* opcode_name(uint8_t op)
-{
-    switch (op)
-    {
+static uint16_t read16(const uint8_t *code, size_t *ip) {
+    uint16_t value =
+        (uint16_t)code[*ip] |
+        ((uint16_t)code[*ip + 1] << 8);
+
+    *ip += 2;
+
+    return value;
+}
+
+const char* opcode_name(uint8_t op) {
+    switch (op) {
         case OP_PUT_A:       return "PUT_A";
         case OP_PUT_B:       return "PUT_B";
         case OP_PUT_S:       return "PUT_S";
@@ -34,22 +42,19 @@ const char* opcode_name(uint8_t op)
     }
 }
 
-int opcode_has_operand(uint8_t op)
-{
+int opcode_has_operand(uint8_t op) {
     switch (op)
     {
         case OP_PUT_A:
         case OP_PUT_B:
-        case OP_STORE:
-            return 1;
+            return 2;
 
         default:
             return 0;
     }
 }
 
-void disassemble(const uint8_t* code, size_t size)
-{
+void disassemble(const uint8_t* code, size_t size) {
     size_t ip = 0;
 
     while (ip < size)
@@ -66,7 +71,7 @@ void disassemble(const uint8_t* code, size_t size)
 
             printf("%s %u\n",
                    opcode_name(op),
-                   code[ip]);
+                   read16(code,&ip));
 
             ip++;
         }

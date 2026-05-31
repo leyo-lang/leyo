@@ -6,11 +6,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <math.h>
 
 #define SPEED_STACK_MAX 256
 #define GLOBALS_MAX 65536
 
-typedef int Value;
+typedef uint16_t Value;
 
 
 typedef struct {
@@ -32,14 +33,37 @@ typedef struct {
 VM vmStd = {0};
 VM *vm;
 
+static void dumpState(uint8_t op) {
+    char buf[512];
 
+    snprintf(buf, sizeof(buf),
+        "OP=0x%02X | A=%d B=%d R=%d | ip=%d | stackTop=%d",
+        op,
+        vm->A,
+        vm->B,
+        vm->R,
+        vm->ip,
+        vm->speedTop
+    );
+
+    logRuntime(buf);
+}
 
 static uint8_t readByte(void) {
-    return vm->code[vm->ip++];
+    return vm->code[vm->ip];
 }
 
 static void advanceByte(void) {
     vm->ip++;
+}
+
+static uint16_t read16(void) {
+    uint16_t low = readByte();
+    advanceByte();
+    uint16_t high = readByte();
+    
+
+    return low | (high << 8);
 }
 
 int runVM(ByteCodeResult bc) {
@@ -50,22 +74,28 @@ int runVM(ByteCodeResult bc) {
 
     while (1) {
         uint8_t op = readByte();
+
+        dumpState(op);
+
         advanceByte();
 
         switch (op) {
             case OP_PUT_A:
-                vm->A = readByte();
+                vm->A = read16();
+                advanceByte();
                 break;
 
             case OP_PUT_B:
-                vm->B = readByte();
+                vm->B = read16();
+                advanceByte();
                 break;
 
-            case OP_PUT_S:
+            case OP_PUT_S: {
                 Value tmp = vm->B;
                 vm->B = vm->A;
                 vm->A = tmp;
                 break;
+            }
 
             case OP_PUT_A_R:
                 vm->A = vm->R;
@@ -76,12 +106,31 @@ int runVM(ByteCodeResult bc) {
                 break;
 
             case OP_OPERATE_ADD:
-                // to make
-                return 0;
+                vm->R = vm->A + vm->B;
+                break;
+
+            case OP_OPERATE_SUB:
+                vm->R = vm->A - vm->B;
+                break;
+
+            case OP_OPERATE_MUL:
+                vm->R = vm->A * vm->B;
+                break;
+
+            case OP_OPERATE_DIV:
+                vm->R = vm->A / vm->B;
+                break;
+
+            case OP_OPERATE_EXP:
+                vm->R = pow(vm->A, vm->B);
+                break;
+
+            case OP_STORE:
+                vm->globals[vm->B] = vm->A;
+                break;
 
             case OP_FINISH:
                 return 0;
-
 
             default:
                 printf("Unknown opcode: 0x%02X at %d\n", op, vm->ip - 1);

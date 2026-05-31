@@ -94,6 +94,12 @@ static void emit(uint8_t value) {
     b->bytebuff[b->byteIndex++] = value;
 }
 
+static void emit16(uint16_t value) {
+    emit((uint8_t)(value & 0xFF));
+    emit((uint8_t)((value >> 8) & 0xFF));
+}
+
+
 
 static int define(char *name) {
     for (int i = 0; i < b->globalCount; i++) {
@@ -128,22 +134,24 @@ static void parseAtom(void) { // small singular unit of expression (number, iden
 
     switch (current().type) {
         case NUMBER: {
+            logBuildParser("atom is number");
             int value = atoi(current().value);
             emit(OP_PUT_A);
-            emit((uint8_t)value);
-            emit(OP_SS_PUSH_A);
+            emit16((uint16_t)value);
+            //emit(OP_SS_PUSH_A);
     
             advance();
             break;
         }
 
         case IDENTIFIER: {
+            logBuildParser("atom is ident");
             uint16_t slot = resolve(current().value);
             emit(OP_PUT_A);
-            emit((uint16_t)slot); // put slot into A
+            emit16((uint16_t)slot); // put slot into A
             emit(OP_LOAD); // takes from slot def in A and return into r
             emit(OP_PUT_A_R);
-            emit(OP_SS_PUSH_A);
+            //emit(OP_SS_PUSH_A);
 
             advance();
             break;
@@ -151,37 +159,44 @@ static void parseAtom(void) { // small singular unit of expression (number, iden
 
         default: {
             raise("Unknown atom", current().line, current().collumn);
+            callAllErr();
             break;
         }
     }
 }
+static void parseExpression(void)
+{
+    parseAtom(); // result -> A
 
-static void parseExpression(void) {
-    logBuildParser("Expr Parsing now");
-
-    parseAtom(); // left side
     while (current().type == OPERATION) {
         char op = current().value[0];
-        advance();
-        parseAtom(); // right side
 
-        switch (op) {
-            case '+':
-                emit(OP_OPERATE_ADD);
-                break;
-            case '-':
-                emit(OP_OPERATE_SUB);
-                break;
-            case '*':
-                emit(OP_OPERATE_MUL);
-                break;
-            case '/':
-                emit(OP_OPERATE_DIV);
-                break;
-            case '^':
-                emit(OP_OPERATE_EXP);
-                break;
+        emit(OP_PUT_S); // save left operand into B
+
+        advance();
+
+        parseAtom(); // right operand -> A
+
+        emit(OP_PUT_S); // swap:
+                         // B = right
+                         // A = left
+
+        switch (op)
+        {
+            case '+': emit(OP_OPERATE_ADD); break;
+            case '-': emit(OP_OPERATE_SUB); break;
+            case '*': emit(OP_OPERATE_MUL); break;
+            case '/': emit(OP_OPERATE_DIV); break;
+            case '^': emit(OP_OPERATE_EXP); break;
+
+            default:
+                raise("Unknown operator",
+                      current().line,
+                      current().collumn);
+                return;
         }
+
+        emit(OP_PUT_A_R); // result becomes new left side
     }
 }
 
@@ -196,7 +211,7 @@ static void parseAssign(void) {
     parseExpression();
 
     emit(OP_STORE);
-    emit((uint8_t)slot);
+    emit16((uint16_t)slot);
 
     expectCurrent(SEMICOLON, "Expected ';'");
 }
@@ -227,8 +242,10 @@ static void parseVarDecl(void) {
 
     parseExpression();
 
+    emit(OP_PUT_B);
+    emit16(slot);
     emit(OP_STORE);
-    emit((uint8_t)slot);
+    
 
     expectCurrent(SEMICOLON, "Expected ';'");
 }

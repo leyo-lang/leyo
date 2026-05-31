@@ -1,4 +1,1 @@
 int x = 3;
-~chr arr array = [];~
-int b = 7;
-x = b+b+x;
