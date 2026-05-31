@@ -85,7 +85,7 @@ static void expectAndPass(TokenType type, char *errorStr) {
     advance();
 }
 
-static void writeByte(uint8_t value) {
+static void emit(uint8_t value) {
     if ((size_t)b->byteIndex >= sizeof(b->bytebuff)) {
         logBuildParser("Byte buffer overflow detected");
         raise("Byte buffer overflow", current().line, current().collumn);
@@ -123,11 +123,66 @@ static int resolve(char *name) {
     return -1;
 }
 
+static void parseAtom(void) { // small singular unit of expression (number, identifier, string, etc)
+    logBuildParser("Parsing atom");
+
+    switch (current().type) {
+        case NUMBER: {
+            int value = atoi(current().value);
+            emit(OP_PUT_A);
+            emit((uint8_t)value);
+            emit(OP_SS_PUSH_A);
+    
+            advance();
+            break;
+        }
+
+        case IDENTIFIER: {
+            uint16_t slot = resolve(current().value);
+            emit(OP_PUT_A);
+            emit((uint16_t)slot); // put slot into A
+            emit(OP_LOAD); // takes from slot def in A and return into r
+            emit(OP_PUT_A_R);
+            emit(OP_SS_PUSH_A);
+
+            advance();
+            break;
+        }
+
+        default: {
+            raise("Unknown atom", current().line, current().collumn);
+            break;
+        }
+    }
+}
 
 static void parseExpression(void) {
     logBuildParser("Expr Parsing now");
 
-    
+    parseAtom(); // left side
+    while (current().type == OPERATION) {
+        char op = current().value[0];
+        advance();
+        parseAtom(); // right side
+
+        switch (op) {
+            case '+':
+                emit(OP_OPERATE_ADD);
+                break;
+            case '-':
+                emit(OP_OPERATE_SUB);
+                break;
+            case '*':
+                emit(OP_OPERATE_MUL);
+                break;
+            case '/':
+                emit(OP_OPERATE_DIV);
+                break;
+            case '^':
+                emit(OP_OPERATE_EXP);
+                break;
+        }
+    }
 }
 
 static void parseAssign(void) {
@@ -140,8 +195,8 @@ static void parseAssign(void) {
 
     parseExpression();
 
-    writeByte(OP_STORE);
-    writeByte((uint8_t)slot);
+    emit(OP_STORE);
+    emit((uint8_t)slot);
 
     expectCurrent(SEMICOLON, "Expected ';'");
 }
@@ -172,8 +227,8 @@ static void parseVarDecl(void) {
 
     parseExpression();
 
-    writeByte(OP_STORE);
-    writeByte((uint8_t)slot);
+    emit(OP_STORE);
+    emit((uint8_t)slot);
 
     expectCurrent(SEMICOLON, "Expected ';'");
 }
@@ -225,7 +280,7 @@ ByteCodeResult parse(TokenStream ts) {
     }
     
 
-    writeByte(OP_FINISH); // end mark
+    emit(OP_FINISH); // end mark
 
     ByteCodeResult res = {0};
     res.length = b->byteIndex;
