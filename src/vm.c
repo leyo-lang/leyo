@@ -55,18 +55,33 @@ int runVM(ByteCodeResult bc) {
         switch (op) {
             case OP_PUT_A:
                 vm->A = readByte();
+                break;
 
             case OP_PUT_B:
                 vm->B = readByte();
+                break;
+
+            case OP_PUT_S:
+                Value tmp = vm->B;
+                vm->B = vm->A;
+                vm->A = tmp;
+                break;
 
             case OP_PUT_A_R:
                 vm->A = vm->R;
+                break;
 
             case OP_PUT_B_R:
                 vm->B = vm->R;
+                break;
+
+            case OP_OPERATE_ADD:
+                // to make
+                return 0;
 
             case OP_FINISH:
                 return 0;
+
 
             default:
                 printf("Unknown opcode: 0x%02X at %d\n", op, vm->ip - 1);
