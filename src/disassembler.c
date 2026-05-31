@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+
+#include "../include/bytecode.h"
+
+const char* opcode_name(uint8_t op)
+{
+    switch (op)
+    {
+        case OP_PUT_A:       return "PUT_A";
+        case OP_PUT_B:       return "PUT_B";
+        case OP_PUT_S:       return "PUT_S";
+
+        case OP_PUT_A_R:     return "PUT_A_R";
+        case OP_PUT_B_R:     return "PUT_B_R";
+
+        case OP_OPERATE_MUL: return "MUL";
+        case OP_OPERATE_DIV: return "DIV";
+        case OP_OPERATE_ADD: return "ADD";
+        case OP_OPERATE_SUB: return "SUB";
+        case OP_OPERATE_EXP: return "EXP";
+
+        case OP_STORE:       return "STORE";
+        case OP_LOAD:        return "LOAD";
+
+        case OP_SS_PUSH_A:   return "SS_PUSH_A";
+        case OP_SS_PUSH_B:   return "SS_PUSH_B";
+        case OP_SS_POP:      return "SS_POP";
+
+        case OP_FINISH:      return "FINISH";
+
+        default:             return "UNKNOWN";
+    }
+}
+
+int opcode_has_operand(uint8_t op)
+{
+    switch (op)
+    {
+        case OP_PUT_A:
+        case OP_PUT_B:
+        case OP_STORE:
+            return 1;
+
+        default:
+            return 0;
+    }
+}
+
+void disassemble(const uint8_t* code, size_t size)
+{
+    size_t ip = 0;
+
+    while (ip < size)
+    {
+        uint8_t op = code[ip++];
+
+        if (opcode_has_operand(op))
+        {
+            if (ip >= size)
+            {
+                printf("%s <missing operand>\n", opcode_name(op));
+                break;
+            }
+
+            printf("%s %u\n",
+                   opcode_name(op),
+                   code[ip]);
+
+            ip++;
+        }
+        else
+        {
+            printf("%s\n", opcode_name(op));
+
+            if (op == OP_FINISH)
+                break;
+        }
+    }
+}
