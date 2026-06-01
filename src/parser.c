@@ -210,8 +210,9 @@ static void parseAssign(void) {
 
     parseExpression();
 
+    emit(OP_PUT_B);
+    emit16(slot);
     emit(OP_STORE);
-    emit16((uint16_t)slot);
 
     expectCurrent(SEMICOLON, "Expected ';'");
 }

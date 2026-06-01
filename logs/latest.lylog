@@ -9,4 +9,7 @@
 [RUNTIME] OP=0x01 | A=0 B=0 R=0 | ip=0 | stackTop=0
 [RUNTIME] OP=0x02 | A=3 B=0 R=0 | ip=3 | stackTop=0
 [RUNTIME] OP=0x21 | A=3 B=0 R=0 | ip=6 | stackTop=0
-[RUNTIME] OP=0xFF | A=3 B=0 R=0 | ip=7 | stackTop=0
+[RUNTIME] OP=0x01 | A=3 B=0 R=0 | ip=7 | stackTop=0
+[RUNTIME] OP=0x02 | A=5 B=0 R=0 | ip=10 | stackTop=0
+[RUNTIME] OP=0x21 | A=5 B=0 R=0 | ip=13 | stackTop=0
+[RUNTIME] OP=0xFF | A=5 B=0 R=0 | ip=14 | stackTop=0
