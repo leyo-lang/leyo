@@ -17,6 +17,23 @@ typedef struct {
     uint16_t slot;
 } Global;
 
+typedef enum {
+    VAL_FLOAT,
+    VAL_INT,
+    VAL_STR,
+    VAL_CHAR,
+} ValueFlag;
+
+typedef struct {
+    ValueFlag flag;
+    union {
+        int i;
+        double f;
+        char c;
+        char *s; // sterilise later
+    } as;
+} Value;
+
 typedef struct {
     Token *tokens;
     int pos;
@@ -27,8 +44,10 @@ typedef struct {
 
     Global globals[65535];
     int globalCount;
-} ByteCoder;
 
+    //Value consts[65535];
+    //int constAmt;
+} ByteCoder;
 ByteCoder bytecoder = {0};
 ByteCoder *b;
 
