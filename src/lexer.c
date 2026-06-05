@@ -284,13 +284,14 @@ void handleNumber(void) {
     }
 
     bool dotSeen = false;
+    TokenType flag = NUMBER;
 
     while (true) {
         char c = current();
 
         if (!isdigit(c) && c != '.') {
             buff[buffSize] = '\0';
-            push(token(buff, NUMBER));
+            push(token(buff, flag));
             l->mode = M_NORMAL;
             break;
         }
@@ -301,6 +302,7 @@ void handleNumber(void) {
                 raise("Invalid number format", l->line, l->collumn);
                 break;
             }
+            flag = FLT;
             dotSeen = true;
         }
 

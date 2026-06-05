@@ -21,7 +21,7 @@
 #define OP_SS_PUSH_B          0x32 // push B onto speed stack (element -1)
 #define OP_SS_POP             0x33 // pop from speed stack into R (element -1)
 
-
+#define OP_CONST_LOAD         0x41 // takes slot from A and gets associated const into R
 
 #define OP_FINISH             0xFF // EOF marker
 

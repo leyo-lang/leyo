@@ -8,8 +8,16 @@
 #include <stdint.h>
 
 typedef struct {
+    uint8_t data[65536];
+    int length;
+} ConstBuffer;
+
+ConstBuffer constBuf = {0};
+
+typedef struct {
     uint8_t *data;
     int length;
+    ConstBuffer cb;
 } ByteCodeResult;
 
 typedef struct {
@@ -45,11 +53,14 @@ typedef struct {
     Global globals[65535];
     int globalCount;
 
-    //Value consts[65535];
-    //int constAmt;
+    Value consts[65535];
+    int constAmt;
 } ByteCoder;
+
 ByteCoder bytecoder = {0};
 ByteCoder *b;
+
+
 
 static Token current(void) {
     return b->tokens[b->pos];
@@ -76,6 +87,11 @@ static Token peek(void) {
 }
 
 static void advance(void) {
+    if (b->count+1==b->pos) {
+        logBuildParser("Too far - advanced into eos");
+        raise("Internal Parser Error: Too far - advanced into eos", current().line, current().collumn);
+        callAllErr();
+    }
     b->pos++;
 }
 
@@ -118,7 +134,75 @@ static void emit16(uint16_t value) {
     emit((uint8_t)((value >> 8) & 0xFF));
 }
 
+static void constEmit(uint8_t v) {
+    constBuf.data[constBuf.length++] = v;
+}
 
+static void serializeValue(Value *v) {
+    constEmit((uint8_t)v->flag);
+
+    switch (v->flag) {
+        case VAL_INT: {
+            int x = v->as.i;
+            memcpy(&constBuf.data[constBuf.length], &x, sizeof(x));
+            constBuf.length += sizeof(x);
+            break;
+        }
+
+        case VAL_FLOAT: {
+            double x = v->as.f;
+            memcpy(&constBuf.data[constBuf.length], &x, sizeof(x));
+            constBuf.length += sizeof(x);
+            break;
+        }
+
+        case VAL_CHAR:
+            constEmit((uint8_t)v->as.c);
+            break;
+
+        case VAL_STR: {
+            uint16_t len = strlen(v->as.s);
+
+            memcpy(&constBuf.data[constBuf.length], &len, sizeof(len));
+            constBuf.length += sizeof(len);
+
+            memcpy(&constBuf.data[constBuf.length], v->as.s, len);
+            constBuf.length += len;
+            break;
+        }
+    }
+}
+
+static uint16_t emitConst() {
+    Value v = {0};
+    switch (current().type) {
+        case CHR:
+            v.as.c = current().value[0];
+            v.flag = VAL_CHAR;
+            break;
+
+        case NUMBER:
+            v.as.i = atoi(current().value);
+            v.flag = VAL_INT;
+            break;
+
+        case FLT:
+            v.as.f = atof(current().value);
+            v.flag = VAL_FLOAT;
+            break;
+
+        case STRING:
+            v.as.s = current().value;
+            v.flag = VAL_STR;
+            break;
+
+        default:
+            break;
+    }
+    serializeValue(&v);
+    b->consts[b->constAmt++] = v;
+    return b->constAmt-1;
+}
 
 static int define(char *name) {
     for (int i = 0; i < b->globalCount; i++) {
@@ -154,10 +238,9 @@ static void parseAtom(void) { // small singular unit of expression (number, iden
     switch (current().type) {
         case NUMBER: {
             logBuildParser("atom is number");
-            int value = atoi(current().value);
-            emit(OP_PUT_A);
-            emit16((uint16_t)value);
-            //emit(OP_SS_PUSH_A);
+            emit(OP_CONST_LOAD);
+            emit16((uint16_t)emitConst());
+            emit(OP_PUT_A_R);
     
             advance();
             break;
@@ -323,5 +406,6 @@ ByteCodeResult parse(TokenStream ts) {
     res.length = b->byteIndex;
     res.data = malloc(res.length);
     memcpy(res.data, b->bytebuff, res.length);
+    
     return res;
 }

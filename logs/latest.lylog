@@ -4,43 +4,7 @@
 [CONTROLLER] Running Leyo
 [CONTROLLER] Version:
 [CONTROLLER] 0.1.0-alpha
-[CONTROLLER] Build started
-[CONTROLLER] Input file opened successfully
-[CONTROLLER] File loaded into memory
-[BUILD][LEXER] Lexer started
-[BUILD][LEXER] Entering NORMAL mode
-[BUILD][LEXER] Switching to IDENTIFIER mode
-[BUILD][LEXER] Entering IDENTIFIER mode
-[BUILD][LEXER] Token pushed to stream
-[BUILD][LEXER] Entering NORMAL mode
-[BUILD][LEXER] Entering NORMAL mode
-[BUILD][LEXER] Switching to IDENTIFIER mode
-[BUILD][LEXER] Entering IDENTIFIER mode
-[BUILD][LEXER] Token pushed to stream
-[BUILD][LEXER] Entering NORMAL mode
-[BUILD][LEXER] Entering NORMAL mode
-[BUILD][LEXER] Token pushed to stream
-[BUILD][LEXER] Entering NORMAL mode
-[BUILD][LEXER] Entering NORMAL mode
-[BUILD][LEXER] Switching to NUMBER mode
-[BUILD][LEXER] Entering NUMBER mode
-[BUILD][LEXER] Token pushed to stream
-[BUILD][LEXER] Entering NORMAL mode
-[BUILD][LEXER] Token pushed to stream
-[BUILD][LEXER] Token pushed to stream
-[BUILD][LEXER] Lexer finished
-[CONTROLLER] Tokenisation completed
-[CONTROLLER] Printing token stream
-[CONTROLLER] Finished printing token stream
-[BUILD][PARSER] Parser started
-[BUILD][PARSER] Parsing statement
-[BUILD][PARSER] Parsing variable declaration
-[BUILD][PARSER] Parsing atom
-[BUILD][PARSER] atom is number
-[CONTROLLER] Fetching Version...
-[CONTROLLER] Version Fetched.
-[CONTROLLER] Parsing to bytecode completed
-[CONTROLLER] Bytecode successfully generated
-[CONTROLLER] Printing bytecode output
-[CONTROLLER] Finished printing bytecode output
-[CONTROLLER] Program built successfully
+[RUNTIME] VM START
+[RUNTIME] Starting VM execution
+[RUNTIME] OP=0x41 | A=0 B=0 R=0 | ip=0 | stackTop=0
+[RUNTIME] OP=0x00 | A=0 B=0 R=0 | ip=1 | stackTop=0

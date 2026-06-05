@@ -21,6 +21,7 @@ typedef enum {
     ENDOFSTREAM,
     UNKNOWN,
     CHR,
+    FLT,
 } TokenType;
 
 typedef struct {

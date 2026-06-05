@@ -5,13 +5,40 @@
 #include "../include/type.h"
 
 typedef struct {
+    char *name;
+    uint16_t slot;
+} Global;
+
+typedef enum {
+    VAL_FLOAT,
+    VAL_INT,
+    VAL_STR,
+    VAL_CHAR,
+} ValueFlag;
+
+typedef struct {
+    ValueFlag flag;
+    union {
+        int i;
+        double f;
+        char c;
+        char *s; // sterilise later
+    } as;
+} Value;
+
+typedef struct {
     Token *tokens;
     int pos;
     int count;
+
     uint8_t bytebuff[2048];
     int byteIndex;
-    int hasHalfByte;
-    uint8_t halfByte;
+
+    Global globals[65535];
+    int globalCount;
+
+    Value consts[65535];
+    int constAmt;
 } ByteCoder;
 
 typedef struct {
