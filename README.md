@@ -13,7 +13,7 @@ Its syntax is inspired by C-style languages, while introducing simplified constr
 - Syntax Overview  
 - Installation  
 - Usage  
-- Configuration  
+- Logger Configuration  
 - Security Model  
 - Troubleshooting  
 - Contributors  
@@ -44,30 +44,26 @@ Leyo uses a structured, declarative style where permissions and behaviors are ex
 ---
 
 ## Installation
-⚠️ Not specified yet.
-
-Please provide:
-- Installation method (binary, package manager, source build, etc.)
-- Supported platforms
+Leyo can be installed at <https://github.com/JoshRuds/leyo/releases> for free.
+It is currently still WIP so any errors can be added as an issue on the [Github Page](https://github.com/JoshRuds/leyo)
 
 ---
 
-## Usage
-Basic workflow in Leyo:
-1. Declare permissions using `allow`
-2. Define behaviors using `defined`
-3. Use logging to track execution
-4. Control execution flow with strict conditions
+## Usage  
+`leyo (command) [additional information] [flags]`
+
+- No Commands — displays version number and build number
+- build {filename} {optional: destination} [flags: none implemented yet] — builds file `.leyo` into destination `.lybc`
+- disassemble {filename} [flags: none implemented yet] — outputs the `.lybc` file from binary into human readable commands
+- run {filename} [flags: none implemented yet] — runs `.lybc` file 
+- hash — checks own hash againts publicly available hashes to ensure untampered executable
+- help — outputs helpfile for commands
+- log {filename} — sets up `.lylog` file for later logging of actions
 
 ---
 
-## Configuration
-Configuration appears to be embedded directly in code via:
-- Permission declarations (`allow`)
-- Typed parameters
-- Explicit execution control
-
-(Provide more details if there’s an external config system.)
+## Logger Configuration
+Configuration is available via `leyo log` command
 
 ---
 
@@ -76,22 +72,18 @@ Leyo enforces a **permission-first execution model**:
 - No operation runs unless explicitly allowed
 - All actions are logged for auditing
 - Type safety prevents undefined behavior
-- No pointers → eliminates unsafe memory access
 
 ---
 
 ## Troubleshooting
-Common issues may include:
-- Missing `allow` declarations → code won’t execute
-- Type mismatches → compilation/runtime errors
-- Undefined permissions → blocked operations
+Please drop an issue on the [Github Page](https://github.com/JoshRuds/leyo)
 
 ---
 
 ## Contributors
-Not specified.
+Josh Ruddick — Founder
 
 ---
 
 ## License
-Not specified.
+[Apache-2.0](https://github.com/JoshRuds/leyo/blob/main/LICENSE)
