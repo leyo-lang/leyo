@@ -51,7 +51,7 @@ typedef struct {
 Lexer lexer;
 Lexer *l = &lexer;
 
-TokenStream lexRes;
+TokenStream lexRes = {0};
 
 Token _token(const char *value, TokenType type, int line, int collumn) {
     Token t;

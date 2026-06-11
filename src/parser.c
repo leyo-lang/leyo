@@ -8,7 +8,7 @@
 #include <stdint.h>
 
 typedef struct {
-    uint8_t data[65536];
+    uint8_t *data;
     int length;
 } ConstBuffer;
 
@@ -53,7 +53,7 @@ typedef struct {
     Global globals[65535];
     int globalCount;
 
-    Value consts[65535];
+    Value *consts;
     int constAmt;
 } ByteCoder;
 
@@ -266,8 +266,7 @@ static void parseAtom(void) { // small singular unit of expression (number, iden
         }
     }
 }
-static void parseExpression(void)
-{
+static void parseExpression(void) {
     parseAtom(); // result -> A
 
     while (current().type == OPERATION) {
@@ -355,6 +354,12 @@ static void parseVarDecl(void) {
 
 static void parseStatement(void) {
     logBuildParser("Parsing statement");
+    fprintf(stderr, "before current()\n");
+
+    Token t = current();
+
+    fprintf(stderr, "after current()\n");
+    fprintf(stderr, "type=%d\n", t.type);
 
     switch (current().type) {
 
@@ -386,19 +391,42 @@ static void parseStatement(void) {
 ByteCodeResult parse(TokenStream ts) {
     logBuildParser("Parser started");
 
+    logBuildParser("Assigning parser state");
+
     b = &bytecoder;
 
     b->tokens = ts.stream;
-    b->pos = 0;
     b->count = ts.count;
+    b->pos = 0;
 
-    b->byteIndex = 0;
-    b->globalCount = 0;
+    logBuildParser("State assigned");
+
+    char buf[256];
+
+    sprintf(buf, "tokens=%p", (void*)b->tokens);
+    logBuildParser(buf);
+
+    sprintf(buf, "count=%d", b->count);
+    logBuildParser(buf);
+
+    sprintf(buf, "pos=%d", b->pos);
+    logBuildParser(buf);
+
+    sprintf(buf, "token0.type=%d", b->tokens[0].type);
+    logBuildParser(buf);
+
+    sprintf(buf, "token0.value=%s", b->tokens[0].value);
+    logBuildParser(buf);
+
+    logBuildParser("About to enter while loop");
 
     while (current().type != ENDOFSTREAM) {
+        logBuildParser("Entering parseStatement()");
         parseStatement();
+        logBuildParser("Returned from parseStatement()");
     }
-    
+
+    logBuildParser("Reached EOF");
 
     emit(OP_FINISH); // end mark
 
@@ -406,6 +434,38 @@ ByteCodeResult parse(TokenStream ts) {
     res.length = b->byteIndex;
     res.data = malloc(res.length);
     memcpy(res.data, b->bytebuff, res.length);
+
+    size_t cap = 65535;
+    uint8_t *consts = malloc(cap);
+    
+    size_t amount = 0;
+    Value c;
+    uint16_t i;
+    while (1) {
+        c = b->consts[i++];
+        switch (c.flag) {
+            case VAL_CHAR:
+                consts[amount++] = 0x03;
+                consts[amount++] = c.as.c;
+                break;
+
+            case VAL_STR:
+                consts[amount++] = 0x0;
+                consts[amount++] = c.as.c;
+                break;
+            
+            default:
+                break;
+        }
+        
+    }
+    size_t;
+    const uint8_t *constsFinal = consts;
+
+    ConstBuffer cb = {0};
+    cb.data = malloc(b->constAmt);
+    memcpy(cb.data, constsFinal, cb.length);
+    res.cb = cb;
     
     return res;
 }

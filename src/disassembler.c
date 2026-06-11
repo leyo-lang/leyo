@@ -38,6 +38,8 @@ const char* opcode_name(uint8_t op) {
 
         case OP_FINISH:      return "FINISH";
 
+        case OP_CONST_LOAD:  return "CONST_LOAD";
+
         default:             return "UNKNOWN";
     }
 }
@@ -82,5 +84,20 @@ void disassemble(const uint8_t* code, size_t size) {
             if (op == OP_FINISH)
                 break;
         }
+    }
+}
+
+
+void disassembleHex(const uint8_t* code, size_t size) {
+    size_t ip = 0;
+
+    while (ip < size)
+    {
+        uint8_t op = code[ip++];
+
+        printf("%02x ", op);
+
+        if (op == OP_FINISH)
+            break;
     }
 }

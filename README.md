@@ -34,13 +34,6 @@ Its syntax is inspired by C-style languages, while introducing simplified constr
 ## Syntax Overview
 Leyo uses a structured, declarative style where permissions and behaviors are explicitly defined.
 
-### Key Concepts
-- `allow` — Grants permission for specific operations  
-- `defined` — Declares a function or behavior  
-- `log` — Outputs observable logs  
-- `pass` — Allows execution to proceed  
-- `***` — Comment syntax  
-
 ---
 
 ## Installation
@@ -53,12 +46,12 @@ It is currently still WIP so any errors can be added as an issue on the [Github 
 `leyo (command) [additional information] [flags]`
 
 - No Commands — displays version number and build number
-- build {filename} {optional: destination} [flags: none implemented yet] — builds file `.leyo` into destination `.lybc`
-- disassemble {filename} [flags: none implemented yet] — outputs the `.lybc` file from binary into human readable commands
-- run {filename} [flags: none implemented yet] — runs `.lybc` file 
-- hash — checks own hash againts publicly available hashes to ensure untampered executable
-- help — outputs helpfile for commands
-- log {filename} — sets up `.lylog` file for later logging of actions
+- `build {filename} {optional: destination} [flags: none implemented yet]` — builds file `.leyo` into destination `.lybc`. Defaults to `a.lybc`
+- `disassemble {filename} [flags: --hex --head]` — outputs the `.lybc` file from binary into human readable commands. --hex shows as bytes, --head includes the header in the result
+- `run {filename} [flags: none implemented yet]` — runs `.lybc` file 
+- `hash` — checks own hash againts publicly available hashes to ensure untampered executable
+- `help` — outputs helpfile for commands
+- `log {filename}` — sets up `.lylog` file for later logging of actions
 
 ---
 

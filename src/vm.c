@@ -11,7 +11,7 @@
 #define SPEED_STACK_MAX 256
 #define GLOBALS_MAX 65536
 
-extern struct Value;
+// extern struct Value;
 
 typedef struct {
     uint8_t *code;
@@ -26,7 +26,7 @@ typedef struct {
 
     Value globals[GLOBALS_MAX];
     
-    Value consts[GLOBALS_MAX];
+    Value *consts;
 } VM;
 
 VM vmStd = {0};
@@ -38,9 +38,9 @@ static void dumpState(uint8_t op) {
     snprintf(buf, sizeof(buf),
         "OP=0x%02X | A=%d B=%d R=%d | ip=%d | stackTop=%d",
         op,
-        vm->A,
-        vm->B,
-        vm->R,
+        vm->A.as.i,
+        vm->B.as.i,
+        vm->R.as.i,
         vm->ip,
         vm->speedTop
     );
@@ -380,6 +380,12 @@ int runVM(ByteCodeResult bc) {
                 break;
 
             case OP_CONST_LOAD:
+                break;
+                if (vm->A.as.i > 65535) {
+                    raise("MEMORY ERROR CAUGHT - const load slot too high - DANGER", 0 ,0);
+                    callAllErr();
+                    break;
+                }
                 vm->R = vm->consts[vm->A.as.i];
                 break;
 
