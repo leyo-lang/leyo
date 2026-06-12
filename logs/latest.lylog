@@ -3,4 +3,15 @@
 [CONTROLLER] Version Fetched.
 [CONTROLLER] Running Leyo
 [CONTROLLER] Version:
-[CONTROLLER] 0.3.0
+[CONTROLLER] 0.4.0
+[RUNTIME] VM START
+[RUNTIME] Starting VM execution
+[RUNTIME] OP=0x41 | A=0 B=0 R=0 | ip=0 | stackTop=0
+[RUNTIME] OP=0x04 | A=0 B=0 R=5 | ip=3 | stackTop=0
+[RUNTIME] OP=0x02 | A=5 B=0 R=5 | ip=4 | stackTop=0
+[RUNTIME] OP=0x21 | A=5 B=0 R=5 | ip=7 | stackTop=0
+[RUNTIME] OP=0x41 | A=5 B=0 R=5 | ip=8 | stackTop=0
+[RUNTIME] OP=0x04 | A=5 B=0 R=6 | ip=11 | stackTop=0
+[RUNTIME] OP=0x02 | A=6 B=0 R=6 | ip=12 | stackTop=0
+[RUNTIME] OP=0x21 | A=6 B=0 R=6 | ip=15 | stackTop=0
+[RUNTIME] OP=0xFF | A=6 B=0 R=6 | ip=16 | stackTop=0

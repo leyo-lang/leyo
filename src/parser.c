@@ -13,7 +13,13 @@ ConstBuffer constBuf = {0};
 ByteCoder bytecoder = {0};
 ByteCoder *b;
 
-
+typedef enum {
+    TYPE_INT,
+    TYPE_FLOAT,
+    TYPE_STRING,
+    TYPE_CHAR,
+    TYPE_UNKNOWN
+} VarType;
 
 static Token current(void) {
     return b->tokens[b->pos];
@@ -23,7 +29,7 @@ static Token current(void) {
 static Token previous(void) {
     if (b->count-1==b->pos) {
         logBuildParser("Too far - previoused into eos");
-        raise("Internal Parser Error: Too far - previoused into eos", current().line, current().collumn);
+        raise("Internal Parser Error: Too far - previoused into sos/eos", current().line, current().collumn);
         callAllErr();
     }
     return b->tokens[b->pos-1];
@@ -91,6 +97,14 @@ static void constEmit(uint8_t v) {
     constBuf.data[constBuf.length++] = v;
 }
 
+static TokenType getTypeVar() {
+    if (strcmp(current().value, "int") == 0) {return NUMBER;}
+    if (strcmp(current().value, "str") == 0) {return STRING;}
+    if (strcmp(current().value, "flt") == 0) {return FLT;}
+    if (strcmp(current().value, "chr") == 0) {return CHR;}
+    return UNKNOWN;
+} 
+
 static void serializeValue(Value *v) {
     constEmit((uint8_t)v->flag);
 
@@ -157,7 +171,7 @@ static uint16_t emitConst() {
     return b->constAmt-1;
 }
 
-static int define(char *name) {
+static int define(char *name, TokenType type) {
     for (int i = 0; i < b->globalCount; i++) {
         if (strcmp(b->globals[i].name, name) == 0) {
             return b->globals[i].slot;
@@ -168,6 +182,7 @@ static int define(char *name) {
 
     b->globals[b->globalCount].name = strdup(name);
     b->globals[b->globalCount].slot = slot;
+    b->globals[b->globalCount].type = type;
     b->globalCount++;
 
     return slot;
@@ -185,7 +200,22 @@ static int resolve(char *name) {
     return -1;
 }
 
-static void parseAtom(void) { // small singular unit of expression (number, identifier, string, etc)
+static TokenType resolveType(char *name) {
+    for (int i = 0; i < b->globalCount; i++) {
+        if (strcmp(b->globals[i].name, name) == 0) {
+            return b->globals[i].type;
+        }
+    }
+
+    raise("Undefined variable",
+          current().line,
+          current().collumn);
+
+    callAllErr();
+    return UNKNOWN;
+}
+
+static TokenType parseAtom(void) { // small singular unit of expression (number, identifier, string, etc)
     logBuildParser("Parsing atom");
 
     switch (current().type) {
@@ -195,7 +225,33 @@ static void parseAtom(void) { // small singular unit of expression (number, iden
             emit16((uint16_t)emitConst());
             emit(OP_PUT_A_R);
     
-            advance();
+            break;
+        }
+
+        case CHR: {
+            logBuildParser("atom is char");
+            emit(OP_CONST_LOAD);
+            emit16((uint16_t)emitConst());
+            emit(OP_PUT_A_R);
+    
+            break;
+        }
+
+        case STRING: {
+            logBuildParser("atom is string");
+            emit(OP_CONST_LOAD);
+            emit16((uint16_t)emitConst());
+            emit(OP_PUT_A_R);
+    
+            break;
+        }
+
+        case FLT: {
+            logBuildParser("atom is float");
+            emit(OP_CONST_LOAD);
+            emit16((uint16_t)emitConst());
+            emit(OP_PUT_A_R);
+    
             break;
         }
 
@@ -208,7 +264,6 @@ static void parseAtom(void) { // small singular unit of expression (number, iden
             emit(OP_PUT_A_R);
             //emit(OP_SS_PUSH_A);
 
-            advance();
             break;
         }
 
@@ -218,9 +273,12 @@ static void parseAtom(void) { // small singular unit of expression (number, iden
             break;
         }
     }
+    TokenType type = current().type;
+    advance();
+    return type;
 }
-static void parseExpression(void) {
-    parseAtom(); // result -> A
+static TokenType parseExpression(void) {
+    TokenType ltype = parseAtom(); // result -> A
 
     while (current().type == OPERATION) {
         char op = current().value[0];
@@ -229,14 +287,19 @@ static void parseExpression(void) {
 
         advance();
 
-        parseAtom(); // right operand -> A
+        TokenType rtype = parseAtom(); // right operand -> A
+
+        if (ltype != rtype) {
+            raise("Types in expression are conflicting", current().line, current().collumn);
+            
+            return UNKNOWN;
+        }
 
         emit(OP_PUT_S); // swap:
                          // B = right
                          // A = left
 
-        switch (op)
-        {
+        switch (op) {
             case '+': emit(OP_OPERATE_ADD); break;
             case '-': emit(OP_OPERATE_SUB); break;
             case '*': emit(OP_OPERATE_MUL); break;
@@ -247,11 +310,22 @@ static void parseExpression(void) {
                 raise("Unknown operator",
                       current().line,
                       current().collumn);
-                return;
+                return UNKNOWN;
         }
 
         emit(OP_PUT_A_R); // result becomes new left side
     }
+    
+    return ltype;
+}
+
+static void parseExpressionTC(TokenType aim) {
+    TokenType type = parseExpression();
+    if (aim != type) {
+        raise("Type is conflicting", current().line, current().collumn);
+        return;
+    }
+    return;
 }
 
 static void parseAssign(void) {
@@ -262,7 +336,7 @@ static void parseAssign(void) {
 
     expectAndPass(EQUALS, "Expected '='");
 
-    parseExpression();
+    parseExpressionTC(resolveType(name));
 
     emit(OP_PUT_B);
     emit16(slot);
@@ -279,6 +353,7 @@ static void parseVarDecl(void) {
     };
 
     char *type = current().value;
+    TokenType aim = getTypeVar();
 
     if (!(strcmp(type, "int") == 0 ||
           strcmp(type, "str") == 0 ||
@@ -286,16 +361,15 @@ static void parseVarDecl(void) {
           strcmp(type, "chr") == 0)) {
         raise("Invalid type", current().line, current().collumn);
     }
-
+    
     expect(IDENTIFIER, "Expected variable name");
 
     char *name = current().value;
-
-    uint16_t slot = define(name);
+    uint16_t slot = define(name, aim);
 
     expectAndPass(EQUALS, "Expected '='");
 
-    parseExpression();
+    parseExpressionTC(aim);
 
     emit(OP_PUT_B);
     emit16(slot);
@@ -319,11 +393,9 @@ static void parseStatement(void) {
                 strcmp(current().value, "chr") == 0) {
 
                 parseVarDecl();
-            }
-            else if (peek().type == EQUALS) {
+            } else if (peek().type == EQUALS) {
                 parseAssign();
-            }
-            else {
+            } else {
                 raise("Unknown identifier statement", current().line, current().collumn);
             }
             break;

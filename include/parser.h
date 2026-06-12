@@ -7,6 +7,7 @@
 typedef struct {
     char *name;
     uint16_t slot;
+    TokenType type;
 } Global;
 
 typedef enum {
