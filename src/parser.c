@@ -361,7 +361,7 @@ static void parseVarDecl(void) {
           strcmp(type, "chr") == 0)) {
         raise("Invalid type", current().line, current().collumn);
     }
-    
+
     expect(IDENTIFIER, "Expected variable name");
 
     char *name = current().value;
@@ -379,10 +379,24 @@ static void parseVarDecl(void) {
     expectCurrent(SEMICOLON, "Expected ';'");
 }
 
+static void parseNative(void) {
+    logBuildParser("Parsing Native Call");
+    advance(); //past @
+    
+}
+
 static void parseStatement(void) {
     logBuildParser("Parsing statement");
 
     switch (current().type) {
+        case NATIVE:
+            if (strcmp(current().value, "@") == 0) {
+                parseNative();
+                break;
+            }
+            raise("Internal Parser Error: Lexer Failure Caught", current().line, current().collumn);
+            callAllErr();
+            break;
 
         case IDENTIFIER: {
 

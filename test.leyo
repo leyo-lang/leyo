@@ -1,2 +1,6 @@
 int i = 5;
 i = 6;
+flt f = 5.23;
+chr c = 'f';
+str s = "Hello World!";
+@dump;

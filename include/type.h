@@ -22,6 +22,7 @@ typedef enum {
     UNKNOWN,
     CHR,
     FLT,
+    NATIVE
 } TokenType;
 
 typedef struct {

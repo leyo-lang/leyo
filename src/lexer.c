@@ -133,6 +133,7 @@ void handleNormal(void) {
         return;
     };
 
+    if (c == '@') { push(token(charToStr(c), NATIVE)); } else
     if (c == '(') { push(token(charToStr(c), OPENBRAC)); } else
     if (c == ')') { push(token(charToStr(c), CLOSEBRAC)); } else
     if (c == ',') { push(token(charToStr(c), COMMA)); } else 

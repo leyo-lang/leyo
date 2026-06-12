@@ -33,15 +33,44 @@ typedef struct {
 VM vmStd = {0};
 VM *vm;
 
+static const char *valueToString(Value v, char *buf, size_t size) {
+    switch (v.flag) {
+        case VAL_INT:
+            snprintf(buf, size, "%d", v.as.i);
+            break;
+
+        case VAL_FLOAT:
+            snprintf(buf, size, "%g", v.as.f);
+            break;
+
+        case VAL_CHAR:
+            snprintf(buf, size, "'%c'", v.as.c);
+            break;
+
+        case VAL_STR:
+            snprintf(buf, size, "\"%s\"", v.as.s ? v.as.s : "(null)");
+            break;
+
+        default:
+            snprintf(buf, size, "<unknown>");
+            break;
+    }
+
+    return buf;
+}
+
 static void dumpState(uint8_t op) {
     char buf[512];
+    char aBuf[64];
+    char bBuf[64];
+    char rBuf[64];
 
     snprintf(buf, sizeof(buf),
-        "OP=0x%02X | A=%d B=%d R=%d | ip=%d | stackTop=%d",
+        "OP=0x%02X | A=%s B=%s R=%s | ip=%d | stackTop=%d",
         op,
-        vm->A.as.i,
-        vm->B.as.i,
-        vm->R.as.i,
+        valueToString(vm->A, aBuf, sizeof(aBuf)),
+        valueToString(vm->B, bBuf, sizeof(bBuf)),
+        valueToString(vm->R, rBuf, sizeof(rBuf)),
         vm->ip,
         vm->speedTop
     );
