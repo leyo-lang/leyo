@@ -149,16 +149,25 @@ int build(char *filename, char *bcrfilename) {
     logController("File loaded into memory");
 
     TokenStream ts = tokenise(buffer);
+    printf("BUILD count = %d\n", ts.count);
+    printf("BUILD: ts.tokens=%p\n", (void*)ts.stream);
+    printf("BUILD: ts.count=%d\n", ts.count);
     logController("Tokenisation completed");
 
-    printTokenStream(ts);
+    // /printTokenStream(ts);
 
     if (isErr) {
         logController("Errors detected after tokenisation");
         callAllErr();
     }
 
-    ByteCodeResult bcr = headThis(parse(ts));
+    printf("sizeof(TokenStream) = %zu\n", sizeof(TokenStream));
+    printf("count = %d\n", ts.count);
+    printf("tokens = %p\n", (void*)ts.stream);
+    printf("MAIN sizeof(TokenStream) = %zu\n", sizeof(TokenStream));
+    printf("MAIN ts.count = %d\n", ts.count);
+    printf("MAIN ts.ptr = %p\n", (void*)ts.stream);
+    ByteCodeResult bcr = headThis(parse(&ts));
 
     logController("Parsing to bytecode completed");
 
@@ -269,14 +278,17 @@ int main(int argc, char *argv[]) {
     }
 
     if (strcmp(argv[1], "build") == 0) {
-        if (argc == 3) {
-            argv[argc++] = "a.lybc";
-        } else if (argc != 4) {
-            logController("Too little command line args");
-            raise("Too little command line args", 0,0);
+        char *dest;
+        if (argc != 4 && argc != 3) {
+            logController("Too little or too many command line args");
+            raise("Too little or too many command line args", 0,0);
             callAllErr();
         }
-        return build(argv[2], argv[3]);
+        dest = "a.lybc";
+        if (argc == 4) {
+            dest = argv[3];
+        }
+        return build(argv[2], dest);
     } else if (strcmp(argv[1], "run") == 0) {
         if (argc != 3) {
             logController("Too little command line args");

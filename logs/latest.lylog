@@ -30,12 +30,10 @@
 [BUILD][LEXER] Token pushed to stream
 [BUILD][LEXER] Lexer finished
 [CONTROLLER] Tokenisation completed
-[CONTROLLER] Printing token stream
-[CONTROLLER] Finished printing token stream
 [BUILD][PARSER] Parser started
 [BUILD][PARSER] Assigning parser state
 [BUILD][PARSER] State assigned
-[BUILD][PARSER] tokens=00FDF7A4
-[BUILD][PARSER] count=0
+[BUILD][PARSER] tokens=00000002
+[BUILD][PARSER] count=1
 [BUILD][PARSER] pos=0
-[BUILD][PARSER] token0.type=19637136
+[BUILD][PARSER] count=1

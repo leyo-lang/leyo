@@ -37,7 +37,7 @@ typedef struct {
     Global globals[65535];
     int globalCount;
 
-    Value consts[65535];
+    Value *consts;
     int constAmt;
 } ByteCoder;
 
@@ -46,6 +46,6 @@ typedef struct {
     int length;
 } ByteCodeResult;
 
-ByteCodeResult parse(TokenStream ts);
+ByteCodeResult parse(TokenStream *ts);
 
 #endif

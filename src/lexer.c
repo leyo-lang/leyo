@@ -343,6 +343,10 @@ void handleComment(void) {
 TokenStream tokenise(char* _src) {
     src = _src;
 
+    lexRes.stream = malloc(sizeof(Token) * 4096);
+    lexRes.count = 0;
+    lexRes.capacity = 4096;
+
     l->i = 0;
     l->collumn = 1;
     l->scol = 1;

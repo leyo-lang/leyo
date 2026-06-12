@@ -388,15 +388,19 @@ static void parseStatement(void) {
     }
 }
 
-ByteCodeResult parse(TokenStream ts) {
+ByteCodeResult parse(TokenStream *ts) {
+    printf("sizeof(TokenStream) = %zu\n", sizeof(TokenStream));
+    printf("count = %d\n", ts->count);
+    printf("tokens = %p\n", (void*)ts->stream);
+    printf("PARSE count = %d\n", ts->count);
     logBuildParser("Parser started");
 
     logBuildParser("Assigning parser state");
 
     b = &bytecoder;
 
-    b->tokens = ts.stream;
-    b->count = ts.count;
+    b->tokens = ts->stream;
+    b->count = ts->count;
     b->pos = 0;
 
     logBuildParser("State assigned");
@@ -412,11 +416,15 @@ ByteCodeResult parse(TokenStream ts) {
     sprintf(buf, "pos=%d", b->pos);
     logBuildParser(buf);
 
-    sprintf(buf, "token0.type=%d", b->tokens[0].type);
+    sprintf(buf, "count=%d", b->count);
     logBuildParser(buf);
 
-    sprintf(buf, "token0.value=%s", b->tokens[0].value);
-    logBuildParser(buf);
+    if (b->count > 0) {
+        sprintf(buf, "token0.type=%d", b->tokens[0].type);
+        logBuildParser(buf);
+        sprintf(buf, "token0.value=%s", b->tokens[0].value);
+        logBuildParser(buf);
+    }
 
     logBuildParser("About to enter while loop");
 
@@ -440,30 +448,55 @@ ByteCodeResult parse(TokenStream ts) {
     
     size_t amount = 0;
     Value c;
-    uint16_t i;
-    while (1) {
+    int i = 0;
+    while (i < b->constAmt) {
         c = b->consts[i++];
         switch (c.flag) {
-            case VAL_CHAR:
-                consts[amount++] = 0x03;
-                consts[amount++] = c.as.c;
+            case VAL_INT:
+                consts[amount++] = 0x01;
+                int64_t val_i = c.as.i;
+                memcpy(&consts[amount], &val_i, sizeof(val_i));
+                amount += sizeof(val_i);
                 break;
 
-            case VAL_STR:
-                consts[amount++] = 0x0;
-                consts[amount++] = c.as.c;
+            case VAL_FLOAT:
+                consts[amount++] = 0x02;
+
+                double val_f = c.as.f;
+                memcpy(&consts[amount], &val_f, sizeof(val_f));
+                amount += sizeof(val_f);
                 break;
+
+            case VAL_CHAR:
+                consts[amount++] = 0x03;
+                consts[amount++] = (uint8_t)c.as.c;
+                break;
+
+            case VAL_STR: {
+                const char *s = c.as.s;
+                uint32_t len = strlen(s);
+
+                consts[amount++] = 0x04;
+
+                memcpy(&consts[amount], &len, sizeof(len));
+                amount += sizeof(len);
+
+                memcpy(&consts[amount], s, len);
+                amount += len;
+                break;
+            }
             
             default:
                 break;
         }
         
     }
-    size_t;
+
     const uint8_t *constsFinal = consts;
 
     ConstBuffer cb = {0};
-    cb.data = malloc(b->constAmt);
+    cb.data = malloc(amount);
+    cb.length = amount;
     memcpy(cb.data, constsFinal, cb.length);
     res.cb = cb;
     

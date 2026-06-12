@@ -33,7 +33,8 @@ typedef struct {
 } Token;
 
 typedef struct {
-    Token stream[4096];
+    Token *stream;
+    int capacity;
     int count;
 } TokenStream;
 
