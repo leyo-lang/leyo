@@ -1,8 +1,47 @@
-1x = var decl
-2x = assignment + var logic
-    21 = var assign
-8x = std
-    80 = trace 
-    81 = print 
-    82 = allow
-    83 = log 
+Leyo opcode reference
+
+Format:
+- `opcode` = hexadecimal opcode byte
+- `operands` = immediate bytes consumed after the opcode
+- `meaning` = what the VM does with the instruction
+
+Register setup
+
+0x01  OP_PUT_A      operands: u16  | meaning: load an immediate into register A
+0x02  OP_PUT_B      operands: u16  | meaning: load an immediate into register B
+0x03  OP_PUT_S      operands: none | meaning: swap registers A and B
+0x04  OP_PUT_A_R    operands: none | meaning: copy R into A
+0x05  OP_PUT_B_R    operands: none | meaning: copy R into B
+
+Arithmetic
+
+0x11  OP_OPERATE_MUL operands: none | meaning: multiply A and B into R
+0x12  OP_OPERATE_DIV operands: none | meaning: divide A by B into R
+0x13  OP_OPERATE_ADD operands: none | meaning: add A and B into R
+0x14  OP_OPERATE_SUB operands: none | meaning: subtract B from A into R
+0x15  OP_OPERATE_EXP operands: none | meaning: raise A to the power of B into R
+
+Globals
+
+0x21  OP_STORE       operands: none | meaning: store A into global slot B
+0x22  OP_LOAD        operands: none | meaning: load global slot A into R
+
+Constant pool
+
+0x41  OP_CONST_LOAD  operands: u16  | meaning: load constant pool entry into R
+
+Speed stack
+
+0x31  OP_SS_PUSH_A   operands: none | meaning: push A onto the speed stack
+0x32  OP_SS_PUSH_B   operands: none | meaning: push B onto the speed stack
+0x33  OP_SS_POP      operands: none | meaning: pop from the speed stack into R
+
+Program control
+
+0xFF  OP_FINISH      operands: none | meaning: end of program
+
+Notes
+
+- The compiler and VM must agree on operand size
+- `OP_CONST_LOAD` uses a constant-pool index, not a raw value
+- If an opcode changes, update `include/bytecode.h`, `src/parser.c`, `src/vm.c`, and this file together

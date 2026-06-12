@@ -1,7 +1,22 @@
-.leyo - src code
-.lybc - leyo bc 
-.lylog - logs
-.lyobj - objects
-.lyconf - compiler config
-.lypkg - zip
-.lydet - package details
+Source and project file guide:
+
+.leyo  source files
+.lybc  compiled bytecode files
+.lylog compiler and runtime logs
+.lyobj object files
+.lyconf compiler configuration
+.lypkg  package archive
+.lydet  package metadata
+
+Documentation:
+
+README.md
+CONTRIBUTING.md
+TODO.md
+scripts/test.ps1
+docs/cli.md
+docs/compiler.md
+docs/vm.md
+docs/bytecode.md
+docs/opcodes.txt
+docs/types.txt
