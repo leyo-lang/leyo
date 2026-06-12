@@ -27,6 +27,7 @@ typedef struct {
     Value globals[GLOBALS_MAX];
     
     Value *consts;
+    int constCount;
 } VM;
 
 VM vmStd = {0};
@@ -60,9 +61,113 @@ static uint16_t read16(void) {
     uint16_t low = readByte();
     advanceByte();
     uint16_t high = readByte();
-    
+    advanceByte();
 
     return low | (high << 8);
+}
+
+static Value *decodeConstPool(const uint8_t *data, int length, int *outCount) {
+    Value *values = NULL;
+    int count = 0;
+    int pos = 0;
+
+    while (pos < length) {
+        Value v = {0};
+        uint8_t type = data[pos++];
+
+        switch (type) {
+            case 0x01: {
+                int64_t raw = 0;
+                memcpy(&raw, &data[pos], sizeof(raw));
+                pos += (int)sizeof(raw);
+                v.flag = VAL_INT;
+                v.as.i = (int)raw;
+                break;
+            }
+
+            case 0x02: {
+                double raw = 0.0;
+                memcpy(&raw, &data[pos], sizeof(raw));
+                pos += (int)sizeof(raw);
+                v.flag = VAL_FLOAT;
+                v.as.f = raw;
+                break;
+            }
+
+            case 0x03:
+                v.flag = VAL_CHAR;
+                v.as.c = (char)data[pos++];
+                break;
+
+            case 0x04: {
+                uint32_t len = 0;
+                memcpy(&len, &data[pos], sizeof(len));
+                pos += (int)sizeof(len);
+
+                char *s = malloc((size_t)len + 1);
+                if (!s) {
+                    for (int i = 0; i < count; i++) {
+                        if (values[i].flag == VAL_STR) {
+                            free(values[i].as.s);
+                        }
+                    }
+                    free(values);
+                    return NULL;
+                }
+
+                memcpy(s, &data[pos], len);
+                s[len] = '\0';
+                pos += (int)len;
+
+                v.flag = VAL_STR;
+                v.as.s = s;
+                break;
+            }
+
+            default:
+                for (int i = 0; i < count; i++) {
+                    if (values[i].flag == VAL_STR) {
+                        free(values[i].as.s);
+                    }
+                }
+                free(values);
+                return NULL;
+        }
+
+        Value *tmp = realloc(values, sizeof(Value) * (size_t)(count + 1));
+        if (!tmp) {
+            if (v.flag == VAL_STR) {
+                free(v.as.s);
+            }
+            for (int i = 0; i < count; i++) {
+                if (values[i].flag == VAL_STR) {
+                    free(values[i].as.s);
+                }
+            }
+            free(values);
+            return NULL;
+        }
+
+        values = tmp;
+        values[count++] = v;
+    }
+
+    *outCount = count;
+    return values;
+}
+
+static void freeConstPool(Value *values, int count) {
+    if (!values) {
+        return;
+    }
+
+    for (int i = 0; i < count; i++) {
+        if (values[i].flag == VAL_STR) {
+            free(values[i].as.s);
+        }
+    }
+
+    free(values);
 }
 
 static void addition(void) {
@@ -317,8 +422,19 @@ int runVM(ByteCodeResult bc) {
     logRuntime("Starting VM execution");
     vmStd.code = bc.data;
     vmStd.ip = 0;
-    //vmStd.consts = bc;
+    vmStd.consts = NULL;
+    vmStd.constCount = 0;
     vm = &vmStd;
+
+    if (bc.cb.length > 0 && bc.cb.data != NULL) {
+        vmStd.consts = decodeConstPool(bc.cb.data, bc.cb.length, &vmStd.constCount);
+
+        if (!vmStd.consts) {
+            raise("Failed to decode constant pool", vm->ip, 0);
+            callAllErr();
+            return 1;
+        }
+    }
 
     while (1) {
         uint8_t op = readByte();
@@ -331,13 +447,11 @@ int runVM(ByteCodeResult bc) {
             case OP_PUT_A:
                 vm->A.as.i = read16();
                 vm->A.flag = VAL_INT;
-                advanceByte();
                 break;
 
             case OP_PUT_B:
                 vm->B.as.i = read16();
-                vm->A.flag = VAL_INT;
-                advanceByte();
+                vm->B.flag = VAL_INT;
                 break;
 
             case OP_PUT_S: {
@@ -379,26 +493,44 @@ int runVM(ByteCodeResult bc) {
                 vm->globals[vm->B.as.i] = vm->A;
                 break;
 
-            case OP_CONST_LOAD:
-                break;
-                if (vm->A.as.i > 65535) {
-                    raise("MEMORY ERROR CAUGHT - const load slot too high - DANGER", 0 ,0);
+            case OP_LOAD:
+                if (vm->A.as.i < 0 || vm->A.as.i >= GLOBALS_MAX) {
+                    raise("Global slot out of range", vm->ip, 0);
                     callAllErr();
-                    break;
+                    freeConstPool(vmStd.consts, vmStd.constCount);
+                    return 1;
                 }
-                vm->R = vm->consts[vm->A.as.i];
+                vm->R = vm->globals[vm->A.as.i];
+                break;
+
+            case OP_CONST_LOAD:
+                {
+                    uint16_t constIndex = read16();
+
+                    if (constIndex >= (uint16_t)vm->constCount) {
+                        raise("Const load slot out of range", vm->ip, 0);
+                        callAllErr();
+                        freeConstPool(vmStd.consts, vmStd.constCount);
+                        return 1;
+                    }
+
+                    vm->R = vm->consts[constIndex];
+                }
                 break;
 
             case OP_FINISH:
+                freeConstPool(vmStd.consts, vmStd.constCount);
                 return 0;
 
             default:
                 printf("Unknown opcode: 0x%02X at %d\n", op, vm->ip - 1);
+                freeConstPool(vmStd.consts, vmStd.constCount);
                 exit(1);
         }
     }
 
     raise("Exited Early", vm->ip, 0);
+    freeConstPool(vmStd.consts, vmStd.constCount);
     callAllErr();
     return 1;
 }

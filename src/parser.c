@@ -1,4 +1,5 @@
 #include "../include/type.h"
+#include "../include/parser.h"
 #include "../include/errors.h"
 #include "../include/bytecode.h"
 #include <ctype.h>
@@ -7,55 +8,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-typedef struct {
-    uint8_t *data;
-    int length;
-} ConstBuffer;
-
 ConstBuffer constBuf = {0};
-
-typedef struct {
-    uint8_t *data;
-    int length;
-    ConstBuffer cb;
-} ByteCodeResult;
-
-typedef struct {
-    char *name;
-    uint16_t slot;
-} Global;
-
-typedef enum {
-    VAL_FLOAT,
-    VAL_INT,
-    VAL_STR,
-    VAL_CHAR,
-} ValueFlag;
-
-typedef struct {
-    ValueFlag flag;
-    union {
-        int i;
-        double f;
-        char c;
-        char *s; // sterilise later
-    } as;
-} Value;
-
-typedef struct {
-    Token *tokens;
-    int pos;
-    int count;
-
-    uint8_t bytebuff[2048];
-    int byteIndex;
-
-    Global globals[65535];
-    int globalCount;
-
-    Value *consts;
-    int constAmt;
-} ByteCoder;
 
 ByteCoder bytecoder = {0};
 ByteCoder *b;
@@ -354,12 +307,6 @@ static void parseVarDecl(void) {
 
 static void parseStatement(void) {
     logBuildParser("Parsing statement");
-    fprintf(stderr, "before current()\n");
-
-    Token t = current();
-
-    fprintf(stderr, "after current()\n");
-    fprintf(stderr, "type=%d\n", t.type);
 
     switch (current().type) {
 
@@ -389,10 +336,6 @@ static void parseStatement(void) {
 }
 
 ByteCodeResult parse(TokenStream *ts) {
-    printf("sizeof(TokenStream) = %zu\n", sizeof(TokenStream));
-    printf("count = %d\n", ts->count);
-    printf("tokens = %p\n", (void*)ts->stream);
-    printf("PARSE count = %d\n", ts->count);
     logBuildParser("Parser started");
 
     logBuildParser("Assigning parser state");
@@ -402,6 +345,23 @@ ByteCodeResult parse(TokenStream *ts) {
     b->tokens = ts->stream;
     b->count = ts->count;
     b->pos = 0;
+    b->byteIndex = 0;
+    b->globalCount = 0;
+    b->constAmt = 0;
+    b->consts = malloc(sizeof(Value) * 1024);
+
+    if (!b->consts) {
+        raise("Failed to allocate const table", 0, 0);
+        callAllErr();
+    }
+
+    constBuf.length = 0;
+    constBuf.data = malloc(65535);
+
+    if (!constBuf.data) {
+        raise("Failed to allocate const buffer", 0, 0);
+        callAllErr();
+    }
 
     logBuildParser("State assigned");
 

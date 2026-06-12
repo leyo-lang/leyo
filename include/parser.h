@@ -44,6 +44,12 @@ typedef struct {
 typedef struct {
     uint8_t *data;
     int length;
+} ConstBuffer;
+
+typedef struct {
+    uint8_t *data;
+    int length;
+    ConstBuffer cb;
 } ByteCodeResult;
 
 ByteCodeResult parse(TokenStream *ts);

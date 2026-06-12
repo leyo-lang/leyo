@@ -4,36 +4,3 @@
 [CONTROLLER] Running Leyo
 [CONTROLLER] Version:
 [CONTROLLER] 0.3.0
-[CONTROLLER] Build started
-[CONTROLLER] Input file opened successfully
-[CONTROLLER] File loaded into memory
-[BUILD][LEXER] Lexer started
-[BUILD][LEXER] Entering NORMAL mode
-[BUILD][LEXER] Switching to IDENTIFIER mode
-[BUILD][LEXER] Entering IDENTIFIER mode
-[BUILD][LEXER] Token pushed to stream
-[BUILD][LEXER] Entering NORMAL mode
-[BUILD][LEXER] Entering NORMAL mode
-[BUILD][LEXER] Switching to IDENTIFIER mode
-[BUILD][LEXER] Entering IDENTIFIER mode
-[BUILD][LEXER] Token pushed to stream
-[BUILD][LEXER] Entering NORMAL mode
-[BUILD][LEXER] Entering NORMAL mode
-[BUILD][LEXER] Token pushed to stream
-[BUILD][LEXER] Entering NORMAL mode
-[BUILD][LEXER] Entering NORMAL mode
-[BUILD][LEXER] Switching to NUMBER mode
-[BUILD][LEXER] Entering NUMBER mode
-[BUILD][LEXER] Token pushed to stream
-[BUILD][LEXER] Entering NORMAL mode
-[BUILD][LEXER] Token pushed to stream
-[BUILD][LEXER] Token pushed to stream
-[BUILD][LEXER] Lexer finished
-[CONTROLLER] Tokenisation completed
-[BUILD][PARSER] Parser started
-[BUILD][PARSER] Assigning parser state
-[BUILD][PARSER] State assigned
-[BUILD][PARSER] tokens=00000002
-[BUILD][PARSER] count=1
-[BUILD][PARSER] pos=0
-[BUILD][PARSER] count=1

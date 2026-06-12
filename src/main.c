@@ -149,9 +149,6 @@ int build(char *filename, char *bcrfilename) {
     logController("File loaded into memory");
 
     TokenStream ts = tokenise(buffer);
-    printf("BUILD count = %d\n", ts.count);
-    printf("BUILD: ts.tokens=%p\n", (void*)ts.stream);
-    printf("BUILD: ts.count=%d\n", ts.count);
     logController("Tokenisation completed");
 
     // /printTokenStream(ts);
@@ -161,12 +158,6 @@ int build(char *filename, char *bcrfilename) {
         callAllErr();
     }
 
-    printf("sizeof(TokenStream) = %zu\n", sizeof(TokenStream));
-    printf("count = %d\n", ts.count);
-    printf("tokens = %p\n", (void*)ts.stream);
-    printf("MAIN sizeof(TokenStream) = %zu\n", sizeof(TokenStream));
-    printf("MAIN ts.count = %d\n", ts.count);
-    printf("MAIN ts.ptr = %p\n", (void*)ts.stream);
     ByteCodeResult bcr = headThis(parse(&ts));
 
     logController("Parsing to bytecode completed");
@@ -209,10 +200,22 @@ int run(char *filename) {
         return -1;
     }
 
+    fseek(file, 0, SEEK_END);
+    long fileSize = ftell(file);
+    rewind(file);
+
     // Read header
     LeyoHeader header;
     if (fread(&header, sizeof(LeyoHeader), 1, file) != 1) {
         raise("Failed to read header", 0, 0);
+        callAllErr();
+        fclose(file);
+        return -1;
+    }
+
+    long payloadSize = fileSize - (long)sizeof(LeyoHeader);
+    if (payloadSize < 0 || payloadSize < (long)header.code_size) {
+        raise("Bytecode file is truncated", 0, 0);
         callAllErr();
         fclose(file);
         return -1;
@@ -244,12 +247,35 @@ int run(char *filename) {
         return -1;
     }
 
+    long constSize = payloadSize - (long)header.code_size;
+    uint8_t *constData = NULL;
+    if (constSize > 0) {
+        constData = malloc((size_t)constSize);
+        if (!constData) {
+            raise("Memory allocation failed", 0, 0);
+            callAllErr();
+            free(code);
+            fclose(file);
+            return -1;
+        }
+
+        if (fread(constData, 1, (size_t)constSize, file) != (size_t)constSize) {
+            raise("Failed to read const pool", 0, 0);
+            callAllErr();
+            free(constData);
+            free(code);
+            fclose(file);
+            return -1;
+        }
+    }
+
     fclose(file);
 
-    // Build VM input (strip 0xFF before execution if you want)
-    ByteCodeResult bcr;
+    ByteCodeResult bcr = {0};
     bcr.length = header.code_size;
     bcr.data = code;
+    bcr.cb.data = constData;
+    bcr.cb.length = (int)constSize;
 
     logRuntime("VM START");
 
@@ -257,6 +283,7 @@ int run(char *filename) {
 
     // IMPORTANT: only free original pointer
     free(code);
+    free(constData);
 
     return result;
 }

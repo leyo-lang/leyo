@@ -22,7 +22,7 @@ ByteCodeResult headThis(ByteCodeResult bcr) {
     snprintf(header.version, sizeof(header.version), "%s", getVersion());
 
     int header_size = sizeof(LeyoHeader);
-    int total_size = header_size + bcr.length;
+    int total_size = header_size + bcr.length + bcr.cb.length;
 
     uint8_t* new_data = malloc(total_size);
 
@@ -34,9 +34,16 @@ ByteCodeResult headThis(ByteCodeResult bcr) {
            bcr.data,
            bcr.length);
 
+    if (bcr.cb.length > 0 && bcr.cb.data != NULL) {
+        memcpy(new_data + header_size + bcr.length,
+               bcr.cb.data,
+               bcr.cb.length);
+    }
+
     ByteCodeResult result = {
         .length = total_size,
-        .data = new_data
+        .data = new_data,
+        .cb = bcr.cb
     };
 
     return result;
