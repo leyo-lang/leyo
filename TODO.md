@@ -30,7 +30,7 @@ This is the current working list for Leyo. I’m keeping it short, concrete, and
 
 ## Done Or In Progress
 
-- [ ] Bytecode build/run alignment
-- [ ] Constant pool serialization and VM loading
-- [ ] Contributor docs refresh
+- [x] Bytecode build/run alignment
+- [x] Constant pool serialization and VM loading
+- [x] Contributor docs refresh
 - [ ] CLI reference docs
