@@ -2,6 +2,7 @@
 #include "../include/parser.h"
 #include "../include/errors.h"
 #include "../include/bytecode.h"
+#include "../include/native.h"
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
@@ -256,6 +257,9 @@ static TokenType parseAtom(void) { // small singular unit of expression (number,
         }
 
         case IDENTIFIER: {
+            if (peek().type == OPENBRAC) {
+                // function call to resolve TODO
+            }
             logBuildParser("atom is ident");
             uint16_t slot = resolve(current().value);
             emit(OP_PUT_A);
@@ -277,6 +281,7 @@ static TokenType parseAtom(void) { // small singular unit of expression (number,
     advance();
     return type;
 }
+
 static TokenType parseExpression(void) {
     TokenType ltype = parseAtom(); // result -> A
 
@@ -382,7 +387,16 @@ static void parseVarDecl(void) {
 static void parseNative(void) {
     logBuildParser("Parsing Native Call");
     advance(); //past @
-    
+    NativeCommand nc;
+
+    if (strcmp(current().value, "log") == 0) {nc = NAT_LOG;} else
+    if (strcmp(current().value, "dump") == 0) {nc = NAT_DUMP;} else
+    if (strcmp(current().value, "trace") == 0) {nc = NAT_TRACE;} else
+    {raise("Native Function Unkown", current().line, current().collumn); callAllErr(); return;}
+
+    emit(OP_CALL_NATIVE);
+    emit((uint8_t)nc);
+    expectAndPass(SEMICOLON, "No semicolon after statement");    
 }
 
 static void parseStatement(void) {

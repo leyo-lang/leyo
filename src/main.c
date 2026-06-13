@@ -8,6 +8,7 @@
 #include "../include/version.h"
 #include "../include/headerer.h"
 #include "../include/disassembler.h"
+#include "../include/repl.h"
 
 const char *tokenTypeName(TokenType t) {
     switch (t) {
@@ -28,6 +29,8 @@ const char *tokenTypeName(TokenType t) {
         case UNKNOWN: return "UNKNOWN";
         case ENDOFSTREAM: return "ENDOFSTREAM";
         case CHR: return "CHAR";
+        case FLT: return "FLOAT";
+        case NATIVE: return "NATIVE";
         default: return "???";
     }
 }
@@ -76,8 +79,7 @@ int dis(char *filename, bool flag_justHex, bool flag_head) {
 
     uint8_t* data = malloc(size);
 
-    if (!data)
-    {
+    if (!data) {
         fclose(fp);
         return 1;
     }
@@ -151,7 +153,7 @@ int build(char *filename, char *bcrfilename) {
     TokenStream ts = tokenise(buffer);
     logController("Tokenisation completed");
 
-    // /printTokenStream(ts);
+    printTokenStream(ts);
 
     if (isErr) {
         logController("Errors detected after tokenisation");
@@ -324,7 +326,7 @@ int main(int argc, char *argv[]) {
         }
         return run(argv[2]);
     } else if (strcmp(argv[1], "repl") == 0) {
-        ;
+        return repl();
     } else if (strcmp(argv[1], "test") == 0) {
         ;
     } else if (strcmp(argv[1], "disassemble") == 0) {

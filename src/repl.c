@@ -1,9 +1,26 @@
+#include "../include/lexer.h"
+#include "../include/parser.h"
+#include "../include/errors.h"
+#include "../include/vm.h"
 #include <stdio.h>
+#include <string.h>
 
 int repl(void) {
+    raise("Repl Not Built", 0,0);
+    callAllErr();
+    return 1;
+    TokenStream tokens;
+    ByteCodeResult res;
     while (1) {
         printf(">>> ");
         char *buff = "";
         scanf("%s", buff);
+        
+        tokens = tokenise(buff);
+        if (strcmp(tokens.stream[0].value, "exit") == 0) {return 0;};
+
+        res = parse(&tokens);
+
+        runVM(res);
     }
 }

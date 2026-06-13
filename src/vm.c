@@ -1,6 +1,7 @@
 #include "../include/errors.h"
 #include "../include/parser.h"
 #include "../include/bytecode.h"
+#include "../include/native.h"
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
@@ -473,15 +474,17 @@ int runVM(ByteCodeResult bc) {
         advanceByte();
 
         switch (op) {
-            case OP_PUT_A:
+            case OP_PUT_A: {
                 vm->A.as.i = read16();
                 vm->A.flag = VAL_INT;
                 break;
+            }
 
-            case OP_PUT_B:
+            case OP_PUT_B: {
                 vm->B.as.i = read16();
                 vm->B.flag = VAL_INT;
                 break;
+            }
 
             case OP_PUT_S: {
                 Value tmp = vm->B;
@@ -490,39 +493,47 @@ int runVM(ByteCodeResult bc) {
                 break;
             }
 
-            case OP_PUT_A_R:
+            case OP_PUT_A_R: {
                 vm->A = vm->R;
                 break;
+            }
 
-            case OP_PUT_B_R:
+            case OP_PUT_B_R: {
                 vm->B = vm->R;
                 break;
+            }
 
-            case OP_OPERATE_ADD:
+            case OP_OPERATE_ADD: {
                 addition();
                 break;
+            }
 
-            case OP_OPERATE_SUB:
+            case OP_OPERATE_SUB: {
                 subtraction();
                 break;
+            }
 
-            case OP_OPERATE_MUL:
+            case OP_OPERATE_MUL: {
                 multiplication();
                 break;
+            }
 
-            case OP_OPERATE_DIV:
+            case OP_OPERATE_DIV: {
                 division();
                 break;
+            }
 
-            case OP_OPERATE_EXP:
+            case OP_OPERATE_EXP: {
                 power();
                 break;
+            }
 
-            case OP_STORE:
+            case OP_STORE: {
                 vm->globals[vm->B.as.i] = vm->A;
                 break;
+            }
 
-            case OP_LOAD:
+            case OP_LOAD: {
                 if (vm->A.as.i < 0 || vm->A.as.i >= GLOBALS_MAX) {
                     raise("Global slot out of range", vm->ip, 0);
                     callAllErr();
@@ -531,30 +542,47 @@ int runVM(ByteCodeResult bc) {
                 }
                 vm->R = vm->globals[vm->A.as.i];
                 break;
+            }
 
-            case OP_CONST_LOAD:
-                {
-                    uint16_t constIndex = read16();
+            case OP_CONST_LOAD: {
+                uint16_t constIndex = read16();
 
-                    if (constIndex >= (uint16_t)vm->constCount) {
-                        raise("Const load slot out of range", vm->ip, 0);
+                if (constIndex >= (uint16_t)vm->constCount) {
+                    raise("Const load slot out of range", vm->ip, 0);
+                    callAllErr();
+                    freeConstPool(vmStd.consts, vmStd.constCount);
+                    return 1;
+                }
+
+                vm->R = vm->consts[constIndex];
+                break;
+            }
+                
+            case OP_CALL_NATIVE: {
+                NativeCommand nc = readByte();
+                advanceByte();
+                switch (nc) {
+                    case NAT_DUMP:
+                        dumpState(op);
+                        break;
+                    default:
+                        raise("Unkown Native Command", vm->ip,0);
                         callAllErr();
-                        freeConstPool(vmStd.consts, vmStd.constCount);
-                        return 1;
-                    }
-
-                    vm->R = vm->consts[constIndex];
+                        break;
                 }
                 break;
+            }
 
-            case OP_FINISH:
+            case OP_FINISH: {
                 freeConstPool(vmStd.consts, vmStd.constCount);
                 return 0;
+            }
 
-            default:
+            default: {
                 printf("Unknown opcode: 0x%02X at %d\n", op, vm->ip - 1);
                 freeConstPool(vmStd.consts, vmStd.constCount);
                 exit(1);
+            }
         }
     }
 
