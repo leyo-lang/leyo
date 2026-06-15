@@ -9,6 +9,7 @@
 #include "../include/headerer.h"
 #include "../include/disassembler.h"
 #include "../include/repl.h"
+#include "../include/args.h"
 
 const char *tokenTypeName(TokenType t) {
     switch (t) {
