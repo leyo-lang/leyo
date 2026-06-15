@@ -9,6 +9,7 @@
 #include "../include/headerer.h"
 #include "../include/disassembler.h"
 #include "../include/repl.h"
+#include "../include/lyst.h"
 
 const char *tokenTypeName(TokenType t) {
     switch (t) {
@@ -299,13 +300,28 @@ int main(int argc, char *argv[]) {
     logController("Running Leyo");
     logController("Version:");
     logController(version);
-
-
-    if (argc == 1) { //no cl-arg
+    
+    if (argc <= 1) { //no cl-arg
         printf("Leyo version v%s\nAuthored by Josh Ruddick", version);
         return 0;
     }
 
+    if (strcmp(argv[1], "init") == 0) {
+        if (fopen(".lyst", "w")) {
+            return 0;
+        }
+        return -1;
+    }
+
+    logController("Initalising LYST");
+    if (lystLoad(".lyst") != 1) {
+        logController("Initialisation Failed");
+        raise("Initialisation Failed", 0,0);
+        callAllErr();
+        return -1;
+    }
+    logController("LYST Initialised");
+    
     if (strcmp(argv[1], "build") == 0) {
         char *dest;
         if (argc != 4 && argc != 3) {

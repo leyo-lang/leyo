@@ -7,6 +7,7 @@ Source and project file guide:
 .lyconf compiler configuration
 .lypkg  package archive
 .lydet  package metadata
+.lyst   leyo settings
 
 Documentation:
 
