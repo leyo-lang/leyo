@@ -300,6 +300,11 @@ int main(int argc, char *argv[]) {
     logController("Version:");
     logController(version);
 
+    logController("Initalising ArgParser");
+    int res = argParseSetup(argv, argc);
+    logController("Initalised");
+    
+
 
     if (argc == 1) { //no cl-arg
         printf("Leyo version v%s\nAuthored by Josh Ruddick", version);
