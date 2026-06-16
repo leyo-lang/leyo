@@ -312,7 +312,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    if (strcmp(argv[1], "build") == 0) {
+    if (isCommand("build")) {
         char *dest;
         if (argc != 4 && argc != 3) {
             logController("Too little or too many command line args");
@@ -324,7 +324,7 @@ int main(int argc, char *argv[]) {
             dest = argv[3];
         }
         return build(argv[2], dest);
-    } else if (strcmp(argv[1], "run") == 0) {
+    } else if (isCommand("run")) {
         if (argc != 3) {
             logController("Too little command line args");
             raise("Too little command line args", 0,0);
