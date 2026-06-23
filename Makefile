@@ -1,5 +1,10 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -pedantic -std=c99
+GIT_COMMIT :=  $(shell git describe --always --tags)
+GIT_DIRTY := $(shell git diff-index --quiet HEAD -- && echo No || echo Yes)
+
+CFLAGS = -Wall -Wextra -pedantic -std=c99 \
+         -DGIT_COMMIT=\"$(GIT_COMMIT)\" \
+		 -DGIT_DIRTY=\"$(GIT_DIRTY)\"
 
 SRC_DIR = src
 BUILD_DIR = build

@@ -4,28 +4,6 @@
 [CONTROLLER] Running Leyo
 [CONTROLLER] Version:
 [CONTROLLER] 0.4.1
-[RUNTIME] VM START
-[RUNTIME] Starting VM execution
-[RUNTIME] OP=0x41 | A=0 B=0 R=0 | ip=0 | stackTop=0
-[RUNTIME] OP=0x04 | A=0 B=0 R=5 | ip=3 | stackTop=0
-[RUNTIME] OP=0x02 | A=5 B=0 R=5 | ip=4 | stackTop=0
-[RUNTIME] OP=0x21 | A=5 B=0 R=5 | ip=7 | stackTop=0
-[RUNTIME] OP=0x41 | A=5 B=0 R=5 | ip=8 | stackTop=0
-[RUNTIME] OP=0x04 | A=5 B=0 R=6 | ip=11 | stackTop=0
-[RUNTIME] OP=0x02 | A=6 B=0 R=6 | ip=12 | stackTop=0
-[RUNTIME] OP=0x21 | A=6 B=0 R=6 | ip=15 | stackTop=0
-[RUNTIME] OP=0x41 | A=6 B=0 R=6 | ip=16 | stackTop=0
-[RUNTIME] OP=0x04 | A=6 B=0 R=5.23 | ip=19 | stackTop=0
-[RUNTIME] OP=0x02 | A=5.23 B=0 R=5.23 | ip=20 | stackTop=0
-[RUNTIME] OP=0x21 | A=5.23 B=1 R=5.23 | ip=23 | stackTop=0
-[RUNTIME] OP=0x41 | A=5.23 B=1 R=5.23 | ip=24 | stackTop=0
-[RUNTIME] OP=0x04 | A=5.23 B=1 R='f' | ip=27 | stackTop=0
-[RUNTIME] OP=0x02 | A='f' B=1 R='f' | ip=28 | stackTop=0
-[RUNTIME] OP=0x21 | A='f' B=2 R='f' | ip=31 | stackTop=0
-[RUNTIME] OP=0x41 | A='f' B=2 R='f' | ip=32 | stackTop=0
-[RUNTIME] OP=0x04 | A='f' B=2 R="Hello World!" | ip=35 | stackTop=0
-[RUNTIME] OP=0x02 | A="Hello World!" B=2 R="Hello World!" | ip=36 | stackTop=0
-[RUNTIME] OP=0x21 | A="Hello World!" B=3 R="Hello World!" | ip=39 | stackTop=0
-[RUNTIME] OP=0x51 | A="Hello World!" B=3 R="Hello World!" | ip=40 | stackTop=0
-[RUNTIME] OP=0x51 | A="Hello World!" B=3 R="Hello World!" | ip=42 | stackTop=0
-[RUNTIME] OP=0xFF | A="Hello World!" B=3 R="Hello World!" | ip=42 | stackTop=0
+[CONTROLLER] Initialising ArgParser
+[CONTROLLER] Initialised
+[CONTROLLER] Disassembly started

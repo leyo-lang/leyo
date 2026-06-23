@@ -1,40 +1,113 @@
+#include "../include/args.h"
+
 #include <string.h>
-#include <stdbool.h>
 
-char *flags[];
-int flagAmount;
-char *command;
-bool noCommand;
+#define AP_MAX_ARGS 256
 
-int argParseSetup(char* argv[], int argc) { // returns 1 if command is existent
-    // argv[0] `leyo`
-    if (argc <= 1) {
-        noCommand = true;
-        return true;
+void argParseSetup(ArgParser *parser, char *argv[], int argc) {
+    static char *flags[AP_MAX_ARGS];
+    static char *positionals[AP_MAX_ARGS];
+    static char *optionKeys[AP_MAX_ARGS];
+    static char *optionValues[AP_MAX_ARGS];
+
+    parser->command = NULL;
+    parser->noCommand = true;
+
+    parser->flags = flags;
+    parser->positionals = positionals;
+    parser->optionKeys = optionKeys;
+    parser->optionValues = optionValues;
+
+    parser->flagAmount = 0;
+    parser->positionalAmount = 0;
+    parser->optionAmount = 0;
+
+    parser->bin = NULL;
+
+    if (!argv || !argc) {
+        return;
     }
-    // argc > 1
-    // argv[1] cmd `build`
-    if (argv[1][0] == '-') {
-        noCommand = true;
-        return true;
+
+    parser->bin = argv[0];
+
+    if (argc <= 1) {
+        return;
+    }
+
+    int i = 1;
+
+    if (argv[1][0] != '-') {
+        parser->command = argv[1];
+        parser->noCommand = false;
+        i = 2;
+    }
+
+    while (i < argc) {
+        char *arg = argv[i];
+
+        if (arg[0] == '-') {
+
+            /* option: --threads 8 */
+            if (i + 1 < argc && argv[i + 1][0] != '-') {
+                parser->optionKeys[parser->optionAmount] = arg;
+                parser->optionValues[parser->optionAmount] = argv[i + 1];
+                parser->optionAmount++;
+
+                i += 2;
+                continue;
+            }
+
+            /* flag: -v */
+            parser->flags[parser->flagAmount++] = arg;
+        } else {
+            /* positional argument */
+            parser->positionals[parser->positionalAmount++] = arg;
+        }
+
+        i++;
     }
 }
 
-bool isFlag(char *flag) {
-    for (int i; i < flagAmount; i++) {
-        if (strcmp(flags[i], flag) == 0) {
+bool isFlag(ArgParser *parser, const char *flag) {
+    for (int i = 0; i < parser->flagAmount; i++) {
+        if (strcmp(parser->flags[i], flag) == 0) {
             return true;
         }
     }
+
     return false;
 }
 
-bool isCommand(char *cmd) {
-    if (noCommand) {
+bool isCommand(ArgParser *parser, const char *cmd) {
+    if (parser->noCommand || parser->command == NULL) {
         return false;
     }
-    if (strcmp(command, cmd) == 0) {
-        return true;
+
+    return strcmp(parser->command, cmd) == 0;
+}
+
+char *getOption(ArgParser *parser, const char *option) {
+    for (int i = 0; i < parser->optionAmount; i++) {
+        if (strcmp(parser->optionKeys[i], option) == 0) {
+            return parser->optionValues[i];
+        }
     }
-    return false;
+
+    return NULL;
+}
+
+char *getPositional(ArgParser *parser, int index) {
+    if (index < 0 || index >= parser->positionalAmount) {
+        return NULL;
+    }
+
+    return parser->positionals[index];
+}
+
+char *getBin(ArgParser *parser) {
+    if (parser->bin) {
+        return parser->bin;
+    }
+
+    return NULL;
 }
