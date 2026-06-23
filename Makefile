@@ -42,6 +42,11 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 $(BUILD_DIR)/main.o: $(GIT_INFO_STAMP)
 
 $(GIT_INFO_STAMP): | $(BUILD_DIR)
+ifeq ($(OS),Windows_NT)
+	del /Q $(BUILD_DIR)\git-info-*.stamp 2> nul
+else
+	rm -f $(BUILD_DIR)/git-info-*.stamp
+endif
 	@echo $(GIT_COMMIT) $(GIT_DIRTY) > $@
 
 # run program
