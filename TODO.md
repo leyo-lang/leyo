@@ -6,7 +6,7 @@ This is the current working list for Leyo. I’m keeping it short, concrete, and
 
 - [ ] Add a real `help` command to the CLI
 - [ ] Add a `version` command with build metadata
-- [ ] Add automated smoke tests for build/run/disassemble
+
 - [ ] Expand parser coverage beyond simple literals and identifiers
 - [ ] Add better runtime error messages for VM opcode failures
 - [ ] Document the bytecode header layout in a machine-readable way
@@ -33,4 +33,5 @@ This is the current working list for Leyo. I’m keeping it short, concrete, and
 - [x] Bytecode build/run alignment
 - [x] Constant pool serialization and VM loading
 - [x] Contributor docs refresh
-- [ ] CLI reference docs
+- [x] CLI reference docs
+- [x] Add automated smoke tests for build/run/disassemble

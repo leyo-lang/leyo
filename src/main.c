@@ -10,6 +10,16 @@
 #include "../include/disassembler.h"
 #include "../include/repl.h"
 #include "../include/lyst.h"
+#include "../include/args.h"
+#include "../include/tests.h"
+
+#ifndef GIT_COMMIT
+#define GIT_COMMIT "unknown"
+#endif
+
+#ifndef GIT_DIRTY
+#define GIT_DIRTY "unknown"
+#endif
 
 const char *tokenTypeName(TokenType t) {
     switch (t) {
@@ -62,6 +72,49 @@ void printByteCode(ByteCodeResult* bc) {
     printf("\n");
 
     logController("Finished printing bytecode output");
+}
+
+static const char *platformName(void) {
+#ifdef _WIN32
+    return "Windows";
+#elif __linux__
+    return "Linux";
+#elif __APPLE__
+    return "macOS";
+#else
+    return "Unknown";
+#endif
+}
+
+static const char *archName(void) {
+#if defined(__x86_64__) || defined(_M_X64)
+    return "x86_64";
+#elif defined(__aarch64__)
+    return "ARM64";
+#elif defined(__i386__) || defined(_M_IX86)
+    return "x86";
+#else
+    return "Unknown";
+#endif
+}
+
+static void diagnostics(void) {
+    puts("Leyo Diagnostics");
+    puts("================");
+
+    printf("Version      : %s\n", getVersion());
+    printf("Build Date   : %s %s\n", __DATE__, __TIME__);
+    printf("Compiler     : %s\n", __VERSION__);
+    printf("Platform     : %s\n", platformName());
+    printf("Architecture : %s\n", archName());
+
+    printf("Dirty        : %s\n", GIT_DIRTY);
+    printf("Git Commit   : %s\n", GIT_COMMIT);
+
+    printf("Value Size   : %zu bytes\n", sizeof(Value));
+//    printf("Stack Size   : %d\n", STACK_MAX);    TODO
+
+    puts("================");
 }
 
 int dis(char *filename, bool flag_justHex, bool flag_head) {
@@ -294,19 +347,21 @@ int run(char *filename) {
 int main(int argc, char *argv[]) {
     initLog("logs/latest.lylog");
     logController("Logger initialized");
-    
+
     const char *version = getVersion();
 
     logController("Running Leyo");
     logController("Version:");
     logController(version);
-    
-    if (argc <= 1) { //no cl-arg
-        printf("Leyo version v%s\nAuthored by Josh Ruddick", version);
-        return 0;
-    }
 
-    if (strcmp(argv[1], "init") == 0) {
+    logController("Initialising ArgParser");
+
+    ArgParser parser;
+    argParseSetup(&parser, argv, argc);
+
+    logController("Initialised");
+
+    if (isCommand(&parser, "init") == 0) {
         if (fopen(".lyst", "w")) {
             return 0;
         }
@@ -322,45 +377,85 @@ int main(int argc, char *argv[]) {
     }
     logController("LYST Initialised");
     
-    if (strcmp(argv[1], "build") == 0) {
-        char *dest;
-        if (argc != 4 && argc != 3) {
-            logController("Too little or too many command line args");
-            raise("Too little or too many command line args", 0,0);
-            callAllErr();
+
+    if (parser.noCommand) {
+        if (parser.flagAmount == 0) {
+            printf("Leyo version v%s\nAuthored by Josh Ruddick\nhttps://github.com/JoshRuds/leyo", version);
+            return 0;
         }
-        dest = "a.lybc";
-        if (argc == 4) {
-            dest = argv[3];
+
+        if (isFlag(&parser, "--version") || isFlag(&parser, "-v")) {
+            printf("%s\n", version);
+            return 0;
+        } else if (isFlag(&parser, "--diagnostics") || isFlag(&parser, "-D")) {
+            diagnostics();
+            return 0;
         }
-        return build(argv[2], dest);
-    } else if (strcmp(argv[1], "run") == 0) {
-        if (argc != 3) {
-            logController("Too little command line args");
-            raise("Too little command line args", 0,0);
-            callAllErr();
-        }
-        return run(argv[2]);
-    } else if (strcmp(argv[1], "repl") == 0) {
-        return repl();
-    } else if (strcmp(argv[1], "test") == 0) {
-        ;
-    } else if (strcmp(argv[1], "disassemble") == 0) {
-        if (argc > 3) {
-            if (strcmp(argv[3], "--hex") == 0) {
-                if (strcmp(argv[4], "--head") == 0) {
-                    return dis(argv[2], true, true);
-                }
-                return dis(argv[2], true, false);
-            }
-            
-        }
-        return dis(argv[2], false, false);
-    } else {
-        logController("Unkown command line argument");
-        raise("Unkown command line argument", 0,0);
+
+        logController("Unknown global flag");
+        raise("Unknown global flag", 0, 0);
         callAllErr();
     }
 
-    return 0;
+    if (isCommand(&parser, "build")) {
+
+        char *source = getPositional(&parser, 0);
+
+        if (!source) {
+            logController("Missing source file");
+            raise("Missing source file", 0, 0);
+            callAllErr();
+        }
+
+        char *dest = getOption(&parser, "-o");
+
+        if (!dest) {
+            dest = "a.lybc";
+        }
+
+        return build(source, dest);
+
+    } else if (isCommand(&parser, "run")) {
+
+        char *source = getPositional(&parser, 0);
+
+        if (!source) {
+            logController("Missing source file");
+            raise("Missing source file", 0, 0);
+            callAllErr();
+        }
+
+        return run(source);
+
+    } else if (isCommand(&parser, "repl")) {
+
+        return repl();
+
+    } else if (isCommand(&parser, "test")) {
+
+        return testLeyo(getBin(&parser));
+
+    } else if (isCommand(&parser, "disassemble")) {
+
+        char *file = getPositional(&parser, 0);
+
+        if (!file) {
+            logController("Missing input file");
+            raise("Missing input file", 0, 0);
+            callAllErr();
+        }
+
+        bool hex = isFlag(&parser, "--hex");
+        bool head = isFlag(&parser, "--head");
+
+        return dis(file, hex, head);
+
+    } else {
+
+        logController("Unknown command line argument");
+        raise("Unknown command line argument", 0, 0);
+        callAllErr();
+    }
+
+    return -1;
 }

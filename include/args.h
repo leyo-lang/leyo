@@ -3,28 +3,30 @@
 
 #include <stdbool.h>
 
-#define AP_MAX_FLAGS       128
-#define AP_MAX_OPTIONS     128
-#define AP_MAX_POSITIONALS 128
-
-typedef struct {
-    char *name;
-    char *value;
-} AP_Option;
-
 typedef struct {
     char *command;
+    bool noCommand;
 
-    char *flags[AP_MAX_FLAGS];
-    int flag_count;
+    char **flags;
+    int flagAmount;
 
-    AP_Option options[AP_MAX_OPTIONS];
-    int option_count;
+    char **positionals;
+    int positionalAmount;
 
-    char *positionals[AP_MAX_POSITIONALS];
-    int positional_count;
+    char **optionKeys;
+    char **optionValues;
+    int optionAmount;
 
-    bool has_command;
+    char *bin;
 } ArgParser;
+
+void argParseSetup(ArgParser *parser, char *argv[], int argc);
+
+bool isCommand(ArgParser *parser, const char *cmd);
+bool isFlag(ArgParser *parser, const char *flag);
+
+char *getOption(ArgParser *parser, const char *option);
+char *getPositional(ArgParser *parser, int index);
+char *getBin(ArgParser *parser);
 
 #endif

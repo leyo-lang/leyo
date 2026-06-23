@@ -1,129 +1,113 @@
+#include "../include/args.h"
+
 #include <string.h>
-#include <stdbool.h>
 
-#include "../include/args.h" // argparser
+#define AP_MAX_ARGS 256
 
-ArgParser *ap = {0}; 
+void argParseSetup(ArgParser *parser, char *argv[], int argc) {
+    static char *flags[AP_MAX_ARGS];
+    static char *positionals[AP_MAX_ARGS];
+    static char *optionKeys[AP_MAX_ARGS];
+    static char *optionValues[AP_MAX_ARGS];
 
-static bool starts_with_dash(const char *s) {
-    return s[0] == '-';
-}
+    parser->command = NULL;
+    parser->noCommand = true;
 
-void apInit(int argc, char *argv[]) {
+    parser->flags = flags;
+    parser->positionals = positionals;
+    parser->optionKeys = optionKeys;
+    parser->optionValues = optionValues;
+
+    parser->flagAmount = 0;
+    parser->positionalAmount = 0;
+    parser->optionAmount = 0;
+
+    parser->bin = NULL;
+
+    if (!argv || !argc) {
+        return;
+    }
+
+    parser->bin = argv[0];
+
+    if (argc <= 1) {
+        return;
+    }
+
     int i = 1;
 
-    if (argc > 1 && !starts_with_dash(argv[1])) {
-        ap->command = argv[1];
-        ap->has_command = true;
+    if (argv[1][0] != '-') {
+        parser->command = argv[1];
+        parser->noCommand = false;
         i = 2;
     }
 
-    for (; i < argc; i++) {
-
+    while (i < argc) {
         char *arg = argv[i];
 
-        /* --output=file */
-        if (strncmp(arg, "--", 2) == 0) {
+        if (arg[0] == '-') {
 
-            char *eq = strchr(arg, '=');
+            /* option: --threads 8 */
+            if (i + 1 < argc && argv[i + 1][0] != '-') {
+                parser->optionKeys[parser->optionAmount] = arg;
+                parser->optionValues[parser->optionAmount] = argv[i + 1];
+                parser->optionAmount++;
 
-            if (eq) {
-
-                *eq = '\0';
-
-                ap->options[ap->option_count++] =
-                    (AP_Option){
-                        .name = arg,
-                        .value = eq + 1
-                    };
-
+                i += 2;
                 continue;
             }
 
-            /* --output file */
-            if (i + 1 < argc && !starts_with_dash(argv[i + 1])) {
-
-                ap->options[ap->option_count++] =
-                    (AP_Option){
-                        .name = arg,
-                        .value = argv[++i]
-                    };
-
-                continue;
-            }
-
-            /* plain flag */
-            ap->flags[ap->flag_count++] = arg;
-            continue;
+            /* flag: -v */
+            parser->flags[parser->flagAmount++] = arg;
+        } else {
+            /* positional argument */
+            parser->positionals[parser->positionalAmount++] = arg;
         }
 
-        /* short flags */
-        if (arg[0] == '-' && arg[1] != '\0') {
-
-            /* -o file */
-            if (strlen(arg) == 2 &&
-                i + 1 < argc &&
-                !starts_with_dash(argv[i + 1]))
-            {
-                ap->options[ap->option_count++] =
-                    (AP_Option){
-                        .name = arg,
-                        .value = argv[++i]
-                    };
-
-                continue;
-            }
-
-            /* -abc */
-            for (int j = 1; arg[j]; j++) {
-
-                static char short_flag[AP_MAX_FLAGS][3];
-                static int short_index = 0;
-
-                short_flag[short_index][0] = '-';
-                short_flag[short_index][1] = arg[j];
-                short_flag[short_index][2] = '\0';
-
-                ap->flags[ap->flag_count++] =
-                    short_flag[short_index];
-
-                short_index++;
-            }
-
-            continue;
-        }
-
-        ap->positionals[ap->positional_count++] = arg;
+        i++;
     }
 }
 
-bool apIsCommand(const char *cmd) {
-    return ap->has_command &&
-           strcmp(ap->command, cmd) == 0;
-}
-
-bool apHasFlag(const char *flag) {
-    for (int i = 0; i < ap->flag_count; i++) {
-        if (strcmp(ap->flags[i], flag) == 0)
+bool isFlag(ArgParser *parser, const char *flag) {
+    for (int i = 0; i < parser->flagAmount; i++) {
+        if (strcmp(parser->flags[i], flag) == 0) {
             return true;
+        }
     }
 
     return false;
 }
 
-char *apGetOption(const char *name) {
-    for (int i = 0; i < ap->option_count; i++) {
-        if (strcmp(ap->options[i].name, name) == 0)
-            return ap->options[i].value;
+bool isCommand(ArgParser *parser, const char *cmd) {
+    if (parser->noCommand || parser->command == NULL) {
+        return false;
+    }
+
+    return strcmp(parser->command, cmd) == 0;
+}
+
+char *getOption(ArgParser *parser, const char *option) {
+    for (int i = 0; i < parser->optionAmount; i++) {
+        if (strcmp(parser->optionKeys[i], option) == 0) {
+            return parser->optionValues[i];
+        }
     }
 
     return NULL;
 }
 
-char *apGetPositional(int index) {
-    if (index < 0 || index >= ap->positional_count) {
+char *getPositional(ArgParser *parser, int index) {
+    if (index < 0 || index >= parser->positionalAmount) {
         return NULL;
     }
 
-    return ap->positionals[index];
+    return parser->positionals[index];
+}
+
+char *getBin(ArgParser *parser) {
+    if (parser->bin) {
+        return parser->bin;
+    }
+
+    return NULL;
 }
