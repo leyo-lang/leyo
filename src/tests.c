@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "../include/errors.h"
 #include <string.h>
 
 #ifdef _WIN32
@@ -25,7 +26,10 @@ static int runCommand(const char *cmd) {
 }
 #endif
 
+static void writeTest(const char *str);
+
 static int createTmpFolder(void) {
+    writeTest("Creating temporary workspace");
     #ifdef _WIN32
         char tempPath[MAX_PATH];
         char uniquePath[MAX_PATH];
@@ -48,6 +52,7 @@ static int createTmpFolder(void) {
         }
 
         snprintf(tmpFolderName, sizeof(tmpFolderName), "%s", uniquePath);
+        logController("Temporary workspace created");
         return 0;
 
     #else
@@ -60,11 +65,13 @@ static int createTmpFolder(void) {
         }
 
         snprintf(tmpFolderName, sizeof(tmpFolderName), "%s", dir);
+        logController("Temporary workspace created");
         return 0;
     #endif
 }
 
 static void destroyTmpFolder(void) {
+    logController("Destroying temporary workspace");
     #ifdef _WIN32
         char sourceFile[2048];
         char outputFile[2048];
@@ -97,6 +104,7 @@ static void destroyTmpFolder(void) {
 
 static void writeTest(const char *str) {
     printf("[TEST] %s\n", str);
+    logController(str);
 }
 
 int testLeyo(const char *leyoBin) {
@@ -108,6 +116,13 @@ int testLeyo(const char *leyoBin) {
     char cmd[8192];
 
     writeTest("Starting Smoke Test");
+
+    /*
+     * Nested Leyo commands need to rotate logs on startup.
+     * Close the parent logger so the child processes can archive
+     * the current log without a Windows file-lock conflict.
+     */
+    closeLog();
 
     if (createTmpFolder())
         goto cleanup;

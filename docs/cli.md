@@ -61,9 +61,45 @@ Examples:
 
 ## Notes
 
-- The CLI currently does not implement a full help system
 - Some older project notes mention commands that are not wired up in `main.c` yet
 - When in doubt, trust the command behavior in code over the legacy docs in `docs/files.txt`
+
+## `help`
+
+```bash
+./bin/leyo.exe help [query]
+```
+
+- Lists every available CLI command
+- Uses the first positional argument as a search filter
+- Matches against command names, usage strings, and descriptions
+
+Examples:
+
+```bash
+./bin/leyo.exe help
+./bin/leyo.exe help build
+./bin/leyo.exe help log
+```
+
+## Logging
+
+The active log destination and category flags come from [`.lyst`](../.lyst):
+
+- `logging/enabled`
+- `logging/build`
+- `logging/runtime`
+- `logging/controller`
+- `logging/errors`
+- `logging/path`
+- `logging/retention_days`
+- `logging/retention_action`
+- `logging/archive_path`
+
+When the logger starts, any previous log at that path is archived as a timestamped `.lylog` file in the same folder.
+Logs older than `logging/retention_days` are either archived into `logging/archive_path` or deleted, depending on `logging/retention_action`.
+
+`leyo init` now opens a small command-line wizard for generating `.lyst`. Pass `--defaults` if you want the stock config written immediately.
 
 ## Next CLI Additions
 

@@ -6,6 +6,7 @@
 #include <string.h>
 
 int repl(void) {
+    logController("REPL requested");
     raise("Repl Not Built", 0,0);
     callAllErr();
     return 1;

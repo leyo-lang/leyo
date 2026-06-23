@@ -97,6 +97,7 @@ static uint16_t read16(void) {
 }
 
 static Value *decodeConstPool(const uint8_t *data, int length, int *outCount) {
+    logRuntime("Decoding constant pool");
     Value *values = NULL;
     int count = 0;
     int pos = 0;
@@ -183,6 +184,11 @@ static Value *decodeConstPool(const uint8_t *data, int length, int *outCount) {
     }
 
     *outCount = count;
+    {
+        char buffer[128];
+        snprintf(buffer, sizeof(buffer), "Constant pool decoded: %d values", count);
+        logRuntime(buffer);
+    }
     return values;
 }
 
@@ -460,10 +466,13 @@ int runVM(ByteCodeResult bc) {
         vmStd.consts = decodeConstPool(bc.cb.data, bc.cb.length, &vmStd.constCount);
 
         if (!vmStd.consts) {
+            logRuntime("Failed to decode constant pool");
             raise("Failed to decode constant pool", vm->ip, 0);
             callAllErr();
             return 1;
         }
+
+        logRuntime("Constant pool loaded into VM");
     }
 
     while (1) {
@@ -579,6 +588,7 @@ int runVM(ByteCodeResult bc) {
             }
 
             default: {
+                logRuntime("Unknown opcode encountered");
                 printf("Unknown opcode: 0x%02X at %d\n", op, vm->ip - 1);
                 freeConstPool(vmStd.consts, vmStd.constCount);
                 exit(1);
@@ -586,6 +596,7 @@ int runVM(ByteCodeResult bc) {
         }
     }
 
+    logRuntime("VM exited unexpectedly");
     raise("Exited Early", vm->ip, 0);
     freeConstPool(vmStd.consts, vmStd.constCount);
     callAllErr();

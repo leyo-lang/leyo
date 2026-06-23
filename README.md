@@ -57,6 +57,7 @@ The executable currently supports these commands:
 - `build <source> [output]`
 - `run <file.lybc>`
 - `disassemble <file.lybc> [--hex] [--head]`
+- `help [query]`
 
 Examples:
 
@@ -65,9 +66,22 @@ Examples:
 ./bin/leyo.exe run out.lybc
 ./bin/leyo.exe disassemble out.lybc --hex
 ./bin/leyo.exe disassemble out.lybc --head
+./bin/leyo.exe help build
 ```
 
 `build` defaults the output file to `a.lybc` when you do not pass a destination.
+
+Logging is configured in [`.lyst`](.lyst):
+
+- `logging/enabled` turns file logging on or off
+- `logging/build`, `logging/runtime`, `logging/controller`, and `logging/errors` toggle categories
+- `logging/path` chooses the active log file
+- `logging/retention_days` controls how old logs must be before cleanup runs
+- `logging/retention_action` chooses `archive` or `delete`
+- `logging/archive_path` chooses where archived logs are stored
+- old active logs are still rotated into timestamped `.lylog` files in the log directory
+
+Use `leyo init` to open the setup wizard, or `leyo init --defaults` to write the default `.lyst` immediately.
 
 ## Future CLI Ideas
 

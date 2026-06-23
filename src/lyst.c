@@ -1,6 +1,8 @@
 #include "../include/lyst.h"
+#include "../include/errors.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -26,10 +28,14 @@ int lystLoad(const char *filename) {
     cfg = &cfgRoot;
     cfg->count = 0;
 
+    logController("Loading LYST configuration");
+
     FILE *fp = fopen(filename, "r");
 
-    if (!fp)
+    if (!fp) {
+        logController("LYST configuration not found");
         return 0;
+    }
 
     char line[512];
     char currentSection[64] = "";
@@ -113,6 +119,10 @@ int lystLoad(const char *filename) {
 
     fclose(fp);
 
+    char buffer[128];
+    snprintf(buffer, sizeof(buffer), "LYST loaded with %d entries", cfg->count);
+    logController(buffer);
+
     return 1;
 }
 
@@ -147,4 +157,57 @@ const char *lystGet(const char *path) {
     }
 
     return NULL;
+}
+
+static bool lystEqualsIgnoreCase(const char *a, const char *b) {
+    while (*a && *b) {
+        if (tolower((unsigned char)*a) != tolower((unsigned char)*b)) {
+            return false;
+        }
+        a++;
+        b++;
+    }
+
+    return *a == '\0' && *b == '\0';
+}
+
+bool lystGetBool(const char *path, bool fallback) {
+    const char *value = lystGet(path);
+
+    if (!value) {
+        return fallback;
+    }
+
+    if (lystEqualsIgnoreCase(value, "true") ||
+        lystEqualsIgnoreCase(value, "yes") ||
+        lystEqualsIgnoreCase(value, "on") ||
+        strcmp(value, "1") == 0) {
+        return true;
+    }
+
+    if (lystEqualsIgnoreCase(value, "false") ||
+        lystEqualsIgnoreCase(value, "no") ||
+        lystEqualsIgnoreCase(value, "off") ||
+        strcmp(value, "0") == 0) {
+        return false;
+    }
+
+    return fallback;
+}
+
+int lystGetInt(const char *path, int fallback) {
+    const char *value = lystGet(path);
+
+    if (!value || !*value) {
+        return fallback;
+    }
+
+    char *end = NULL;
+    long parsed = strtol(value, &end, 10);
+
+    if (end == value || *end != '\0') {
+        return fallback;
+    }
+
+    return (int)parsed;
 }

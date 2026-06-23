@@ -1,0 +1,17 @@
+; Leyo settings
+
+[logging]
+enabled = true
+rotate = true
+build = true
+runtime = true
+controller = true
+errors = true
+retention_days = 60
+retention_action = archive
+path = logs/latest.lylog
+archive_path = logs/archive/
+
+[build]
+in = test.leyo
+out = test.lybc

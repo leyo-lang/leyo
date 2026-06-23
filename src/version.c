@@ -12,5 +12,6 @@ char *getVersion(void) {
     logController("Version Fetched.");
     static char buff[64];
     fgets(buff, 64, vfile);
+    fclose(vfile);
     return buff;
 }

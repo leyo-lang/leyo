@@ -1,12 +1,12 @@
 [CONTROLLER] Logger initialized
+[CONTROLLER] LYST configuration loaded
+[CONTROLLER] logs/latest.lylog
+[CONTROLLER] Arg parser ready: command=help flags=0 options=0 positionals=0
 [CONTROLLER] Fetching Version...
 [CONTROLLER] Version Fetched.
 [CONTROLLER] Running Leyo
-[CONTROLLER] Version:
-[CONTROLLER] 0.4.1
-<<<<<<< HEAD
+[CONTROLLER] 0.5.1
 [CONTROLLER] Initialising ArgParser
 [CONTROLLER] Initialised
-[CONTROLLER] Disassembly started
-=======
->>>>>>> 7b7fffcc3639a378b30f709f504b0de8f71d4cc2
+[CONTROLLER] Unknown command line argument
+[ERROR] Line:0 Column:0 Unknown command line argument

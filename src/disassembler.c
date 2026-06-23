@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "../include/bytecode.h"
+#include "../include/errors.h"
 
 static uint16_t read16(const uint8_t *code, size_t *ip) {
     uint16_t value =
@@ -62,6 +63,7 @@ int opcode_has_operand(uint8_t op) {
 }
 
 void disassemble(const uint8_t* code, size_t size) {
+    logController("Disassembler entered human-readable mode");
     size_t ip = 0;
 
     while (ip < size)
@@ -90,10 +92,13 @@ void disassemble(const uint8_t* code, size_t size) {
                 break;
         }
     }
+
+    logController("Disassembler finished human-readable mode");
 }
 
 
 void disassembleHex(const uint8_t* code, size_t size) {
+    logController("Disassembler entered hex mode");
     size_t ip = 0;
 
     while (ip < size)
@@ -105,4 +110,6 @@ void disassembleHex(const uint8_t* code, size_t size) {
         if (op == OP_FINISH)
             break;
     }
+
+    logController("Disassembler finished hex mode");
 }

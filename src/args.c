@@ -1,5 +1,7 @@
 #include "../include/args.h"
+#include "../include/errors.h"
 
+#include <stdio.h>
 #include <string.h>
 
 #define AP_MAX_ARGS 256
@@ -25,6 +27,7 @@ void argParseSetup(ArgParser *parser, char *argv[], int argc) {
     parser->bin = NULL;
 
     if (!argv || !argc) {
+        logController("Arg parser initialised with no arguments");
         return;
     }
 
@@ -65,6 +68,17 @@ void argParseSetup(ArgParser *parser, char *argv[], int argc) {
         }
 
         i++;
+    }
+
+    {
+        char buffer[256];
+        snprintf(buffer, sizeof(buffer),
+                 "Arg parser ready: command=%s flags=%d options=%d positionals=%d",
+                 parser->command ? parser->command : "(none)",
+                 parser->flagAmount,
+                 parser->optionAmount,
+                 parser->positionalAmount);
+        logController(buffer);
     }
 }
 

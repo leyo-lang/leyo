@@ -56,3 +56,6 @@ dkms.conf
 # me
 a.lnk
 .vs
+logs/*.lylog
+logs/archive/*.lylog
+!logs/latest.lylog

@@ -12,6 +12,7 @@
 
 
 ByteCodeResult headThis(ByteCodeResult bcr) {
+    logController("Wrapping bytecode with Leyo header");
     
     LeyoHeader header = {
         .magic = {'L', 'Y', 'B', 'C'},
@@ -23,6 +24,17 @@ ByteCodeResult headThis(ByteCodeResult bcr) {
 
     int header_size = sizeof(LeyoHeader);
     int total_size = header_size + bcr.length + bcr.cb.length;
+
+    {
+        char buffer[128];
+        snprintf(buffer, sizeof(buffer),
+                 "Header size=%d payload=%d consts=%d total=%d",
+                 header_size,
+                 bcr.length,
+                 bcr.cb.length,
+                 total_size);
+        logController(buffer);
+    }
 
     uint8_t* new_data = malloc(total_size);
 
@@ -45,6 +57,8 @@ ByteCodeResult headThis(ByteCodeResult bcr) {
         .data = new_data,
         .cb = bcr.cb
     };
+
+    logController("Header wrapping finished");
 
     return result;
 }
