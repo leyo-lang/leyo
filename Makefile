@@ -9,6 +9,7 @@ CFLAGS = -Wall -Wextra -pedantic -std=c99 \
 SRC_DIR = src
 BUILD_DIR = build
 BIN_DIR = bin
+GIT_INFO_STAMP = $(BUILD_DIR)/git-info-$(GIT_COMMIT)-$(GIT_DIRTY).stamp
 
 # find all .c files automatically
 SRCS := $(wildcard $(SRC_DIR)/*.c)
@@ -37,6 +38,12 @@ $(TARGET): $(OBJS)
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+# keep main.o tied to the current git state so commit/dirty changes rebuild it
+$(BUILD_DIR)/main.o: $(GIT_INFO_STAMP)
+
+$(GIT_INFO_STAMP): | $(BUILD_DIR)
+	@echo $(GIT_COMMIT) $(GIT_DIRTY) > $@
+
 # run program
 run: all
 	$(TARGET)
@@ -45,9 +52,11 @@ run: all
 clean:
 ifeq ($(OS),Windows_NT)
 	del /Q $(BUILD_DIR)\*.o 2> nul
+	del /Q $(BUILD_DIR)\git-info-*.stamp 2> nul
 	del /Q $(BIN_DIR)\*.exe 2> nul
 else
 	rm -f $(BUILD_DIR)/*.o
+	rm -f $(BUILD_DIR)/git-info-*.stamp
 	rm -f $(BIN_DIR)/*
 endif
 
