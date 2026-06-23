@@ -1,5 +1,5 @@
-#ifndef ARGS_H
-#define ARGS_H
+#ifndef ARGPARSE_H
+#define ARGPARSE_H
 
 #include <stdbool.h>
 

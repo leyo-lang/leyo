@@ -9,6 +9,7 @@
 #include "../include/headerer.h"
 #include "../include/disassembler.h"
 #include "../include/repl.h"
+#include "../include/lyst.h"
 #include "../include/args.h"
 #include "../include/tests.h"
 
@@ -359,6 +360,23 @@ int main(int argc, char *argv[]) {
     argParseSetup(&parser, argv, argc);
 
     logController("Initialised");
+
+    if (isCommand(&parser, "init") == 0) {
+        if (fopen(".lyst", "w")) {
+            return 0;
+        }
+        return -1;
+    }
+
+    logController("Initalising LYST");
+    if (lystLoad(".lyst") != 1) {
+        logController("Initialisation Failed");
+        raise("Initialisation Failed", 0,0);
+        callAllErr();
+        return -1;
+    }
+    logController("LYST Initialised");
+    
 
     if (parser.noCommand) {
         if (parser.flagAmount == 0) {

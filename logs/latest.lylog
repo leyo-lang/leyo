@@ -4,6 +4,9 @@
 [CONTROLLER] Running Leyo
 [CONTROLLER] Version:
 [CONTROLLER] 0.4.1
+<<<<<<< HEAD
 [CONTROLLER] Initialising ArgParser
 [CONTROLLER] Initialised
 [CONTROLLER] Disassembly started
+=======
+>>>>>>> 7b7fffcc3639a378b30f709f504b0de8f71d4cc2

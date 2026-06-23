@@ -40,6 +40,8 @@ const char* opcode_name(uint8_t op) {
 
         case OP_CONST_LOAD:  return "CONST_LOAD";
 
+        case OP_CALL_NATIVE: return "CALL_NATIVE";
+
         default:             return "UNKNOWN";
     }
 }
@@ -50,6 +52,9 @@ int opcode_has_operand(uint8_t op) {
         case OP_PUT_A:
         case OP_PUT_B:
             return 2;
+
+        case OP_CALL_NATIVE:
+            return 1;
 
         default:
             return 0;
