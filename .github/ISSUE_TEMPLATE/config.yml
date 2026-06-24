@@ -1,0 +1,19 @@
+blank_issues_enabled: false
+
+contact_links:
+
+- name: Questions and Support
+  url: https://github.com/<your-username>/leyo/discussions
+  about: Ask questions about using Leyo, the VM, syntax, or development.
+
+- name: Documentation
+  url: https://github.com/<your-username>/leyo/blob/main/README.md
+  about: Read the documentation before opening an issue.
+
+- name: Security Issues
+  url: mailto:github@joshruddick.uk?subject=Leyo%20Security
+  about: Contact maintainers about dangerous issues
+
+- name: Email Support
+  url: mailto:github@joshruddick.uk?subject=Leyo%20Support
+  about: Contact the Leyo maintainers by email.
