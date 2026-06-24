@@ -1,0 +1,44 @@
+name: Bug Report
+description: Report a bug in Leyo
+title: "[Bug]: "
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened?
+      placeholder: Describe the bug here.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Show the minimal example or steps to reproduce.
+      placeholder: |
+        ~ minimal example
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behaviour
+    attributes:
+      label: Expected Behaviour
+      description: What should have happened?
+      placeholder: Describe the expected result.
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Paste the output from `leyo -D` below.
+      placeholder: |
+        >> leyo -D
+        OUTPUT HERE
+      render: shell
+    validations:
+      required: true

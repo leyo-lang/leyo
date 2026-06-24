@@ -1,0 +1,30 @@
+name: Feature Request
+description: Suggest a new feature
+title: "[Feature]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What problem are you trying to solve?
+      placeholder: Describe the gap or pain point.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the feature.
+      placeholder: Explain what you want built.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Any alternative approaches you've considered?
+      placeholder: List any other options you evaluated.
+    validations:
+      required: false

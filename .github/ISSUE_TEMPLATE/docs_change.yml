@@ -1,0 +1,30 @@
+name: Documentation
+description: Report missing or incorrect documentation
+title: "[Docs]: "
+body:
+  - type: textarea
+    id: page-or-topic
+    attributes:
+      label: Page or Topic
+      description: What documentation is affected?
+      placeholder: Name the page, section, or topic.
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue
+    attributes:
+      label: Issue
+      description: What's incorrect or missing?
+      placeholder: Describe the documentation problem.
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested-improvement
+    attributes:
+      label: Suggested Improvement
+      description: How should it be improved?
+      placeholder: Describe the change you'd like to see.
+    validations:
+      required: true

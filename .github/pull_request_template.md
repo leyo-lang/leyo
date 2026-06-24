@@ -4,26 +4,26 @@ What does this PR change?
 
 ## Reasoning
 
-Why have you make this change?
+Why did you make this change?
 
 ## Issues
 
-What issue does this solve? PLEASE LIST ALL
+What issue does this solve? Please list all related issues.
 
 ## Versioning
 
-- [ ] This is a major change - no longer backwards compatable
-- [ ] This is a minor change - a backwards compatable functionality is added
-- [ ] This is a patch - a bug fix that adds no more functionality
+- [ ] This is a major change - no longer backward compatible
+- [ ] This is a minor change - backward compatible functionality is added
+- [ ] This is a patch - a bug fix that adds no new functionality
 
-We suggest reading the [SEMVER GUIDELINES](https://semver.org/)
-Versioning is based of SemVer 2.0.0
+We suggest reading the [SemVer guidelines](https://semver.org/).
+Versioning is based on SemVer 2.0.0.
 
 ## Testing
 
 - [ ] I have run `leyo test`
 - [ ] I have updated `leyo help`
-- [ ] I have updated [VERSION FILE](/VERSION.mk) with a new version number - see above
+- [ ] I have updated [VERSION.mk](/VERSION.mk) with a new version number, if required
 
 ## Notes
 
@@ -33,4 +33,4 @@ Anything reviewers should know?
 
 - [ ] I ensure that all the above information is correct
 
-Contributor: (ENTER NAME HERE)
+Contributor: (enter name here)
