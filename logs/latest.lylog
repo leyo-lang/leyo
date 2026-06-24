@@ -1,12 +1,14 @@
 [CONTROLLER] Logger initialized
 [CONTROLLER] LYST configuration loaded
 [CONTROLLER] logs/latest.lylog
-[CONTROLLER] Arg parser ready: command=help flags=0 options=0 positionals=0
+[CONTROLLER] Arg parser ready: command=disassemble flags=1 options=0 positionals=1
 [CONTROLLER] Fetching Version...
 [CONTROLLER] Version Fetched.
 [CONTROLLER] Running Leyo
-[CONTROLLER] 0.5.1
+[CONTROLLER] 0.6.1
 [CONTROLLER] Initialising ArgParser
 [CONTROLLER] Initialised
-[CONTROLLER] Unknown command line argument
-[ERROR] Line:0 Column:0 Unknown command line argument
+[CONTROLLER] Disassembly started
+[CONTROLLER] File=C:\Users\joshu\AppData\Local\Temp\LYOB2B2.tmp\smoke.lybc Hex=true Head=false
+[CONTROLLER] Disassembler entered hex mode
+[CONTROLLER] Disassembler finished hex mode

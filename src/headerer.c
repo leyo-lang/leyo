@@ -20,7 +20,7 @@ ByteCodeResult headThis(ByteCodeResult bcr) {
         .code_size = bcr.length
     };
 
-    snprintf(header.version, sizeof(header.version), "%s", getVersion());
+    snprintf(header.version, sizeof(header.version), "%s", LEYO_VERSION);
 
     int header_size = sizeof(LeyoHeader);
     int total_size = header_size + bcr.length + bcr.cb.length;

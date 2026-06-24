@@ -20,7 +20,7 @@ OBJS := $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
 TARGET = $(BIN_DIR)/leyo.exe
 
 # default target
-all: $(BUILD_DIR) $(TARGET)
+all: version.h $(BUILD_DIR) $(TARGET)
 
 # create build directory
 $(BUILD_DIR):
@@ -29,6 +29,13 @@ $(BUILD_DIR):
 $(BIN_DIR):
 	mkdir $(BIN_DIR)
 
+include VERSION.mk
+
+version.h: VERSION.mk
+	@echo #ifndef VERSION_H > include/version.h
+	@echo #define VERSION_H >> include/version.h
+	@echo #define LEYO_VERSION "$(VERSION)" >> include/version.h
+	@echo #endif >> include/version.h
 
 # link step
 $(TARGET): $(OBJS)

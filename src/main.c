@@ -196,7 +196,7 @@ static void diagnostics(void) {
     puts("Leyo Diagnostics");
     puts("================");
 
-    printf("Version      : %s\n", getVersion());
+    printf("Version      : %s\n", LEYO_VERSION);
     printf("Build Date   : %s %s\n", __DATE__, __TIME__);
     printf("Compiler     : %s\n", __VERSION__);
     printf("Platform     : %s\n", platformName());
@@ -748,7 +748,9 @@ int main(int argc, char *argv[]) {
         logController(buffer);
     }
 
-    const char *version = getVersion();
+    logController("Fetching Version...");
+    const char *version = LEYO_VERSION;
+    logController("Version Fetched.");
 
     logController("Running Leyo");
     logController(version);
