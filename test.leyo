@@ -1,6 +1,7 @@
 int i = 5;
 i = 6;
-flt f = 5.23;
+int j = i;
+flt f = 5.9;
 chr c = 'f';
 str s = "Hello World!";
 @dump;

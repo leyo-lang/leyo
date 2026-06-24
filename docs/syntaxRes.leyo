@@ -1,0 +1,3 @@
+fnc foo(int bar) {
+    rtn bar*2
+}

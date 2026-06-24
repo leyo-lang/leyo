@@ -28,9 +28,16 @@ typedef struct {
 } Value;
 
 typedef struct {
+    char *name;
+    uint32_t address;
+    TokenType retType;
+    // todo add args 
+} Func;
+
+typedef struct {
     Token *tokens;
-    int pos;
-    int count;
+    uint32_t pos;
+    uint32_t count;
 
     uint8_t bytebuff[2048];
     int byteIndex;
@@ -40,6 +47,9 @@ typedef struct {
 
     Value *consts;
     int constAmt;
+
+    Func *funcs;
+    int funcAmt;
 } ByteCoder;
 
 typedef struct {

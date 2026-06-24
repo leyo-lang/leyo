@@ -94,6 +94,13 @@ static void emit16(uint16_t value) {
     emit((uint8_t)((value >> 8) & 0xFF));
 }
 
+static void emit32(uint32_t value) {
+    emit((uint8_t)(value & 0xFF));
+    emit((uint8_t)((value >> 8) & 0xFF));
+    emit((uint8_t)((value >> 16) & 0xFF));
+    emit((uint8_t)((value >> 24) & 0xFF));
+}
+
 static void constEmit(uint8_t v) {
     constBuf.data[constBuf.length++] = v;
 }
@@ -201,6 +208,18 @@ static int resolve(char *name) {
     return -1;
 }
 
+static uint32_t resolvef(char *name) {
+    for (int i = 0; i < b->funcAmt; i++) {
+        if (strcmp(b->funcs[i].name, name) == 0) {
+            return b->funcs[i].address;
+        }
+    }
+
+    raise("Undefined func", current().line, current().collumn);
+    callAllErr();
+    return -1;
+}
+
 static TokenType resolveType(char *name) {
     for (int i = 0; i < b->globalCount; i++) {
         if (strcmp(b->globals[i].name, name) == 0) {
@@ -208,13 +227,24 @@ static TokenType resolveType(char *name) {
         }
     }
 
-    raise("Undefined variable",
-          current().line,
-          current().collumn);
+    raise("Undefined variable", current().line, current().collumn);
 
     callAllErr();
     return UNKNOWN;
 }
+
+static uint32_t resolveTypef(char *name) {
+    for (int i = 0; i < b->funcAmt; i++) {
+        if (strcmp(b->funcs[i].name, name) == 0) {
+            return b->funcs[i].retType;
+        }
+    }
+
+    raise("Undefined func", current().line, current().collumn);
+    callAllErr();
+    return UNKNOWN;
+}
+
 
 static TokenType parseAtom(void) { // small singular unit of expression (number, identifier, string, etc)
     logBuildParser("Parsing atom");
@@ -258,7 +288,16 @@ static TokenType parseAtom(void) { // small singular unit of expression (number,
 
         case IDENTIFIER: {
             if (peek().type == OPENBRAC) {
-                // function call to resolve TODO
+                char *name = current().value;  
+                logBuildParser("atom is ident func");
+                emit(OP_CALL);
+                emit32(resolvef(name));
+                while (current().type != CLOSEBRAC) {
+                    advance();
+                }
+                TokenType type = resolveTypef(name);
+                advance();
+                return type;
             }
             logBuildParser("atom is ident");
             uint16_t slot = resolve(current().value);
@@ -267,6 +306,10 @@ static TokenType parseAtom(void) { // small singular unit of expression (number,
             emit(OP_LOAD); // takes from slot def in A and return into r
             emit(OP_PUT_A_R);
             //emit(OP_SS_PUSH_A);
+
+            TokenType type = resolveType(current().value);
+            advance();
+            return type;
 
             break;
         }

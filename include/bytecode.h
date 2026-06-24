@@ -23,7 +23,8 @@
 
 #define OP_CONST_LOAD         0x41 // takes slot from A and gets associated const into R
 
-#define OP_CALL_NATIVE        0x51 // calls native command 
+#define OP_CALL               0x51 // calls command  - takes uint32
+#define OP_CALL_NATIVE        0x52 // calls native command 
 
 #define OP_FINISH             0xFF // EOF marker
 
