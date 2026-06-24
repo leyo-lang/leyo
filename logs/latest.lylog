@@ -1,44 +1,11 @@
 [CONTROLLER] Logger initialized
 [CONTROLLER] LYST configuration loaded
 [CONTROLLER] logs/latest.lylog
-[CONTROLLER] Arg parser ready: command=run flags=0 options=0 positionals=1
+[CONTROLLER] Arg parser ready: command=github flags=0 options=0 positionals=0
 [CONTROLLER] Fetching Version...
 [CONTROLLER] Version Fetched.
 [CONTROLLER] Running Leyo
-[CONTROLLER] 0.6.1
+[CONTROLLER] 0.6.2
 [CONTROLLER] Initialising ArgParser
 [CONTROLLER] Initialised
-[CONTROLLER] Run target=test.lybc
-[RUNTIME] VM START
-[RUNTIME] Starting VM execution
-[RUNTIME] Decoding constant pool
-[RUNTIME] Constant pool decoded: 5 values
-[RUNTIME] Constant pool loaded into VM
-[RUNTIME] OP=0x41 | A=0 B=0 R=0 | ip=0 | stackTop=0
-[RUNTIME] OP=0x04 | A=0 B=0 R=5 | ip=3 | stackTop=0
-[RUNTIME] OP=0x02 | A=5 B=0 R=5 | ip=4 | stackTop=0
-[RUNTIME] OP=0x21 | A=5 B=0 R=5 | ip=7 | stackTop=0
-[RUNTIME] OP=0x41 | A=5 B=0 R=5 | ip=8 | stackTop=0
-[RUNTIME] OP=0x04 | A=5 B=0 R=6 | ip=11 | stackTop=0
-[RUNTIME] OP=0x02 | A=6 B=0 R=6 | ip=12 | stackTop=0
-[RUNTIME] OP=0x21 | A=6 B=0 R=6 | ip=15 | stackTop=0
-[RUNTIME] OP=0x01 | A=6 B=0 R=6 | ip=16 | stackTop=0
-[RUNTIME] OP=0x22 | A=0 B=0 R=6 | ip=19 | stackTop=0
-[RUNTIME] OP=0x04 | A=0 B=0 R=6 | ip=20 | stackTop=0
-[RUNTIME] OP=0x02 | A=6 B=0 R=6 | ip=21 | stackTop=0
-[RUNTIME] OP=0x21 | A=6 B=1 R=6 | ip=24 | stackTop=0
-[RUNTIME] OP=0x41 | A=6 B=1 R=6 | ip=25 | stackTop=0
-[RUNTIME] OP=0x04 | A=6 B=1 R=5.9 | ip=28 | stackTop=0
-[RUNTIME] OP=0x02 | A=5.9 B=1 R=5.9 | ip=29 | stackTop=0
-[RUNTIME] OP=0x21 | A=5.9 B=2 R=5.9 | ip=32 | stackTop=0
-[RUNTIME] OP=0x41 | A=5.9 B=2 R=5.9 | ip=33 | stackTop=0
-[RUNTIME] OP=0x04 | A=5.9 B=2 R='f' | ip=36 | stackTop=0
-[RUNTIME] OP=0x02 | A='f' B=2 R='f' | ip=37 | stackTop=0
-[RUNTIME] OP=0x21 | A='f' B=3 R='f' | ip=40 | stackTop=0
-[RUNTIME] OP=0x41 | A='f' B=3 R='f' | ip=41 | stackTop=0
-[RUNTIME] OP=0x04 | A='f' B=3 R="Hello World!" | ip=44 | stackTop=0
-[RUNTIME] OP=0x02 | A="Hello World!" B=3 R="Hello World!" | ip=45 | stackTop=0
-[RUNTIME] OP=0x21 | A="Hello World!" B=4 R="Hello World!" | ip=48 | stackTop=0
-[RUNTIME] OP=0x51 | A="Hello World!" B=4 R="Hello World!" | ip=49 | stackTop=0
-[RUNTIME] OP=0x51 | A="Hello World!" B=4 R="Hello World!" | ip=51 | stackTop=0
-[RUNTIME] OP=0xFF | A="Hello World!" B=4 R="Hello World!" | ip=51 | stackTop=0
+[CONTROLLER] Opening Github

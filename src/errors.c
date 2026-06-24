@@ -492,7 +492,7 @@ void callAllErr(void) {
     }
 
     closeLog();
-    quick_exit(1);
+    exit(1);
 }
 
 void initLog(const char *filename) {

@@ -211,6 +211,16 @@ static void diagnostics(void) {
     puts("================");
 }
 
+void openGithub(void) {
+#ifdef _WIN32
+    system("start https://github.com/JoshRuds/Leyo");
+#elif __APPLE__
+    system("open https://github.com/JoshRuds/Leyo");
+#else
+    system("xdg-open https://github.com/JoshRuds/Leyo");
+#endif
+}
+
 static void trimInput(char *text) {
     size_t len = strlen(text);
 
@@ -760,7 +770,7 @@ int main(int argc, char *argv[]) {
 
     if (parser.noCommand) {
         if (parser.flagAmount == 0) {
-            printf("Leyo version v%s\nAuthored by Josh Ruddick\nhttps://github.com/JoshRuds/leyo", version);
+            printf("Leyo version v%s\nAuthored by Josh Ruddick\nRun `leyo github` for github link\n", version);
             return 0;
         }
 
@@ -836,6 +846,12 @@ int main(int argc, char *argv[]) {
         char *in = (char*)lystGet("build/in");
         char *out = (char*)lystGet("build/out");
         return build(in, out);
+
+    } else if (isCommand(&parser, "github")) {
+        logController("Opening Github");
+
+        openGithub();
+        return 0;
 
     } else {
 
