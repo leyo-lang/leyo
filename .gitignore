@@ -60,3 +60,6 @@ logs/*.lylog
 logs/archive/*.lylog
 !logs/latest.lylog
 build/*.stamp
+bin/leyo
+bin/leyo.exe
+!bin/.gitkeep

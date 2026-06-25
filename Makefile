@@ -17,7 +17,12 @@ SRCS := $(wildcard $(SRC_DIR)/*.c)
 # convert them into .o files inside bin/
 OBJS := $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
 
+ifeq ($(OS),Windows_NT)
 TARGET = $(BIN_DIR)/leyo.exe
+else
+TARGET = $(BIN_DIR)/leyo
+endif
+
 
 # default target
 all: version.h $(BUILD_DIR) $(TARGET)
