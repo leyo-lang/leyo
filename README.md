@@ -1,8 +1,6 @@
 # Leyo
 
-Leyo is a compiled programming language, bytecode format, and virtual machine written in C. The project contains a complete toolchain capable of compiling source code into Leyo bytecode, packaging it into a portable file format, executing it inside a virtual machine, and inspecting the generated instructions with a built-in disassembler.
-
-The implementation is intentionally lightweight. Each part of the compiler and runtime is designed to remain understandable without requiring a large framework or external dependencies.
+Leyo is a type-safe observable permission-based bytecode language and runtime, written in C. The repository includes the lexer, parser, bytecode packer, disassembler, and VM that power the language end to end.
 
 ## Design Philosophy
 
@@ -89,6 +87,10 @@ Additional documentation is available throughout the repository.
 Leyo is under active development.
 
 Core compilation, bytecode generation, virtual machine execution, logging, configuration, and disassembly are implemented. Additional language features continue to be developed, and compatibility between development versions should not be assumed.
+
+## Roadmap
+
+See [`TODO.md`](TODO.md) for the current work list and the rough order I want to tackle it in.
 
 ## License
 
