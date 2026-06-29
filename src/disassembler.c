@@ -5,6 +5,7 @@
 #include "../include/bytecode.h"
 #include "../include/errors.h"
 
+/*
 static uint16_t read16(const uint8_t *code, size_t *ip) {
     uint16_t value =
         (uint16_t)code[*ip] |
@@ -14,6 +15,7 @@ static uint16_t read16(const uint8_t *code, size_t *ip) {
 
     return value;
 }
+*/
 
 const char* opcode_name(uint8_t op) {
     switch (op) {
@@ -43,6 +45,11 @@ const char* opcode_name(uint8_t op) {
 
         case OP_CALL_NATIVE: return "CALL_NATIVE";
 
+        case OP_JUMP:        return "JUMP";
+
+        case OP_CALL:        return "CALL";
+        case OP_RETURN:      return "RETURN";
+
         default:             return "UNKNOWN";
     }
 }
@@ -50,6 +57,7 @@ const char* opcode_name(uint8_t op) {
 int opcode_has_operand(uint8_t op) {
     switch (op)
     {
+        case OP_CONST_LOAD:
         case OP_PUT_A:
         case OP_PUT_B:
             return 2;
@@ -57,32 +65,61 @@ int opcode_has_operand(uint8_t op) {
         case OP_CALL_NATIVE:
             return 1;
 
+        case OP_JUMP:
+        case OP_CALL:
+            return 4;
+
         default:
             return 0;
     }
+}
+
+char *formatNumber(int highest, int number) {
+    int width = 1;
+
+    for (int n = highest; n >= 10; n /= 10)
+        width++;
+
+    char *str = malloc(width + 1);
+    if (!str)
+        return NULL;
+
+    snprintf(str, width + 1, "%0*d", width, number);
+    return str;
 }
 
 void disassemble(const uint8_t* code, size_t size) {
     logController("Disassembler entered human-readable mode");
     size_t ip = 0;
 
-    while (ip < size)
-    {
+    while (ip < size) {   
+        printf("%s: ", formatNumber(size-1, ip));
         uint8_t op = code[ip++];
+        
 
-        if (opcode_has_operand(op))
-        {
+        if (opcode_has_operand(op)) {
             if (ip >= size)
             {
                 printf("%s <missing operand>\n", opcode_name(op));
                 break;
             }
 
-            printf("%s %u\n",
-                   opcode_name(op),
-                   read16(code,&ip));
+            printf("%s", opcode_name(op));
 
-            ip++;
+            int size = opcode_has_operand(op);
+
+            if (size > 0) {
+                uint64_t operand = 0;
+
+                for (int i = 0; i < size; i++)
+                    operand |= (uint64_t)code[ip++] << (i * 8);
+
+                printf(" %llu", (unsigned long long)operand);
+            }
+
+            printf("\n");
+
+            //ip++;
         }
         else
         {

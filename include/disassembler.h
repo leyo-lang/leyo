@@ -4,6 +4,9 @@
 #include <stdint.h>
 #include <stdio.h>
 
+
+const char* opcode_name(uint8_t op);
+
 void disassemble(const uint8_t* code, size_t size);
 void disassembleHex(const uint8_t* code, size_t size);
 

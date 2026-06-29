@@ -108,13 +108,20 @@ int main(int argc, char *argv[]) {
     }
 
     if (isCommand(&parser, "build")) {
+        bool isScript = false;
 
         char *source = getPositional(&parser, 0);
 
         if (!source) {
-            logController("Missing source file");
-            raise("Missing source file", 0, 0);
-            callAllErr();
+            char *script = getOption(&parser, "-s");
+            if (script) {
+                isScript = true;
+                source = script;
+            } else {
+                logController("Missing source file");
+                raise("Missing source file", 0, 0);
+                callAllErr();
+            }
         }
 
         char *dest = getOption(&parser, "-o");
@@ -123,7 +130,7 @@ int main(int argc, char *argv[]) {
             dest = "a.lybc";
         }
 
-        return build(source, dest);
+        return build(source, dest, isScript);
 
     } else if (isCommand(&parser, "run")) {
 
@@ -156,7 +163,7 @@ int main(int argc, char *argv[]) {
         }
 
         bool hex = isFlag(&parser, "--hex");
-        bool head = isFlag(&parser, "--head");
+        bool head = !isFlag(&parser, "--head");
 
         return dis(file, hex, head);
 
@@ -165,7 +172,7 @@ int main(int argc, char *argv[]) {
 
         char *in = (char*)lystGet("build/in");
         char *out = (char*)lystGet("build/out");
-        return build(in, out);
+        return build(in, out, false);
 
     } else if (isCommand(&parser, "github")) {
         logController("Opening Github");

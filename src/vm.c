@@ -2,6 +2,7 @@
 #include "../include/parser.h"
 #include "../include/bytecode.h"
 #include "../include/native.h"
+#include "../include/disassembler.h"
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
@@ -13,6 +14,10 @@
 #define GLOBALS_MAX 65536
 
 // extern struct Value;
+
+typedef struct {
+    uint32_t rtnAdr;
+} Call;
 
 typedef struct {
     uint8_t *code;
@@ -29,6 +34,10 @@ typedef struct {
     
     Value *consts;
     int constCount;
+
+    Call *callStack;
+    int callAmt;
+    int callCap;
 } VM;
 
 VM vmStd = {0};
@@ -94,6 +103,13 @@ static uint16_t read16(void) {
     advanceByte();
 
     return low | (high << 8);
+}
+
+static uint32_t read32(void) {
+    uint32_t low = read16();
+    uint32_t high = read16();
+
+    return low | (high << 16);
 }
 
 static Value *decodeConstPool(const uint8_t *data, int length, int *outCount) {
@@ -454,12 +470,25 @@ static void power() {
     }
 }
 
+static void checkCallStack() {
+    if (vm->callAmt >= vm->callCap-1) {
+        vm->callCap *= 2;
+        vm->callStack = realloc(
+            vm->callStack,
+            vm->callCap * sizeof(Call)
+        );
+    }
+}
+
 int runVM(ByteCodeResult bc) {
     logRuntime("Starting VM execution");
     vmStd.code = bc.data;
     vmStd.ip = 0;
     vmStd.consts = NULL;
     vmStd.constCount = 0;
+    vmStd.callAmt = 0;
+    vmStd.callCap = 64;
+    vmStd.callStack = malloc(vmStd.callCap * sizeof(Call));
     vm = &vmStd;
 
     if (bc.cb.length > 0 && bc.cb.data != NULL) {
@@ -479,6 +508,10 @@ int runVM(ByteCodeResult bc) {
         uint8_t op = readByte();
 
         dumpState(op);
+
+        char buf[64];
+        snprintf(buf, 64, "%s", opcode_name(op));
+        logRuntime(buf);
 
         advanceByte();
 
@@ -579,6 +612,23 @@ int runVM(ByteCodeResult bc) {
                         callAllErr();
                         break;
                 }
+                break;
+            }
+
+            case OP_JUMP: {
+                vm->ip = read32();
+                break;
+            }
+
+            case OP_CALL: {
+                checkCallStack();
+                vm->callStack[vm->callAmt++] = (Call){.rtnAdr = vm->ip+4};
+                vm->ip = read32();
+                break;
+            }
+
+            case OP_RETURN: {
+                vm->ip = vm->callStack[--vm->callAmt].rtnAdr;
                 break;
             }
 

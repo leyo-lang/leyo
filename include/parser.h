@@ -40,7 +40,7 @@ typedef struct {
     uint32_t count;
 
     uint8_t bytebuff[2048];
-    int byteIndex;
+    uint32_t byteIndex;
 
     Global globals[65535];
     int globalCount;

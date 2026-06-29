@@ -1,6 +1,8 @@
 #ifndef BUILD_H
 #define BUILD_H
 
-int build(char *filename, char *bcrfilename);
+#include <stdbool.h>
+
+int build(char *filename, char *bcrfilename, bool isFlnameScript);
 
 #endif

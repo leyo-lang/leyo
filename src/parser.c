@@ -22,6 +22,11 @@ typedef enum {
     TYPE_UNKNOWN
 } VarType;
 
+
+// HOISTS
+
+static void parseStatement(void);
+
 static Token current(void) {
     return b->tokens[b->pos];
 }
@@ -99,6 +104,25 @@ static void emit32(uint32_t value) {
     emit((uint8_t)((value >> 8) & 0xFF));
     emit((uint8_t)((value >> 16) & 0xFF));
     emit((uint8_t)((value >> 24) & 0xFF));
+}
+
+static uint32_t reserve32(void) {
+    uint32_t pos = b->byteIndex;
+    emit32(0);
+    return pos;
+}
+
+static void patch32(uint32_t loc, uint32_t value) {
+    if (loc + 3 >= b->byteIndex) {
+        logBuildParser("Invalid patch location");
+        raise("Byte patch out of bounds", current().line, current().collumn);
+        return;
+    }
+
+    b->bytebuff[loc+0] = (uint8_t)(value & 0xFF);
+    b->bytebuff[loc+1] = (uint8_t)((value >> 8) & 0xFF);
+    b->bytebuff[loc+2] = (uint8_t)((value >> 16) & 0xFF);
+    b->bytebuff[loc+3] = (uint8_t)((value >> 24) & 0xFF);
 }
 
 static void constEmit(uint8_t v) {
@@ -179,12 +203,40 @@ static uint16_t emitConst() {
     return b->constAmt-1;
 }
 
+static bool isKeyword(char *tc) {
+    char *keywords[] = {
+        "int", "chr", "str", "flt", "arr",
+        "rtn", "fnc", "whl", "rpt", "brk", "cnt"
+    };
+
+    int keywordAmt = sizeof(keywords) / sizeof(keywords[0]);
+
+    for (int i = 0; i < keywordAmt; i++) {
+        if (strcmp(keywords[i], tc) == 0) {
+            raise("Cannot Overwrite Keyword", current().line, current().collumn);
+            return true;
+        }
+    }
+
+    return false;
+}
+
 static int define(char *name, TokenType type) {
+    isKeyword(name);
     for (int i = 0; i < b->globalCount; i++) {
         if (strcmp(b->globals[i].name, name) == 0) {
+            raise("Previously Defined", current().line, current().collumn);
             return b->globals[i].slot;
         }
     }
+    for (int i = 0; i < b->funcAmt; i++) {
+        if (strcmp(b->funcs[i].name, name) == 0) {
+            raise("Previously Defined", current().line, current().collumn);
+            return b->funcs[i].address;
+        }
+    }
+    
+
 
     int slot = b->globalCount;
 
@@ -194,6 +246,29 @@ static int define(char *name, TokenType type) {
     b->globalCount++;
 
     return slot;
+}
+
+static uint32_t definef(char *name, TokenType ret) {
+    isKeyword(name);
+    for (int i = 0; i < b->globalCount; i++) {
+        if (strcmp(b->globals[i].name, name) == 0) {
+            raise("Previously Defined", current().line, current().collumn);
+            return b->globals[i].slot;
+        }
+    }
+    for (int i = 0; i < b->funcAmt; i++) {
+        if (strcmp(b->funcs[i].name, name) == 0) {
+            raise("Previously Defined", current().line, current().collumn);
+            return b->funcs[i].address;
+        }
+    }
+
+    b->funcs[b->funcAmt].name = strdup(name);
+    b->funcs[b->funcAmt].address = b->byteIndex;
+    b->funcs[b->funcAmt].retType = ret;
+    b->funcAmt++;
+
+    return b->byteIndex;
 }
 
 static int resolve(char *name) {
@@ -233,18 +308,44 @@ static TokenType resolveType(char *name) {
     return UNKNOWN;
 }
 
-static uint32_t resolveTypef(char *name) {
+static TokenType resolveTypef(char *name) {
     for (int i = 0; i < b->funcAmt; i++) {
         if (strcmp(b->funcs[i].name, name) == 0) {
             return b->funcs[i].retType;
         }
     }
 
-    raise("Undefined func", current().line, current().collumn);
+    raise("Undefined function", current().line, current().collumn);
     callAllErr();
     return UNKNOWN;
 }
 
+static TokenType functionCall(void) {
+    char *name = current().value;  
+    logBuildParser("atom is ident func");
+    emit(OP_CALL);
+    emit32(resolvef(name));
+    expectAndPass(OPENBRAC, "Function must be opened '('");
+    while (current().type != CLOSEBRAC) {
+        advance();
+    }
+    TokenType type = resolveTypef(name);
+    advance();
+
+    return type;
+}
+
+static void consumeStatementTerminator(const char *ctx) {
+    if (current().type != SEMICOLON) {
+        char buffer[256];
+        snprintf(buffer, sizeof(buffer), "%s: expected ';'", ctx ? ctx : "Statement");
+        raise(buffer, current().line, current().collumn);
+        callAllErr();
+        return;
+    }
+
+    advance();
+}
 
 static TokenType parseAtom(void) { // small singular unit of expression (number, identifier, string, etc)
     logBuildParser("Parsing atom");
@@ -288,16 +389,7 @@ static TokenType parseAtom(void) { // small singular unit of expression (number,
 
         case IDENTIFIER: {
             if (peek().type == OPENBRAC) {
-                char *name = current().value;  
-                logBuildParser("atom is ident func");
-                emit(OP_CALL);
-                emit32(resolvef(name));
-                while (current().type != CLOSEBRAC) {
-                    advance();
-                }
-                TokenType type = resolveTypef(name);
-                advance();
-                return type;
+                return functionCall();
             }
             logBuildParser("atom is ident");
             uint16_t slot = resolve(current().value);
@@ -442,10 +534,139 @@ static void parseNative(void) {
     expectAndPass(SEMICOLON, "No semicolon after statement");    
 }
 
+
+static void parseFuncBody(TokenType retType) {
+    while (current().type != CLOSEBRACE &&
+           current().type != ENDOFSTREAM) {
+
+        uint32_t before = b->pos;
+
+        // RETURN HANDLING (no hacks, no eat)
+        if (strcmp(current().value, "rtn") == 0) {
+            advance();
+            parseExpressionTC(retType);
+
+            emit(OP_RETURN);
+
+            expectCurrent(SEMICOLON, "Expected ';' after return");
+
+            // IMPORTANT: return ends statement cleanly
+            continue;
+        }
+
+        parseStatement();
+
+        if (b->pos == before) {
+            raise("Parser stalled inside function", current().line, current().collumn);
+            break;
+        }
+    }
+}
+
+static void parseFunction(void) {
+    logBuildParser("[FN] Enter parseFunction()");
+
+    advance(); // past fnc
+    logBuildParser("[FN] Consumed 'fnc'");
+
+    bool runNow = false;
+
+    if (strcmp(current().value, "!") == 0) {
+        runNow = true;
+        logBuildParser("[FN] Run-now flag detected");
+        advance();
+    }
+
+    logBuildParser("[FN] Parsing function name");
+
+    char *name = current().value;
+    expectCurrent(IDENTIFIER, "Function must be named");
+
+    logBuildParser("[FN] Function name captured");
+
+    isKeyword(name);
+    logBuildParser("[FN] Keyword check passed");
+
+    expectCurrent(OPENBRAC, "[FN] Expect '(' for params");
+    logBuildParser("[FN] Enter parameter list");
+
+    while (current().type != CLOSEBRAC) {
+        logBuildParser("[FN] Parsing param token");
+        advance();
+    }
+
+    logBuildParser("[FN] End parameter list");
+
+    advance(); // onto '<'
+    logBuildParser("[FN] Parsing return type start");
+
+    if (strcmp(current().value, "<") != 0) {
+        logBuildParser("[FN] ERROR: missing '<'");
+        raise("Requires opening type bracket '<'", current().line, current().collumn);
+        callAllErr();
+        return;
+    }
+
+    advance();
+    logBuildParser("[FN] Reading return type");
+
+    TokenType retType = getTypeVar();
+
+    advance(); // onto '>'
+    logBuildParser("[FN] Expecting '>'");
+
+    if (strcmp(current().value, ">") != 0) {
+        logBuildParser("[FN] ERROR: missing '>'");
+        raise("Requires closing type bracket '>'", current().line, current().collumn);
+        callAllErr();
+        return;
+    }
+
+    logBuildParser("[FN] Return type parsed successfully");
+
+    expectAndPass(OPENBRACE, "[FN] Expect function body '{'");
+    logBuildParser("[FN] Enter function body");
+
+    uint32_t reservedLoc = 0;
+
+    if (!runNow) {
+        emit(OP_JUMP);
+        reservedLoc = reserve32();
+        logBuildParser("[FN] Reserved jump patch slot");
+    }
+
+    definef(name, retType);
+    logBuildParser("[FN] Function registered in symbol table");
+
+    parseFuncBody(retType);
+
+    logBuildParser("[FN] Function body closed");
+
+    if (!runNow) {
+        logBuildParser("[FN] Patching jump address");
+        patch32(reservedLoc, b->byteIndex);
+    }
+
+    advance();
+    if (current().type == SEMICOLON) {
+        advance();
+    }
+
+    logBuildParser("[FN] Function fully parsed");
+
+    return;
+}
+
+
 static void parseStatement(void) {
     logBuildParser("Parsing statement");
 
     switch (current().type) {
+        case SEMICOLON:
+            logBuildParser("[WARN] Lone SemiColon");
+            advance();
+            break;
+
         case NATIVE:
             if (strcmp(current().value, "@") == 0) {
                 parseNative();
@@ -464,8 +685,13 @@ static void parseStatement(void) {
                 strcmp(current().value, "chr") == 0) {
 
                 parseVarDecl();
+            } else if (strcmp(current().value, "fnc") == 0) {
+                parseFunction();
             } else if (peek().type == EQUALS) {
                 parseAssign();
+            } else if (peek().type == OPENBRAC) {
+                functionCall();
+                consumeStatementTerminator("Function call");
             } else {
                 raise("Unknown identifier statement", current().line, current().collumn);
             }
@@ -490,8 +716,15 @@ ByteCodeResult parse(TokenStream *ts) {
     b->pos = 0;
     b->byteIndex = 0;
     b->globalCount = 0;
+    b->funcs = malloc(sizeof(Func) * 1024);
+    b->funcAmt = 0;
     b->constAmt = 0;
     b->consts = malloc(sizeof(Value) * 1024);
+
+    if (!b->funcs) {
+        raise("Failed to allocate function table", 0, 0);
+        callAllErr();
+    }
 
     if (!b->consts) {
         raise("Failed to allocate const table", 0, 0);

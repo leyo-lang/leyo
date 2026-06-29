@@ -1,7 +1,56 @@
-int i = 5;
-i = 6;
-int j = i;
-flt f = 5.9;
-chr c = 'f';
-str s = "Hello World!";
-@dump;
+~ HARD FUNCTION STRESS TEST ~
+
+fnc a() <int> {
+    rtn 1;
+}
+
+fnc b() <int> {
+    rtn a() + 2;
+}
+
+fnc c() <int> {
+    rtn b() + a();
+}
+
+fnc d() <int> {
+    rtn c() + b() + a();
+}
+
+fnc e() <int> {
+    rtn d() + c() + b();
+}
+
+fnc f() <int> {
+    rtn e() + d();
+}
+
+fnc g() <int> {
+    rtn f() + e() + d() + c();
+}
+
+~ deep nesting + repeated calls ~
+
+fnc h() <int> {
+    rtn g() + g() + f() + e();
+}
+
+fnc i() <int> {
+    rtn h() + g() + f() + e() + d();
+}
+
+~ unreachable code + return validation ~
+
+fnc j() <int> {
+    rtn i();
+
+    ~ unreachable branch test ~
+    rtn 999;
+}
+
+~ chained entry function ~
+
+fnc main() <int> {
+    rtn j() + i() + h();
+}
+
+main();

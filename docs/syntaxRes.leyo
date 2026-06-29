@@ -1,3 +1,23 @@
-fnc foo(int bar) {
-    rtn bar*2
+#allow maths;
+#poison print;
+fnc foo(int bar) <int> {
+    rtn bar*2;
 }
+
+
+LYBC
+
+JUMP here
+foo // where you are going to jump at 
+
+PRINT 5
+ADD
+RETURN
+
+here // end of function
+
+// calling Function
+CALL foo
+returnback
+
+HALT

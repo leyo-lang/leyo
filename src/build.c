@@ -58,8 +58,16 @@ static void printByteCode(ByteCodeResult* bc) {
     logController("Finished printing bytecode output");
 }
 
-int build(char *filename, char *bcrfilename) {
+int build(char *filename, char *bcrfilename, bool isFlnameScript) {
     logController("Build started");
+    char *buffer = NULL;
+
+    if (isFlnameScript) {
+        logController("Build Is A Script");
+        buffer = filename;
+        goto tokenising;
+    }
+
     {
         char buffer[256];
         snprintf(buffer, sizeof(buffer), "Input=%s Output=%s", filename, bcrfilename);
@@ -80,7 +88,7 @@ int build(char *filename, char *bcrfilename) {
     rewind(file);
 
     
-    char *buffer = malloc(size + 1);
+    buffer = malloc(size + 1);
     if (!buffer) {
         logController("Memory allocation failed for file buffer");
         fclose(file);
@@ -93,6 +101,8 @@ int build(char *filename, char *bcrfilename) {
 
     logController("File loaded into memory");
 
+tokenising:
+    ;
     TokenStream ts = tokenise(buffer);
     logController("Tokenisation completed");
 
