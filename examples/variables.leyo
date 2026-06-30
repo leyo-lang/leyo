@@ -1,0 +1,22 @@
+~ Variables Come In All Types ~
+
+int i = 4;
+flt f = 3.2;
+chr c = 'a';
+
+~ ERROR: must be Initialised ~
+~ str s; ~
+
+
+~ They can be reassigned ~
+
+i = 3 + 5;
+f = f + 0.1;
+c = 'b';
+
+~ there are arrays as well ~
+
+~
+int arr abc = [1,2,3]
+NOT YET IMPLEMENTED 
+~
