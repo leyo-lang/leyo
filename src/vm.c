@@ -17,6 +17,9 @@
 
 typedef struct {
     uint32_t rtnAdr;
+    Value A;
+    Value B;
+    Value R;
 } Call;
 
 typedef struct {
@@ -27,8 +30,8 @@ typedef struct {
     Value B;
     Value R;
 
-    Value speedStack[SPEED_STACK_MAX];
-    int speedTop;
+    //Value speedStack[SPEED_STACK_MAX];
+    //int speedTop;
 
     Value globals[GLOBALS_MAX];
     
@@ -76,13 +79,13 @@ static void dumpState(uint8_t op) {
     char rBuf[64];
 
     snprintf(buf, sizeof(buf),
-        "OP=0x%02X | A=%s B=%s R=%s | ip=%d | stackTop=%d",
+        "OP=0x%02X | A=%s B=%s R=%s | ip=%d | callAmt=%d",
         op,
         valueToString(vm->A, aBuf, sizeof(aBuf)),
         valueToString(vm->B, bBuf, sizeof(bBuf)),
         valueToString(vm->R, rBuf, sizeof(rBuf)),
         vm->ip,
-        vm->speedTop
+        vm->callAmt
     );
 
     logRuntime(buf);
@@ -622,13 +625,15 @@ int runVM(ByteCodeResult bc) {
 
             case OP_CALL: {
                 checkCallStack();
-                vm->callStack[vm->callAmt++] = (Call){.rtnAdr = vm->ip+4};
+                vm->callStack[vm->callAmt++] = (Call){.rtnAdr = vm->ip+4, .B = vm->B};
                 vm->ip = read32();
                 break;
             }
 
             case OP_RETURN: {
-                vm->ip = vm->callStack[--vm->callAmt].rtnAdr;
+                --vm->callAmt;
+                vm->B = vm->callStack[vm->callAmt].B;
+                vm->ip = vm->callStack[vm->callAmt].rtnAdr;
                 break;
             }
 
