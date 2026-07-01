@@ -5,6 +5,7 @@
 #include "../include/vm.h"
 #include "../include/headerer.h"
 #include "../include/errors.h"
+
 int run(char *filename) {
     {
         char buffer[256];
@@ -32,6 +33,14 @@ int run(char *filename) {
         return -1;
     }
 
+    long payloadSize = fileSize - sizeof(LeyoHeader);
+    if (payloadSize < 0 || payloadSize < (long)header.code_size) {
+        raise("Bytecode file is truncated", 0, 0);
+        callAllErr();
+        fclose(file);
+        return -1;
+    }
+
     // Validate magic
     if (memcmp(header.magic, "LYBC", 4) != 0) {
         raise("Invalid bytecode magic", 0, 0);
@@ -40,52 +49,38 @@ int run(char *filename) {
         return -1;
     }
 
-    // Validate file size matches header expectations
-    long expectedSize = (long)sizeof(LeyoHeader)
-                      + (long)header.code_size
-                      + (long)header.const_size;
-
-    if (fileSize != expectedSize) {
-        raise("Bytecode file is corrupt or truncated", 0, 0);
+    // Allocate bytecode buffer
+    uint8_t *code = malloc(header.code_size);
+    if (!code) {
+        raise("Memory allocation failed", 0, 0);
         callAllErr();
         fclose(file);
         return -1;
     }
 
-    // Allocate bytecode buffer
-    uint8_t *code = NULL;
-    if (header.code_size > 0) {
-        code = malloc(header.code_size);
-        if (!code) {
-            raise("Memory allocation failed (code)", 0, 0);
-            callAllErr();
-            fclose(file);
-            return -1;
-        }
-
-        if (fread(code, 1, header.code_size, file) != header.code_size) {
-            raise("Failed to read bytecode", 0, 0);
-            callAllErr();
-            free(code);
-            fclose(file);
-            return -1;
-        }
+    // Read bytecode
+    if (fread(code, 1, header.code_size, file) != header.code_size) {
+        raise("Failed to read bytecode", 0, 0);
+        callAllErr();
+        free(code);
+        fclose(file);
+        return -1;
     }
 
-    // Allocate constant pool buffer
+    long constSize = payloadSize - (long)header.code_size;
     uint8_t *constData = NULL;
-    if (header.const_size > 0) {
-        constData = malloc(header.const_size);
+    if (constSize > 0) {
+        constData = malloc((size_t)constSize);
         if (!constData) {
-            raise("Memory allocation failed (const pool)", 0, 0);
+            raise("Memory allocation failed", 0, 0);
             callAllErr();
             free(code);
             fclose(file);
             return -1;
         }
 
-        if (fread(constData, 1, header.const_size, file) != header.const_size) {
-            raise("Failed to read constant pool", 0, 0);
+        if (fread(constData, 1, (size_t)constSize, file) != (size_t)constSize) {
+            raise("Failed to read const pool", 0, 0);
             callAllErr();
             free(constData);
             free(code);
@@ -100,12 +95,13 @@ int run(char *filename) {
     bcr.length = header.code_size;
     bcr.data = code;
     bcr.cb.data = constData;
-    bcr.cb.length = header.const_size;
+    bcr.cb.length = (int)constSize;
 
     logRuntime("VM START");
 
     int result = runVM(bcr);
 
+    // IMPORTANT: only free original pointer
     free(code);
     free(constData);
 

@@ -35,11 +35,6 @@ typedef struct {
 } Func;
 
 typedef struct {
-    Func *funcs;
-    int funcAmt;
-} FuncTable;
-
-typedef struct {
     Token *tokens;
     uint32_t pos;
     uint32_t count;
@@ -53,7 +48,8 @@ typedef struct {
     Value *consts;
     int constAmt;
 
-    FuncTable ft;
+    Func *funcs;
+    int funcAmt;
 } ByteCoder;
 
 typedef struct {
