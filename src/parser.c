@@ -3,6 +3,8 @@
 #include "../include/errors.h"
 #include "../include/bytecode.h"
 #include "../include/native.h"
+#include "../include/headerer.h"
+#include "../include/packager.h"
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
@@ -229,10 +231,10 @@ static int define(char *name, TokenType type) {
             return b->globals[i].slot;
         }
     }
-    for (int i = 0; i < b->funcAmt; i++) {
-        if (strcmp(b->funcs[i].name, name) == 0) {
+    for (int i = 0; i < b->ft.funcAmt; i++) {
+        if (strcmp(b->ft.funcs[i].name, name) == 0) {
             raise("Previously Defined", current().line, current().collumn);
-            return b->funcs[i].address;
+            return b->ft.funcs[i].address;
         }
     }
     
@@ -256,19 +258,42 @@ static uint32_t definef(char *name, TokenType ret) {
             return b->globals[i].slot;
         }
     }
-    for (int i = 0; i < b->funcAmt; i++) {
-        if (strcmp(b->funcs[i].name, name) == 0) {
+    for (int i = 0; i < b->ft.funcAmt; i++) {
+        if (strcmp(b->ft.funcs[i].name, name) == 0) {
             raise("Previously Defined", current().line, current().collumn);
-            return b->funcs[i].address;
+            return b->ft.funcs[i].address;
         }
     }
 
-    b->funcs[b->funcAmt].name = strdup(name);
-    b->funcs[b->funcAmt].address = b->byteIndex;
-    b->funcs[b->funcAmt].retType = ret;
-    b->funcAmt++;
+    b->ft.funcs[b->ft.funcAmt].name = strdup(name);
+    b->ft.funcs[b->ft.funcAmt].address = b->byteIndex;
+    b->ft.funcs[b->ft.funcAmt].retType = ret;
+    b->ft.funcAmt++;
 
     return b->byteIndex;
+}
+
+static uint32_t _definef(char *name, TokenType ret, uint32_t loc) {
+    isKeyword(name);
+    for (int i = 0; i < b->globalCount; i++) {
+        if (strcmp(b->globals[i].name, name) == 0) {
+            raise("Previously Defined", current().line, current().collumn);
+            return b->globals[i].slot;
+        }
+    }
+    for (int i = 0; i < b->ft.funcAmt; i++) {
+        if (strcmp(b->ft.funcs[i].name, name) == 0) {
+            raise("Previously Defined", current().line, current().collumn);
+            return b->ft.funcs[i].address;
+        }
+    }
+
+    b->ft.funcs[b->ft.funcAmt].name = strdup(name);
+    b->ft.funcs[b->ft.funcAmt].address = loc;
+    b->ft.funcs[b->ft.funcAmt].retType = ret;
+    b->ft.funcAmt++;
+
+    return loc;
 }
 
 static int resolve(char *name) {
@@ -284,9 +309,9 @@ static int resolve(char *name) {
 }
 
 static uint32_t resolvef(char *name) {
-    for (int i = 0; i < b->funcAmt; i++) {
-        if (strcmp(b->funcs[i].name, name) == 0) {
-            return b->funcs[i].address;
+    for (int i = 0; i < b->ft.funcAmt; i++) {
+        if (strcmp(b->ft.funcs[i].name, name) == 0) {
+            return b->ft.funcs[i].address;
         }
     }
 
@@ -309,15 +334,57 @@ static TokenType resolveType(char *name) {
 }
 
 static TokenType resolveTypef(char *name) {
-    for (int i = 0; i < b->funcAmt; i++) {
-        if (strcmp(b->funcs[i].name, name) == 0) {
-            return b->funcs[i].retType;
+    for (int i = 0; i < b->ft.funcAmt; i++) {
+        if (strcmp(b->ft.funcs[i].name, name) == 0) {
+            return b->ft.funcs[i].retType;
         }
     }
 
     raise("Undefined function", current().line, current().collumn);
     callAllErr();
     return UNKNOWN;
+}
+
+static uint8_t* getFileBytes(char *filename, size_t *outSize) {
+    FILE *file = fopen(filename, "rb");
+    if (!file)
+        return NULL;
+
+    fseek(file, 0, SEEK_END);
+    long size = ftell(file);
+    rewind(file);
+
+    uint8_t *data = malloc((size_t)size);
+    if (!data) {
+        fclose(file);
+        return NULL;
+    }
+
+    if (fread(data, 1, (size_t)size, file) != (size_t)size) {
+        free(data);
+        fclose(file);
+        return NULL;
+    }
+
+    fclose(file);
+
+    *outSize = (size_t)size;
+    return data;
+}
+
+static void parsePackages(char *fnames[], int fnameCount) {
+    char *fileName;
+    uint8_t *bytes;
+    size_t outsize;
+    for (int i = 0; i < fnameCount; i++) {
+        fileName = fnames[i];
+        LYPKG pkg = read_pkg(fopen(fileName, "r"));
+        
+        for (int j = 0; j < pkg.ft.funcAmt; j++) {
+            _definef(pkg.ft.funcs[j].name, pkg.ft.funcs[j].retType, pkg.ft.funcs[j].address);
+        }
+        
+    }
 }
 
 static TokenType functionCall(void) {
@@ -716,12 +783,12 @@ ByteCodeResult parse(TokenStream *ts) {
     b->pos = 0;
     b->byteIndex = 0;
     b->globalCount = 0;
-    b->funcs = malloc(sizeof(Func) * 1024);
-    b->funcAmt = 0;
+    b->ft.funcs = malloc(sizeof(Func) * 1024);
+    b->ft.funcAmt = 0;
     b->constAmt = 0;
     b->consts = malloc(sizeof(Value) * 1024);
 
-    if (!b->funcs) {
+    if (!b->ft.funcs) {
         raise("Failed to allocate function table", 0, 0);
         callAllErr();
     }
@@ -771,6 +838,8 @@ ByteCodeResult parse(TokenStream *ts) {
     }
 
     logBuildParser("Reached EOF");
+
+    // PASTE PACKAGE CODE
 
     emit(OP_FINISH); // end mark
 
