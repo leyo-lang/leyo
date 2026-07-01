@@ -90,7 +90,7 @@ Core compilation, bytecode generation, virtual machine execution, logging, confi
 
 ## Roadmap
 
-See [`TODO.md`](TODO.md) for the current work list and the rough order I want to tackle it in.
+See [`TODO.md`](TODO.md) for the current work list and contributing ideas.
 
 ## License
 
