@@ -1,37 +1,34 @@
-# TODO
+# Leyo Roadmap
 
-This is the current working list for Leyo. I’m keeping it short, concrete, and ordered by what will most improve the project for contributors.
+MAINTAINERS: UPDATE AFTER COMPLETION
 
-## High Priority
-
-- [ ] Add a real `help` command to the CLI
-- [ ] Add a `version` command with build metadata
-
-- [ ] Expand parser coverage beyond simple literals and identifiers
-- [ ] Add better runtime error messages for VM opcode failures
-- [ ] Document the bytecode header layout in a machine-readable way
-
-## Medium Priority
-
-- [ ] Add `build --debug` or `build --trace` for compiler diagnostics
-- [ ] Add `run --trace` for opcode-level VM stepping
-- [ ] Add source formatting support once syntax is stable
-- [ ] Add a minimal standard library for common language features
-- [ ] Add a proper sample program suite under `examples/`
-- [ ] Add regression tests for lexer, parser, and bytecode generation
-
-## Lower Priority
-
-- [ ] Add JSON disassembly output
-- [ ] Add a package or project manifest format
-- [ ] Add REPL improvements
-- [ ] Add command aliases for frequently used flows
-- [ ] Clean up older archive code once the new paths are fully stable
-
-## Done Or In Progress
-
-- [x] Bytecode build/run alignment
-- [x] Constant pool serialization and VM loading
-- [x] Contributor docs refresh
-- [x] CLI reference docs
-- [x] Add automated smoke tests for build/run/disassemble
+- [x] Variables
+- [x] Expressions
+- [x] Type system
+- [x] Functions
+- [ ] Scope handling
+- [ ] `if` / `else`
+- [ ] `while`
+- [ ] `repeat`
+- [ ] `break` / `continue`
+- [ ] Arrays
+- [ ] Strings
+- [ ] Memory management
+- [ ] Modules & imports
+- [ ] Standard library
+  - [ ] `std.io`
+  - [ ] `std.math`
+  - [ ] `std.string`
+  - [ ] `std.array`
+  - [ ] `std.time`
+  - [ ] `std.random`
+- [ ] Error diagnostics
+- [ ] Bytecode optimizations
+- [ ] Formatter
+- [ ] Linter
+- [ ] REPL
+- [ ] Documentation generator
+- [ ] Testing
+- [ ] Performance improvements
+- [ ] Package manager (optional)
+- [ ] v1.0 Release
