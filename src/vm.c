@@ -11,27 +11,21 @@
 #include <math.h>
 
 #define SPEED_STACK_MAX 256
-#define GLOBALS_MAX 65536
+#define GLOBALS_MAX 65535
 
 // extern struct Value;
 
 typedef struct {
     uint32_t rtnAdr;
-    Value A;
-    Value B;
-    Value R;
 } Call;
 
 typedef struct {
     uint8_t *code;
     int ip;
 
-    Value A;
-    Value B;
-    Value R;
-
-    //Value speedStack[SPEED_STACK_MAX];
-    //int speedTop;
+    Value *stack;
+    uint32_t sp;
+    uint32_t stackCap;
 
     Value globals[GLOBALS_MAX];
     
@@ -45,6 +39,18 @@ typedef struct {
 
 VM vmStd = {0};
 VM *vm;
+
+static inline void push(Value v) {
+    vm->stack[vm->sp++] = v;
+}
+
+static inline Value pop() {
+    return vm->stack[--vm->sp];
+}
+
+static inline Value peek() {
+    return vm->stack[vm->sp - 1];
+}
 
 static const char *valueToString(Value v, char *buf, size_t size) {
     switch (v.flag) {
@@ -483,6 +489,17 @@ static void checkCallStack() {
     }
 }
 
+static void checkStack() {
+    if (vm->sp >= vm->stackCap-1) {
+        vm->stackCap *= 2;
+        vm->stack = realloc(
+            vm->stack,
+            vm->stackCap * sizeof(Value)
+        );
+    }
+}
+
+
 int runVM(ByteCodeResult bc) {
     logRuntime("Starting VM execution");
     vmStd.code = bc.data;
@@ -492,6 +509,9 @@ int runVM(ByteCodeResult bc) {
     vmStd.callAmt = 0;
     vmStd.callCap = 64;
     vmStd.callStack = malloc(vmStd.callCap * sizeof(Call));
+    vmStd.sp = 0;
+    vmStd.stackCap = 64;
+    vmStd.stack = malloc(vmStd.stackCap * sizeof(Value));
     vm = &vmStd;
 
     if (bc.cb.length > 0 && bc.cb.data != NULL) {
@@ -519,32 +539,36 @@ int runVM(ByteCodeResult bc) {
         advanceByte();
 
         switch (op) {
-            case OP_PUT_A: {
-                vm->A.as.i = read16();
-                vm->A.flag = VAL_INT;
+            case OP_PUSH: {
+                push((Value){.as.i = read16(), .flag = VAL_INT});
                 break;
             }
 
-            case OP_PUT_B: {
-                vm->B.as.i = read16();
-                vm->B.flag = VAL_INT;
+            case OP_POP: {
+                pop();
                 break;
             }
 
-            case OP_PUT_S: {
-                Value tmp = vm->B;
-                vm->B = vm->A;
-                vm->A = tmp;
+            case OP_SWAP: {
+                if (vm->sp < 2) {
+                    error("stack underflow on SWAP");
+                }
+
+                Value b = pop();
+                Value a = pop();
+
+                push(b);
+                push(a);
                 break;
             }
 
-            case OP_PUT_A_R: {
-                vm->A = vm->R;
+            case OP_DUP: {
+                push(peek());
                 break;
             }
 
             case OP_PUT_B_R: {
-                vm->B = vm->R;
+                
                 break;
             }
 
@@ -574,7 +598,7 @@ int runVM(ByteCodeResult bc) {
             }
 
             case OP_STORE: {
-                vm->globals[vm->B.as.i] = vm->A;
+                vm->globals[read16()] = pop();
                 break;
             }
 
