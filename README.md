@@ -2,6 +2,16 @@
 
 Leyo is a type-safe observable permission-based bytecode language and runtime, written in C. The repository includes the lexer, parser, bytecode packer, disassembler, and VM that power the language end to end.
 
+## Download
+
+Releases can be found at the [Releases Page](https://github.com/JoshRuds/leyo/releases).
+Source code can be found there and the windows executable, the other platforms have been marked as compatible (v0.7.0+) and will just need to built with `make`. 
+
+Tested on:  
+MacOs Clang  
+Windows GCC  
+NOT LINUX TESTED PLEASE RAISE ISSUE IF NOT COMPATIBLE
+
 ## Design Philosophy
 
 Leyo is built around three core ideas.
