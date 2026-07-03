@@ -40,6 +40,10 @@ int main(int argc, char *argv[]) {
     ArgParser parser;
     argParseSetup(&parser, argv, argc);
 
+    if (isFlag(&parser, "-s") || isFlag(&parser, "--speed")) {
+        inertLogs();
+    }
+
     if (isCommand(&parser, "help")) {
         printHelp(getPositional(&parser, 0));
         return 0;
@@ -106,6 +110,8 @@ int main(int argc, char *argv[]) {
         raise("Unknown global flag", 0, 0);
         callAllErr();
     }
+
+    
 
     if (isCommand(&parser, "build")) {
         bool isScript = false;
@@ -186,6 +192,30 @@ int main(int argc, char *argv[]) {
         //();
         return 0;
 
+    } else if (isCommand(&parser, "rm")) {
+        logController("Removing items");
+        char conf = 0;
+        printf("Confirm deletion (y/N): ");
+        scanf(" %c", &conf);
+        if (!(conf == 'y' || conf == 'Y')) {
+            logController("No Removal Confimation, Exiting");
+            printf("Cancelled.\n");
+            return 0;
+        }
+        if (strcmp(getPositional(&parser, 0), "log") == 0) {
+            #ifdef _WIN32
+                system("del /Q logs\\*");
+                system("del /Q logs\\archive\\*");
+            #else
+                system("rm -f logs/* 2>/dev/null");
+                system("rm -f logs/archive/*");
+            #endif
+        } else {
+            raise("Unkown RM command", 0,0);
+            callAllErr();
+            return -1;
+        }
+        return 0;
     } else {
 
         logController("Unknown command line argument");

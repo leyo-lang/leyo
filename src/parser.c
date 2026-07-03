@@ -129,7 +129,7 @@ static void constEmit(uint8_t v) {
     constBuf.data[constBuf.length++] = v;
 }
 
-static TokenType getTypeVar() {
+static TokenType getTypeVar(void) {
     if (strcmp(current().value, "int") == 0) {return NUMBER;}
     if (strcmp(current().value, "str") == 0) {return STRING;}
     if (strcmp(current().value, "flt") == 0) {return FLT;}
@@ -172,7 +172,7 @@ static void serializeValue(Value *v) {
     }
 }
 
-static uint16_t emitConst() {
+static uint16_t emitConst(void) {
     Value v = {0};
     switch (current().type) {
         case CHR:
@@ -355,7 +355,6 @@ static TokenType parseAtom(void) { // small singular unit of expression (number,
             logBuildParser("atom is number");
             emit(OP_CONST_LOAD);
             emit16((uint16_t)emitConst());
-            emit(OP_PUT_A_R);
     
             break;
         }
@@ -364,7 +363,6 @@ static TokenType parseAtom(void) { // small singular unit of expression (number,
             logBuildParser("atom is char");
             emit(OP_CONST_LOAD);
             emit16((uint16_t)emitConst());
-            emit(OP_PUT_A_R);
     
             break;
         }
@@ -373,7 +371,6 @@ static TokenType parseAtom(void) { // small singular unit of expression (number,
             logBuildParser("atom is string");
             emit(OP_CONST_LOAD);
             emit16((uint16_t)emitConst());
-            emit(OP_PUT_A_R);
     
             break;
         }
@@ -382,7 +379,6 @@ static TokenType parseAtom(void) { // small singular unit of expression (number,
             logBuildParser("atom is float");
             emit(OP_CONST_LOAD);
             emit16((uint16_t)emitConst());
-            emit(OP_PUT_A_R);
     
             break;
         }
@@ -393,11 +389,9 @@ static TokenType parseAtom(void) { // small singular unit of expression (number,
             }
             logBuildParser("atom is ident");
             uint16_t slot = resolve(current().value);
-            emit(OP_PUT_A);
-            emit16((uint16_t)slot); // put slot into A
-            emit(OP_LOAD); // takes from slot def in A and return into r
-            emit(OP_PUT_A_R);
-            //emit(OP_SS_PUSH_A);
+            
+            emit(OP_LOAD); // takes from slot given and return into top
+            emit16((uint16_t)slot); // put slot into mem
 
             TokenType type = resolveType(current().value);
             advance();
@@ -418,26 +412,20 @@ static TokenType parseAtom(void) { // small singular unit of expression (number,
 }
 
 static TokenType parseExpression(void) {
-    TokenType ltype = parseAtom(); // result -> A
+    TokenType ltype = parseAtom(); // result -> top
 
     while (current().type == OPERATION) {
         char op = current().value[0];
 
-        emit(OP_PUT_S); // save left operand into B
-
         advance();
 
-        TokenType rtype = parseAtom(); // right operand -> A
+        TokenType rtype = parseAtom(); // right operand -> top | left -> 2nd
 
         if (ltype != rtype) {
             raise("Types in expression are conflicting", current().line, current().collumn);
             
             return UNKNOWN;
         }
-
-        emit(OP_PUT_S); // swap:
-                         // B = right
-                         // A = left
 
         switch (op) {
             case '+': emit(OP_OPERATE_ADD); break;
@@ -452,8 +440,6 @@ static TokenType parseExpression(void) {
                       current().collumn);
                 return UNKNOWN;
         }
-
-        emit(OP_PUT_A_R); // result becomes new left side
     }
     
     return ltype;
@@ -478,9 +464,8 @@ static void parseAssign(void) {
 
     parseExpressionTC(resolveType(name));
 
-    emit(OP_PUT_B);
-    emit16(slot);
     emit(OP_STORE);
+    emit16(slot);
 
     expectCurrent(SEMICOLON, "Expected ';'");
 }
@@ -511,10 +496,8 @@ static void parseVarDecl(void) {
 
     parseExpressionTC(aim);
 
-    emit(OP_PUT_B);
-    emit16(slot);
     emit(OP_STORE);
-    
+    emit16(slot);    
 
     expectCurrent(SEMICOLON, "Expected ';'");
 }
@@ -628,10 +611,12 @@ static void parseFunction(void) {
     logBuildParser("[FN] Enter function body");
 
     uint32_t reservedLoc = 0;
+    uint32_t origin = 0;
 
     if (!runNow) {
         emit(OP_JUMP);
         reservedLoc = reserve32();
+        origin = b->byteIndex;
         logBuildParser("[FN] Reserved jump patch slot");
     }
 
@@ -644,7 +629,7 @@ static void parseFunction(void) {
 
     if (!runNow) {
         logBuildParser("[FN] Patching jump address");
-        patch32(reservedLoc, b->byteIndex);
+        patch32(reservedLoc, b->byteIndex-origin);
     }
 
     advance();

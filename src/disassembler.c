@@ -19,47 +19,40 @@ static uint16_t read16(const uint8_t *code, size_t *ip) {
 
 const char* opcode_name(uint8_t op) {
     switch (op) {
-        case OP_PUT_A:       return "PUT_A";
-        case OP_PUT_B:       return "PUT_B";
-        case OP_PUT_S:       return "PUT_S";
+        case OP_PUSH:           return "PUSH";
+        case OP_POP:            return "POP";
+        case OP_DUP:            return "DUP";
+        case OP_SWAP:           return "SWAP";
+        case OP_OVER:           return "OVER";
 
-        case OP_PUT_A_R:     return "PUT_A_R";
-        case OP_PUT_B_R:     return "PUT_B_R";
+        case OP_OPERATE_MUL:    return "MUL";
+        case OP_OPERATE_DIV:    return "DIV";
+        case OP_OPERATE_ADD:    return "ADD";
+        case OP_OPERATE_SUB:    return "SUB";
+        case OP_OPERATE_EXP:    return "EXP";
 
-        case OP_OPERATE_MUL: return "MUL";
-        case OP_OPERATE_DIV: return "DIV";
-        case OP_OPERATE_ADD: return "ADD";
-        case OP_OPERATE_SUB: return "SUB";
-        case OP_OPERATE_EXP: return "EXP";
+        case OP_STORE:          return "STORE";
+        case OP_LOAD:           return "LOAD";
 
-        case OP_STORE:       return "STORE";
-        case OP_LOAD:        return "LOAD";
+        case OP_CONST_LOAD:     return "CONST_LOAD";
 
-        case OP_SS_PUSH_A:   return "SS_PUSH_A";
-        case OP_SS_PUSH_B:   return "SS_PUSH_B";
-        case OP_SS_POP:      return "SS_POP";
+        case OP_CALL_NATIVE:    return "CALL_NATIVE";
 
-        case OP_FINISH:      return "FINISH";
+        case OP_JUMP:           return "JUMP";
 
-        case OP_CONST_LOAD:  return "CONST_LOAD";
+        case OP_CALL:           return "CALL";
+        case OP_RETURN:         return "RETURN";
 
-        case OP_CALL_NATIVE: return "CALL_NATIVE";
+        case OP_FINISH:         return "FINISH";
 
-        case OP_JUMP:        return "JUMP";
-
-        case OP_CALL:        return "CALL";
-        case OP_RETURN:      return "RETURN";
-
-        default:             return "UNKNOWN";
+        default:                return "UNKNOWN";
     }
 }
 
 int opcode_has_operand(uint8_t op) {
-    switch (op)
-    {
+    switch (op) {
         case OP_CONST_LOAD:
-        case OP_PUT_A:
-        case OP_PUT_B:
+        case OP_PUSH:
             return 2;
 
         case OP_CALL_NATIVE:
