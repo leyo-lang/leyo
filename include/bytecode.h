@@ -13,7 +13,7 @@
 #define OP_OPERATE_SUB        0x14 // sub -2, -1 -> -1
 #define OP_OPERATE_EXP        0x15 // exp -2, -1 -> -1
 
-#define OP_STORE              0x21 // store A into slot B
+#define OP_STORE              0x21 // store top into slot given
 #define OP_LOAD               0x22 // load from slot given into top
 
 #define OP_CONST_LOAD         0x41 // takes slot from A and gets associated const into R

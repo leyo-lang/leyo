@@ -17,6 +17,7 @@
 
 typedef struct {
     uint32_t rtnAdr;
+    uint32_t stackPos;
 } Call;
 
 typedef struct {
@@ -52,6 +53,10 @@ static inline Value peek() {
     return vm->stack[vm->sp - 1];
 }
 
+static inline Value prev() {
+    return vm->stack[vm->sp - 2];
+}
+
 static const char *valueToString(Value v, char *buf, size_t size) {
     switch (v.flag) {
         case VAL_INT:
@@ -80,16 +85,14 @@ static const char *valueToString(Value v, char *buf, size_t size) {
 
 static void dumpState(uint8_t op) {
     char buf[512];
-    char aBuf[64];
-    char bBuf[64];
     char rBuf[64];
 
     snprintf(buf, sizeof(buf),
-        "OP=0x%02X | A=%s B=%s R=%s | ip=%d | callAmt=%d",
+        "OP=0x%02X | stackPointer=%d stackCap=%d stackTop=%s | ip=%d | callAmt=%d",
         op,
-        valueToString(vm->A, aBuf, sizeof(aBuf)),
-        valueToString(vm->B, bBuf, sizeof(bBuf)),
-        valueToString(vm->R, rBuf, sizeof(rBuf)),
+        vm->sp,
+        vm->stackCap,
+        valueToString(vm->stack[vm->sp-1], rBuf, sizeof(rBuf)),
         vm->ip,
         vm->callAmt
     );
@@ -232,250 +235,322 @@ static void freeConstPool(Value *values, int count) {
 }
 
 static void addition(void) {
-    switch (vm->A.flag) {
+    Value rhs = pop();
+    Value lhs = pop();
+
+    switch (lhs.flag) {
         case VAL_CHAR:
             raise("Char addition unsupported", vm->ip, 0);
-            callAllErr(); 
-            break;
-        
+            callAllErr();
+            return;
+
         case VAL_STR:
             raise("String addition unsupported", vm->ip, 0);
-            callAllErr(); 
-            /*vm->R.as.s = vm->A.as.s;
-            strcat(vm->R.as.s,vm->B.as.s);
-            vm->R.flag = VAL_STR;*/
-            break;
+            callAllErr();
+            return;
 
         case VAL_INT:
-            if (vm->B.flag == VAL_INT) {
-                vm->R.as.i = vm->A.as.i + vm->B.as.i;
-                vm->R.flag = VAL_INT;
-                break;
-            } else if (vm->B.flag == VAL_FLOAT) {
-                vm->R.as.f = (double)(vm->A.as.i + vm->B.as.f);
-                vm->R.flag = VAL_FLOAT;
-                break;
-            } else {
-                raise("Cannot add text type (chr+str) to number type", vm->ip, 0);
-                callAllErr();
-                break;
+            switch (rhs.flag) {
+                case VAL_INT:
+                    push((Value){
+                        .as.i = lhs.as.i + rhs.as.i,
+                        .flag = VAL_INT
+                    });
+                    return;
+
+                case VAL_FLOAT:
+                    push((Value){
+                        .as.f = lhs.as.i + rhs.as.f,
+                        .flag = VAL_FLOAT
+                    });
+                    return;
+
+                default:
+                    raise("Cannot add text type (chr+str) to number type", vm->ip, 0);
+                    callAllErr();
+                    return;
             }
-            break;
 
         case VAL_FLOAT:
-            if (vm->B.flag == VAL_INT) {
-                vm->R.as.f = (double)(vm->A.as.f + vm->B.as.i);
-                vm->R.flag = VAL_FLOAT;
-                break;
-            } else if (vm->B.flag == VAL_FLOAT) {
-                vm->R.as.f = (double)(vm->A.as.f + vm->B.as.f);
-                vm->R.flag = VAL_FLOAT;
-                break;
-            } else {
-                raise("Cannot add text type (chr+str) to number type", vm->ip, 0);
-                callAllErr();
-                break;
+            switch (rhs.flag) {
+                case VAL_INT:
+                    push((Value){
+                        .as.f = lhs.as.f + rhs.as.i,
+                        .flag = VAL_FLOAT
+                    });
+                    return;
+
+                case VAL_FLOAT:
+                    push((Value){
+                        .as.f = lhs.as.f + rhs.as.f,
+                        .flag = VAL_FLOAT
+                    });
+                    return;
+
+                default:
+                    raise("Cannot add text type (chr+str) to number type", vm->ip, 0);
+                    callAllErr();
+                    return;
             }
-            break;
 
         default:
-            break;
+            return;
     }
 }
 
 static void subtraction(void) {
-    switch (vm->A.flag) {
+    Value rhs = pop();
+    Value lhs = pop();
+
+    switch (lhs.flag) {
         case VAL_CHAR:
             raise("Char subtraction unsupported", vm->ip, 0);
-            callAllErr(); 
-            break;
-        
+            callAllErr();
+            return;
+
         case VAL_STR:
             raise("String subtraction unsupported", vm->ip, 0);
-            callAllErr(); 
-            break;
+            callAllErr();
+            return;
 
         case VAL_INT:
-            if (vm->B.flag == VAL_INT) {
-                vm->R.as.i = vm->A.as.i - vm->B.as.i;
-                vm->R.flag = VAL_INT;
-                break;
-            } else if (vm->B.flag == VAL_FLOAT) {
-                vm->R.as.f = (double)(vm->A.as.i - vm->B.as.f);
-                vm->R.flag = VAL_FLOAT;
-                break;
-            } else {
-                raise("Cannot subtract text type (chr+str) to number type", vm->ip, 0);
-                callAllErr();
-                break;
+            switch (rhs.flag) {
+                case VAL_INT:
+                    push((Value){
+                        .as.i = lhs.as.i - rhs.as.i,
+                        .flag = VAL_INT
+                    });
+                    return;
+
+                case VAL_FLOAT:
+                    push((Value){
+                        .as.f = lhs.as.i - rhs.as.f,
+                        .flag = VAL_FLOAT
+                    });
+                    return;
+
+                default:
+                    raise("Cannot subtract text type (chr+str) from number type", vm->ip, 0);
+                    callAllErr();
+                    return;
             }
-            break;
 
         case VAL_FLOAT:
-            if (vm->B.flag == VAL_INT) {
-                vm->R.as.f = (double)(vm->A.as.f - vm->B.as.i);
-                vm->R.flag = VAL_FLOAT;
-                break;
-            } else if (vm->B.flag == VAL_FLOAT) {
-                vm->R.as.f = (double)(vm->A.as.f - vm->B.as.f);
-                vm->R.flag = VAL_FLOAT;
-                break;
-            } else {
-                raise("Cannot add text type (chr+str) to number type", vm->ip, 0);
-                callAllErr();
-                break;
+            switch (rhs.flag) {
+                case VAL_INT:
+                    push((Value){
+                        .as.f = lhs.as.f - rhs.as.i,
+                        .flag = VAL_FLOAT
+                    });
+                    return;
+
+                case VAL_FLOAT:
+                    push((Value){
+                        .as.f = lhs.as.f - rhs.as.f,
+                        .flag = VAL_FLOAT
+                    });
+                    return;
+
+                default:
+                    raise("Cannot subtract text type (chr+str) from number type", vm->ip, 0);
+                    callAllErr();
+                    return;
             }
-            break;
 
         default:
-            break;
+            return;
     }
 }
 
 static void multiplication(void) {
-    switch (vm->A.flag) {
+    Value rhs = pop();
+    Value lhs = pop();
+
+    switch (lhs.flag) {
         case VAL_CHAR:
             raise("Char multiplication unsupported", vm->ip, 0);
-            callAllErr(); 
-            break;
-        
+            callAllErr();
+            return;
+
         case VAL_STR:
             raise("String multiplication unsupported", vm->ip, 0);
-            callAllErr(); 
-            break;
+            callAllErr();
+            return;
 
         case VAL_INT:
-            if (vm->B.flag == VAL_INT) {
-                vm->R.as.i = vm->A.as.i * vm->B.as.i;
-                vm->R.flag = VAL_INT;
-                break;
-            } else if (vm->B.flag == VAL_FLOAT) {
-                vm->R.as.f = (double)(vm->A.as.i * vm->B.as.f);
-                vm->R.flag = VAL_FLOAT;
-                break;
-            } else {
-                raise("Cannot multiply text type (chr+str) to number type", vm->ip, 0);
-                callAllErr();
-                break;
+            switch (rhs.flag) {
+                case VAL_INT:
+                    push((Value){
+                        .as.i = lhs.as.i * rhs.as.i,
+                        .flag = VAL_INT
+                    });
+                    return;
+
+                case VAL_FLOAT:
+                    push((Value){
+                        .as.f = lhs.as.i * rhs.as.f,
+                        .flag = VAL_FLOAT
+                    });
+                    return;
+
+                default:
+                    raise("Cannot multiply text type (chr+str) with number type", vm->ip, 0);
+                    callAllErr();
+                    return;
             }
-            break;
 
         case VAL_FLOAT:
-            if (vm->B.flag == VAL_INT) {
-                vm->R.as.f = (double)(vm->A.as.f * vm->B.as.i);
-                vm->R.flag = VAL_FLOAT;
-                break;
-            } else if (vm->B.flag == VAL_FLOAT) {
-                vm->R.as.f = (double)(vm->A.as.f * vm->B.as.f);
-                vm->R.flag = VAL_FLOAT;
-                break;
-            } else {
-                raise("Cannot multiply text type (chr+str) to number type", vm->ip, 0);
-                callAllErr();
-                break;
+            switch (rhs.flag) {
+                case VAL_INT:
+                    push((Value){
+                        .as.f = lhs.as.f * rhs.as.i,
+                        .flag = VAL_FLOAT
+                    });
+                    return;
+
+                case VAL_FLOAT:
+                    push((Value){
+                        .as.f = lhs.as.f * rhs.as.f,
+                        .flag = VAL_FLOAT
+                    });
+                    return;
+
+                default:
+                    raise("Cannot multiply text type (chr+str) with number type", vm->ip, 0);
+                    callAllErr();
+                    return;
             }
-            break;
 
         default:
-            break;
+            return;
     }
 }
 
 static void division(void) {
-    switch (vm->A.flag) {
+    Value rhs = pop();
+    Value lhs = pop();
+
+    switch (lhs.flag) {
         case VAL_CHAR:
             raise("Char division unsupported", vm->ip, 0);
-            callAllErr(); 
-            break;
-        
+            callAllErr();
+            return;
+
         case VAL_STR:
             raise("String division unsupported", vm->ip, 0);
-            callAllErr(); 
-            break;
+            callAllErr();
+            return;
 
         case VAL_INT:
-            if (vm->B.flag == VAL_INT) {
-                vm->R.as.i = vm->A.as.i / vm->B.as.i;
-                vm->R.flag = VAL_INT;
-                break;
-            } else if (vm->B.flag == VAL_FLOAT) {
-                vm->R.as.f = (double)(vm->A.as.i / vm->B.as.f);
-                vm->R.flag = VAL_FLOAT;
-                break;
-            } else {
-                raise("Cannot divide text type (chr+str) to number type", vm->ip, 0);
-                callAllErr();
-                break;
+            switch (rhs.flag) {
+                case VAL_INT:
+                    push((Value){
+                        .as.i = lhs.as.i / rhs.as.i,
+                        .flag = VAL_INT
+                    });
+                    return;
+
+                case VAL_FLOAT:
+                    push((Value){
+                        .as.f = lhs.as.i / rhs.as.f,
+                        .flag = VAL_FLOAT
+                    });
+                    return;
+
+                default:
+                    raise("Cannot divide text type (chr+str) by number type", vm->ip, 0);
+                    callAllErr();
+                    return;
             }
-            break;
 
         case VAL_FLOAT:
-            if (vm->B.flag == VAL_INT) {
-                vm->R.as.f = (double)(vm->A.as.f / vm->B.as.i);
-                vm->R.flag = VAL_FLOAT;
-                break;
-            } else if (vm->B.flag == VAL_FLOAT) {
-                vm->R.as.f = (double)(vm->A.as.f / vm->B.as.f);
-                vm->R.flag = VAL_FLOAT;
-                break;
-            } else {
-                raise("Cannot divide text type (chr+str) to number type", vm->ip, 0);
-                callAllErr();
-                break;
+            switch (rhs.flag) {
+                case VAL_INT:
+                    push((Value){
+                        .as.f = lhs.as.f / rhs.as.i,
+                        .flag = VAL_FLOAT
+                    });
+                    return;
+
+                case VAL_FLOAT:
+                    push((Value){
+                        .as.f = lhs.as.f / rhs.as.f,
+                        .flag = VAL_FLOAT
+                    });
+                    return;
+
+                default:
+                    raise("Cannot divide text type (chr+str) by number type", vm->ip, 0);
+                    callAllErr();
+                    return;
             }
-            break;
 
         default:
-            break;
+            return;
     }
 }
 
-static void power() {
-    switch (vm->A.flag) {
+static void power(void) {
+    Value rhs = pop();
+    Value lhs = pop();
+
+    switch (lhs.flag) {
         case VAL_CHAR:
-            raise("Char expodents unsupported", vm->ip, 0);
-            callAllErr(); 
-            break;
-        
+            raise("Char exponents unsupported", vm->ip, 0);
+            callAllErr();
+            return;
+
         case VAL_STR:
-            raise("String expodents unsupported", vm->ip, 0);
-            callAllErr(); 
-            break;
+            raise("String exponents unsupported", vm->ip, 0);
+            callAllErr();
+            return;
 
         case VAL_INT:
-            if (vm->B.flag == VAL_INT) {
-                vm->R.as.i = pow(vm->A.as.i , vm->B.as.i);
-                vm->R.flag = VAL_INT;
-                break;
-            } else if (vm->B.flag == VAL_FLOAT) {
-                vm->R.as.f = (double)pow(vm->A.as.i , vm->B.as.f);
-                vm->R.flag = VAL_FLOAT;
-                break;
-            } else {
-                raise("Cannot expodent text type (chr+str) to number type", vm->ip, 0);
-                callAllErr();
-                break;
+            switch (rhs.flag) {
+                case VAL_INT:
+                    push((Value){
+                        .as.i = pow(lhs.as.i, rhs.as.i),
+                        .flag = VAL_INT
+                    });
+                    return;
+
+                case VAL_FLOAT:
+                    push((Value){
+                        .as.f = pow(lhs.as.i, rhs.as.f),
+                        .flag = VAL_FLOAT
+                    });
+                    return;
+
+                default:
+                    raise("Cannot exponentiate text type (chr+str) with number type", vm->ip, 0);
+                    callAllErr();
+                    return;
             }
-            break;
 
         case VAL_FLOAT:
-            if (vm->B.flag == VAL_INT) {
-                vm->R.as.f = (double)(pow(vm->A.as.f, vm->B.as.i));
-                vm->R.flag = VAL_FLOAT;
-                break;
-            } else if (vm->B.flag == VAL_FLOAT) {
-                vm->R.as.f = (double)pow(vm->A.as.f , vm->B.as.f);
-                vm->R.flag = VAL_FLOAT;
-                break;
-            } else {
-                raise("Cannot expodent text type (chr+str) to number type", vm->ip, 0);
-                callAllErr();
-                break;
+            switch (rhs.flag) {
+                case VAL_INT:
+                    push((Value){
+                        .as.f = pow(lhs.as.f, rhs.as.i),
+                        .flag = VAL_FLOAT
+                    });
+                    return;
+
+                case VAL_FLOAT:
+                    push((Value){
+                        .as.f = pow(lhs.as.f, rhs.as.f),
+                        .flag = VAL_FLOAT
+                    });
+                    return;
+
+                default:
+                    raise("Cannot exponentiate text type (chr+str) with number type", vm->ip, 0);
+                    callAllErr();
+                    return;
             }
-            break;
 
         default:
-            break;
+            return;
     }
 }
 
@@ -567,8 +642,8 @@ int runVM(ByteCodeResult bc) {
                 break;
             }
 
-            case OP_PUT_B_R: {
-                
+            case OP_OVER: {
+                push(prev());
                 break;
             }
 
@@ -598,18 +673,26 @@ int runVM(ByteCodeResult bc) {
             }
 
             case OP_STORE: {
-                vm->globals[read16()] = pop();
-                break;
-            }
-
-            case OP_LOAD: {
-                if (vm->A.as.i < 0 || vm->A.as.i >= GLOBALS_MAX) {
+                uint16_t slot = read16();
+                if (slot < 0 || slot >= GLOBALS_MAX) {
                     raise("Global slot out of range", vm->ip, 0);
                     callAllErr();
                     freeConstPool(vmStd.consts, vmStd.constCount);
                     return 1;
                 }
-                vm->R = vm->globals[vm->A.as.i];
+                vm->globals[slot] = pop();
+                break;
+            }
+
+            case OP_LOAD: {
+                uint16_t slot = read16();
+                if (slot < 0 || slot >= GLOBALS_MAX) {
+                    raise("Global slot out of range", vm->ip, 0);
+                    callAllErr();
+                    freeConstPool(vmStd.consts, vmStd.constCount);
+                    return 1;
+                }
+                push(vm->globals[slot]);
                 break;
             }
 
@@ -623,7 +706,7 @@ int runVM(ByteCodeResult bc) {
                     return 1;
                 }
 
-                vm->R = vm->consts[constIndex];
+                push(vm->consts[constIndex]);
                 break;
             }
                 
@@ -643,20 +726,25 @@ int runVM(ByteCodeResult bc) {
             }
 
             case OP_JUMP: {
-                vm->ip = read32();
+                int32_t offset = (int32_t)read32();
+                if (offset < 0 && vm->ip < (uint32_t)(-offset)) {
+                    raise("Invalid Jump Offset", vm->ip,0);
+                    callAllErr();
+                }
+                vm->ip += offset;
                 break;
             }
 
             case OP_CALL: {
                 checkCallStack();
-                vm->callStack[vm->callAmt++] = (Call){.rtnAdr = vm->ip+4, .B = vm->B};
+                vm->callStack[vm->callAmt++] = (Call){.rtnAdr = vm->ip+4, .stackPos = vm->sp};
                 vm->ip = read32();
                 break;
             }
 
             case OP_RETURN: {
                 --vm->callAmt;
-                vm->B = vm->callStack[vm->callAmt].B;
+                vm->sp = vm->callStack[vm->callAmt].stackPos;
                 vm->ip = vm->callStack[vm->callAmt].rtnAdr;
                 break;
             }
