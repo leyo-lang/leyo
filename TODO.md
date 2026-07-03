@@ -12,7 +12,7 @@ MAINTAINERS: UPDATE AFTER COMPLETION
 - [ ] `repeat`
 - [ ] `break` / `continue`
 - [ ] Arrays
-- [ ] Strings
+- [x] Strings
 - [ ] Memory management
 - [ ] Modules & imports
 - [ ] Standard library
