@@ -17,12 +17,12 @@
 
 typedef struct {
     uint32_t rtnAdr;
-    uint32_t stackPos;
+    //uint32_t stackPos;
 } Call;
 
 typedef struct {
     uint8_t *code;
-    int ip;
+    uint32_t ip;
 
     Value *stack;
     uint32_t sp;
@@ -41,19 +41,33 @@ typedef struct {
 VM vmStd = {0};
 VM *vm;
 
+static void checkCallStack(void) {
+    if (vm->callAmt >= vm->callCap-1) {
+        vm->callCap *= 2;
+        vm->callStack = realloc(
+            vm->callStack,
+            vm->callCap * sizeof(Call)
+        );
+    }
+}
+
 static inline void push(Value v) {
+    checkCallStack();
     vm->stack[vm->sp++] = v;
 }
 
-static inline Value pop() {
+static inline Value pop(void) {
+    if (vm->sp <= 0) {raise("Underflow", vm->ip,0); callAllErr();};
     return vm->stack[--vm->sp];
 }
 
-static inline Value peek() {
+static inline Value peek(void) {
+    if (vm->sp <= 0) {raise("Underflow", vm->ip,0); callAllErr();};
     return vm->stack[vm->sp - 1];
 }
 
-static inline Value prev() {
+static inline Value prev(void) {
+    if (vm->sp <= 1) {raise("Underflow", vm->ip,0); callAllErr();};
     return vm->stack[vm->sp - 2];
 }
 
@@ -84,6 +98,9 @@ static const char *valueToString(Value v, char *buf, size_t size) {
 }
 
 static void dumpState(uint8_t op) {
+    if (vm->sp <= 0) {
+        return;
+    }
     char buf[512];
     char rBuf[64];
 
@@ -92,7 +109,7 @@ static void dumpState(uint8_t op) {
         op,
         vm->sp,
         vm->stackCap,
-        valueToString(vm->stack[vm->sp-1], rBuf, sizeof(rBuf)),
+        valueToString(peek(), rBuf, sizeof(rBuf)),
         vm->ip,
         vm->callAmt
     );
@@ -554,25 +571,7 @@ static void power(void) {
     }
 }
 
-static void checkCallStack() {
-    if (vm->callAmt >= vm->callCap-1) {
-        vm->callCap *= 2;
-        vm->callStack = realloc(
-            vm->callStack,
-            vm->callCap * sizeof(Call)
-        );
-    }
-}
 
-static void checkStack() {
-    if (vm->sp >= vm->stackCap-1) {
-        vm->stackCap *= 2;
-        vm->stack = realloc(
-            vm->stack,
-            vm->stackCap * sizeof(Value)
-        );
-    }
-}
 
 
 int runVM(ByteCodeResult bc) {
@@ -626,7 +625,8 @@ int runVM(ByteCodeResult bc) {
 
             case OP_SWAP: {
                 if (vm->sp < 2) {
-                    error("stack underflow on SWAP");
+                    raise("stack underflow on SWAP", vm->ip, 0);
+                    callAllErr();
                 }
 
                 Value b = pop();
@@ -737,14 +737,14 @@ int runVM(ByteCodeResult bc) {
 
             case OP_CALL: {
                 checkCallStack();
-                vm->callStack[vm->callAmt++] = (Call){.rtnAdr = vm->ip+4, .stackPos = vm->sp};
+                vm->callStack[vm->callAmt++] = (Call){.rtnAdr = vm->ip+4};
                 vm->ip = read32();
                 break;
             }
 
             case OP_RETURN: {
                 --vm->callAmt;
-                vm->sp = vm->callStack[vm->callAmt].stackPos;
+                //vm->sp = vm->callStack[vm->callAmt].stackPos;
                 vm->ip = vm->callStack[vm->callAmt].rtnAdr;
                 break;
             }

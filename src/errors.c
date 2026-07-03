@@ -21,6 +21,7 @@ static Error errors[100];
 static int error_count = 0;
 
 bool isErr = false;
+bool isInert = false;
 
 static FILE *logFile = NULL;
 static LogConfig logConfig = {
@@ -432,22 +433,30 @@ void closeLog(void) {
     logFile = NULL;
 }
 
+void inertLogs(void) {
+    isInert = true;
+}
+
 void logBuildLexer(const char *msg) {
+    if (isInert) {return;}
     if (!logConfig.enabled || !logConfig.build) return;
     writeTagged("[BUILD][LEXER]", msg);
 }
 
 void logBuildParser(const char *msg) {
+    if (isInert) {return;}
     if (!logConfig.enabled || !logConfig.build) return;
     writeTagged("[BUILD][PARSER]", msg);
 }
 
 void logRuntime(const char *msg) {
+    if (isInert) {return;}
     if (!logConfig.enabled || !logConfig.runtime) return;
     writeTagged("[RUNTIME]", msg);
 }
 
 void logController(const char *msg) {
+    if (isInert) {return;}
     if (!logConfig.enabled || !logConfig.controller) return;
     writeTagged("[CONTROLLER]", msg);
 }
@@ -496,6 +505,9 @@ void callAllErr(void) {
 }
 
 void initLog(const char *filename) {
+    if (isInert) {
+        return;
+    }
     const char *path = filename && filename[0] ? filename : logConfig.path;
 
     if (!logConfig.enabled) {

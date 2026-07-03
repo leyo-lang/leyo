@@ -129,7 +129,7 @@ static void constEmit(uint8_t v) {
     constBuf.data[constBuf.length++] = v;
 }
 
-static TokenType getTypeVar() {
+static TokenType getTypeVar(void) {
     if (strcmp(current().value, "int") == 0) {return NUMBER;}
     if (strcmp(current().value, "str") == 0) {return STRING;}
     if (strcmp(current().value, "flt") == 0) {return FLT;}
@@ -172,7 +172,7 @@ static void serializeValue(Value *v) {
     }
 }
 
-static uint16_t emitConst() {
+static uint16_t emitConst(void) {
     Value v = {0};
     switch (current().type) {
         case CHR:
@@ -616,7 +616,7 @@ static void parseFunction(void) {
     if (!runNow) {
         emit(OP_JUMP);
         reservedLoc = reserve32();
-        origin = b->bytebuff;
+        origin = b->byteIndex;
         logBuildParser("[FN] Reserved jump patch slot");
     }
 

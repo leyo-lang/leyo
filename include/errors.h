@@ -39,4 +39,6 @@ void logBuildParser(const char *msg);
 void logRuntime(const char *msg);
 void logController(const char *msg);
 
+void inertLogs(void);
+
 #endif
