@@ -324,7 +324,7 @@ static TokenType functionCall(void) {
     char *name = current().value;  
     logBuildParser("atom is ident func");
     emit(OP_CALL);
-    emit32(resolvef(name));
+    emit32((int32_t)(resolvef(name) - (b->byteIndex + 4)));
     expectAndPass(OPENBRAC, "Function must be opened '('");
     while (current().type != CLOSEBRAC) {
         advance();

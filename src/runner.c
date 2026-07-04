@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "../include/parser.h"
 #include "../include/vm.h"
 #include "../include/headerer.h"
 #include "../include/errors.h"
 
-int run(char *filename) {
+int run(char *filename, bool verbose) {
     {
         char buffer[256];
         snprintf(buffer, sizeof(buffer), "Run target=%s", filename);
@@ -99,7 +100,7 @@ int run(char *filename) {
 
     logRuntime("VM START");
 
-    int result = runVM(bcr);
+    int result = runVM(bcr, verbose);
 
     // IMPORTANT: only free original pointer
     free(code);

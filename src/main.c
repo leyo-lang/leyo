@@ -148,7 +148,7 @@ int main(int argc, char *argv[]) {
             callAllErr();
         }
 
-        return run(source);
+        return run(source, isFlag(&parser, "-v") || isFlag(&parser, "--verbose"));
 
     } else if (isCommand(&parser, "repl")) {
 

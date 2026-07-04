@@ -1,11 +1,11 @@
 [CONTROLLER] Logger initialized
 [CONTROLLER] LYST configuration loaded
 [CONTROLLER] logs/latest.lylog
-[CONTROLLER] Arg parser ready: command=run flags=0 options=0 positionals=1
+[CONTROLLER] Arg parser ready: command=run flags=1 options=0 positionals=1
 [CONTROLLER] Fetching Version...
 [CONTROLLER] Version Fetched.
 [CONTROLLER] Running Leyo
-[CONTROLLER] 0.6.2
+[CONTROLLER] 0.8.1
 [CONTROLLER] Initialising ArgParser
 [CONTROLLER] Initialised
 [CONTROLLER] Run target=test.lybc
@@ -14,28 +14,73 @@
 [RUNTIME] Decoding constant pool
 [RUNTIME] Constant pool decoded: 3 values
 [RUNTIME] Constant pool loaded into VM
+[RUNTIME] OP=0x61 | stackPointer=0 stackCap=64 stackTop=None | ip=0 | callAmt=0
 [RUNTIME] JUMP
+[RUNTIME] 4
+[RUNTIME] OP=0x61 | stackPointer=0 stackCap=64 stackTop=None | ip=9 | callAmt=0
 [RUNTIME] JUMP
+[RUNTIME] 10
+[RUNTIME] OP=0x61 | stackPointer=0 stackCap=64 stackTop=None | ip=24 | callAmt=0
 [RUNTIME] JUMP
+[RUNTIME] 12
+[RUNTIME] OP=0x61 | stackPointer=0 stackCap=64 stackTop=None | ip=41 | callAmt=0
 [RUNTIME] JUMP
+[RUNTIME] 18
+[RUNTIME] OP=0x61 | stackPointer=0 stackCap=64 stackTop=None | ip=64 | callAmt=0
 [RUNTIME] JUMP
+[RUNTIME] 18
+[RUNTIME] OP=0x61 | stackPointer=0 stackCap=64 stackTop=None | ip=87 | callAmt=0
 [RUNTIME] JUMP
+[RUNTIME] 12
+[RUNTIME] OP=0x61 | stackPointer=0 stackCap=64 stackTop=None | ip=104 | callAmt=0
 [RUNTIME] JUMP
+[RUNTIME] 24
+[RUNTIME] OP=0x61 | stackPointer=0 stackCap=64 stackTop=None | ip=133 | callAmt=0
 [RUNTIME] JUMP
+[RUNTIME] 24
+[RUNTIME] OP=0x61 | stackPointer=0 stackCap=64 stackTop=None | ip=162 | callAmt=0
 [RUNTIME] JUMP
+[RUNTIME] 30
+[RUNTIME] OP=0x61 | stackPointer=0 stackCap=64 stackTop=None | ip=197 | callAmt=0
 [RUNTIME] JUMP
+[RUNTIME] 10
+[RUNTIME] OP=0x61 | stackPointer=0 stackCap=64 stackTop=None | ip=212 | callAmt=0
 [RUNTIME] JUMP
+[RUNTIME] 18
+[RUNTIME] OP=0x71 | stackPointer=0 stackCap=64 stackTop=None | ip=235 | callAmt=0
 [RUNTIME] CALL
+[RUNTIME] -23
+[RUNTIME] OP=0x71 | stackPointer=0 stackCap=64 stackTop=None | ip=217 | callAmt=1
 [RUNTIME] CALL
+[RUNTIME] -20
+[RUNTIME] OP=0x71 | stackPointer=0 stackCap=64 stackTop=None | ip=202 | callAmt=2
 [RUNTIME] CALL
+[RUNTIME] -40
+[RUNTIME] OP=0x71 | stackPointer=0 stackCap=64 stackTop=None | ip=167 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -34
+[RUNTIME] OP=0x71 | stackPointer=0 stackCap=64 stackTop=None | ip=138 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -34
+[RUNTIME] OP=0x71 | stackPointer=0 stackCap=64 stackTop=None | ip=109 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -22
+[RUNTIME] OP=0x71 | stackPointer=0 stackCap=64 stackTop=None | ip=92 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -28
+[RUNTIME] OP=0x71 | stackPointer=0 stackCap=64 stackTop=None | ip=69 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -28
+[RUNTIME] OP=0x71 | stackPointer=0 stackCap=64 stackTop=None | ip=46 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -22
+[RUNTIME] OP=0x71 | stackPointer=0 stackCap=64 stackTop=None | ip=29 | callAmt=9
 [RUNTIME] CALL
+[RUNTIME] -20
+[RUNTIME] OP=0x71 | stackPointer=0 stackCap=64 stackTop=None | ip=14 | callAmt=10
 [RUNTIME] CALL
+[RUNTIME] -14
+[RUNTIME] OP=0x41 | stackPointer=0 stackCap=64 stackTop=None | ip=5 | callAmt=11
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=1 stackCap=64 stackTop=1 | ip=8 | callAmt=11
 [RUNTIME] RETURN
@@ -47,6 +92,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=3 | ip=34 | callAmt=9
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=3 | ip=5 | callAmt=10
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=1 | ip=8 | callAmt=10
@@ -57,8 +103,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=4 | ip=51 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=4 | ip=14 | callAmt=9
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=4 | ip=5 | callAmt=10
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=1 | ip=8 | callAmt=10
@@ -73,6 +121,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=7 | ip=57 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=7 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -83,10 +132,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=8 | ip=74 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=8 | ip=29 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=8 | ip=14 | callAmt=9
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=8 | ip=5 | callAmt=10
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=1 | ip=8 | callAmt=10
@@ -99,6 +151,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=3 | ip=34 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=3 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -111,8 +164,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=12 | ip=80 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=12 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=12 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -129,12 +184,16 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=15 | ip=97 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -56
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=15 | ip=46 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=15 | ip=29 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=15 | ip=14 | callAmt=9
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=15 | ip=5 | callAmt=10
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=1 | ip=8 | callAmt=10
@@ -147,6 +206,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=3 | ip=34 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=3 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -157,8 +217,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=51 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=4 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -173,6 +235,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=7 | ip=57 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=7 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -187,14 +250,19 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=23 | ip=114 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=23 | ip=69 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=23 | ip=46 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=23 | ip=29 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=23 | ip=14 | callAmt=9
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=23 | ip=5 | callAmt=10
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=1 | ip=8 | callAmt=10
@@ -207,6 +275,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=3 | ip=34 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=3 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -217,8 +286,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=51 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=4 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -233,6 +304,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=7 | ip=57 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=7 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -243,10 +315,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=74 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=29 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=8 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -259,6 +334,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -271,8 +347,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=12 | ip=80 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=12 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=12 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -291,12 +369,16 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=38 | ip=120 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -79
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=38 | ip=46 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=38 | ip=29 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=38 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=38 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -309,6 +391,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=3 | ip=34 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=3 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -319,8 +402,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=51 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=4 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -335,6 +420,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=7 | ip=57 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=7 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -347,10 +433,13 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=46 | ip=126 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -102
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=46 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=46 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=46 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -363,6 +452,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -377,18 +467,25 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=50 | ip=143 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -39
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=50 | ip=109 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=50 | ip=92 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=50 | ip=69 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=50 | ip=46 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=50 | ip=29 | callAmt=9
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=50 | ip=14 | callAmt=10
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=50 | ip=5 | callAmt=11
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=1 | ip=8 | callAmt=11
@@ -401,6 +498,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=3 | ip=34 | callAmt=9
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=3 | ip=5 | callAmt=10
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=10
@@ -411,8 +509,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=51 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=14 | callAmt=9
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=4 | ip=5 | callAmt=10
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=10
@@ -427,6 +527,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=7 | ip=57 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=7 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -437,10 +538,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=74 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=29 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=14 | callAmt=9
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=8 | ip=5 | callAmt=10
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=10
@@ -453,6 +557,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -465,8 +570,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=12 | ip=80 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=12 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=12 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -483,12 +590,16 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=97 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -56
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=46 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=29 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=14 | callAmt=9
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=15 | ip=5 | callAmt=10
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=10
@@ -501,6 +612,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -511,8 +623,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -527,6 +641,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -541,14 +656,19 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=23 | ip=114 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=23 | ip=69 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=23 | ip=46 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=23 | ip=29 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=23 | ip=14 | callAmt=9
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=23 | ip=5 | callAmt=10
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=10
@@ -561,6 +681,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -571,8 +692,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -587,6 +710,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -597,10 +721,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=74 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=29 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=8 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -613,6 +740,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -625,8 +753,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=80 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=12 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -645,12 +775,16 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=38 | ip=120 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -79
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=38 | ip=46 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=38 | ip=29 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=38 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=38 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -663,6 +797,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -673,8 +808,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -689,6 +826,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -701,10 +839,13 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=46 | ip=126 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -102
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=46 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=46 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=46 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -717,6 +858,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -733,16 +875,22 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=100 | ip=149 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -62
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=100 | ip=92 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=100 | ip=69 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=100 | ip=46 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=100 | ip=29 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=100 | ip=14 | callAmt=9
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=100 | ip=5 | callAmt=10
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=1 | ip=8 | callAmt=10
@@ -755,6 +903,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=3 | ip=34 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=3 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -765,8 +914,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=51 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=4 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -781,6 +932,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=7 | ip=57 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=7 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -791,10 +943,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=74 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=29 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=8 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -807,6 +962,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -819,8 +975,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=12 | ip=80 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=12 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=12 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -837,12 +995,16 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=97 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -56
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=46 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=29 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=15 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -855,6 +1017,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -865,8 +1028,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -881,6 +1046,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -897,14 +1063,19 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=123 | ip=155 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -91
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=123 | ip=69 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=123 | ip=46 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=123 | ip=29 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=123 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=123 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -917,6 +1088,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=3 | ip=34 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=3 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -927,8 +1099,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=51 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=4 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -943,6 +1117,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=7 | ip=57 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=7 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -953,10 +1128,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=74 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=8 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -969,6 +1147,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -981,8 +1160,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=12 | ip=80 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=12 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=12 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1003,18 +1184,25 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=138 | ip=172 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -68
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=138 | ip=109 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=138 | ip=92 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=138 | ip=69 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=138 | ip=46 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=138 | ip=29 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=138 | ip=14 | callAmt=9
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=138 | ip=5 | callAmt=10
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=1 | ip=8 | callAmt=10
@@ -1027,6 +1215,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=3 | ip=34 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=3 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -1037,8 +1226,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=51 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=4 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -1053,6 +1244,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=7 | ip=57 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=7 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1063,10 +1255,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=74 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=29 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=8 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -1079,6 +1274,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1091,8 +1287,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=12 | ip=80 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=12 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=12 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1109,12 +1307,16 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=97 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -56
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=46 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=29 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=15 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -1127,6 +1329,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1137,8 +1340,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1153,6 +1358,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1167,14 +1373,19 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=23 | ip=114 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=23 | ip=69 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=23 | ip=46 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=23 | ip=29 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=23 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=23 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -1187,6 +1398,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1197,8 +1409,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1213,6 +1427,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1223,10 +1438,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=74 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=8 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1239,6 +1457,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1251,8 +1470,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=80 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=12 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1271,12 +1492,16 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=38 | ip=120 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -79
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=38 | ip=46 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=38 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=38 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=38 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1289,6 +1514,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1299,8 +1525,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1315,6 +1543,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -1327,10 +1556,13 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=46 | ip=126 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -102
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=46 | ip=29 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=46 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=46 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1343,6 +1575,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -1359,16 +1592,22 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=188 | ip=178 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -91
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=188 | ip=92 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=188 | ip=69 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=188 | ip=46 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=188 | ip=29 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=188 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=188 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -1381,6 +1620,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=3 | ip=34 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=3 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1391,8 +1631,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=51 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=4 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1407,6 +1649,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=7 | ip=57 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=7 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1417,10 +1660,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=74 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=8 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1433,6 +1679,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1445,8 +1692,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=12 | ip=80 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=12 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=12 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1463,12 +1712,16 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=97 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -56
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=46 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=15 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1481,6 +1734,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1491,8 +1745,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1507,6 +1763,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -1523,14 +1780,19 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=211 | ip=184 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -120
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=211 | ip=69 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=211 | ip=46 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=211 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=211 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=211 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1543,6 +1805,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1553,8 +1816,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=51 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=4 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1569,6 +1834,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=7 | ip=57 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=7 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -1579,10 +1845,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=74 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=29 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=8 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1595,6 +1864,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -1607,8 +1877,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=12 | ip=80 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=12 | ip=14 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=12 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -1627,12 +1899,16 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=226 | ip=190 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -149
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=226 | ip=46 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=226 | ip=29 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=226 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=226 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1645,6 +1921,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=3 | ip=34 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=3 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -1655,8 +1932,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=51 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=14 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=4 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -1671,6 +1950,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=7 | ip=57 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=7 | ip=5 | callAmt=5
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=5
@@ -1687,22 +1967,31 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=234 | ip=222 | callAmt=1
 [RUNTIME] CALL
+[RUNTIME] -60
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=234 | ip=167 | callAmt=2
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=234 | ip=138 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=234 | ip=109 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=234 | ip=92 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=234 | ip=69 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=234 | ip=46 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=234 | ip=29 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=234 | ip=14 | callAmt=9
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=234 | ip=5 | callAmt=10
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=1 | ip=8 | callAmt=10
@@ -1715,6 +2004,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=3 | ip=34 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=3 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -1725,8 +2015,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=51 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=4 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -1741,6 +2033,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=7 | ip=57 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=7 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1751,10 +2044,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=74 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=29 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=8 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -1767,6 +2063,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1779,8 +2076,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=12 | ip=80 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=12 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=12 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1797,12 +2096,16 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=97 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -56
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=46 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=29 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=15 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -1815,6 +2118,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1825,8 +2129,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1841,6 +2147,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1855,14 +2162,19 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=23 | ip=114 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=23 | ip=69 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=23 | ip=46 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=23 | ip=29 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=23 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=23 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -1875,6 +2187,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1885,8 +2198,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1901,6 +2216,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1911,10 +2227,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=74 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=8 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1927,6 +2246,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1939,8 +2259,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=80 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=12 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1959,12 +2281,16 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=38 | ip=120 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -79
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=38 | ip=46 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=38 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=38 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=38 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -1977,6 +2303,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -1987,8 +2314,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2003,6 +2332,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -2015,10 +2345,13 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=46 | ip=126 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -102
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=46 | ip=29 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=46 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=46 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2031,6 +2364,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -2045,18 +2379,25 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=50 | ip=143 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -39
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=50 | ip=109 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=50 | ip=92 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=50 | ip=69 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=50 | ip=46 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=50 | ip=29 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=50 | ip=14 | callAmt=9
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=50 | ip=5 | callAmt=10
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=10
@@ -2069,6 +2410,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -2079,8 +2421,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -2095,6 +2439,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -2105,10 +2450,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=74 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=29 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=8 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -2121,6 +2469,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -2133,8 +2482,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=80 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=12 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -2151,12 +2502,16 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=97 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -56
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=46 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=29 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=15 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -2169,6 +2524,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -2179,8 +2535,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=51 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=4 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -2195,6 +2553,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=7 | ip=57 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=7 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2209,14 +2568,19 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=23 | ip=114 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=23 | ip=69 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=23 | ip=46 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=23 | ip=29 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=23 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=23 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -2229,6 +2593,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -2239,8 +2604,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=51 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=4 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -2255,6 +2622,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=7 | ip=57 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=7 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2265,10 +2633,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=8 | ip=74 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=8 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=8 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=8 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -2281,6 +2652,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=5 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=5 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=6 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2293,8 +2665,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=12 | ip=80 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=12 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=12 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2313,12 +2687,16 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=38 | ip=120 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -79
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=38 | ip=46 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=38 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=38 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=38 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -2331,6 +2709,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2341,8 +2720,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=51 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=4 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2357,6 +2738,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=7 | ip=57 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=7 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -2369,10 +2751,13 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=46 | ip=126 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -102
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=46 | ip=29 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=46 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=46 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2385,6 +2770,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -2401,16 +2787,22 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=100 | ip=149 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -62
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=100 | ip=92 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=100 | ip=69 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=100 | ip=46 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=100 | ip=29 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=100 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=100 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -2423,6 +2815,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -2433,8 +2826,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -2449,6 +2844,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2459,10 +2855,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=74 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=8 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -2475,6 +2874,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2487,8 +2887,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=80 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=12 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2505,12 +2907,16 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=97 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -56
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=46 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=15 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -2523,6 +2929,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2533,8 +2940,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=51 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=4 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2549,6 +2958,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=7 | ip=57 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=7 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -2565,14 +2975,19 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=123 | ip=155 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -91
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=123 | ip=69 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=123 | ip=46 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=123 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=123 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=123 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -2585,6 +3000,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2595,8 +3011,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2611,6 +3029,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -2621,10 +3040,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=74 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=29 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=8 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2637,6 +3059,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -2649,8 +3072,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=80 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=14 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=12 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -2671,18 +3096,25 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=138 | ip=172 | callAmt=2
 [RUNTIME] CALL
+[RUNTIME] -68
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=138 | ip=109 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=138 | ip=92 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=138 | ip=69 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=138 | ip=46 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=138 | ip=29 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=138 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=138 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -2695,6 +3127,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -2705,8 +3138,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -2721,6 +3156,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2731,10 +3167,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=74 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=8 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -2747,6 +3186,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2759,8 +3199,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=80 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=12 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2777,12 +3219,16 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=97 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -56
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=46 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=15 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -2795,6 +3241,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2805,8 +3252,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=51 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=4 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2821,6 +3270,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=7 | ip=57 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=7 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -2835,14 +3285,19 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=23 | ip=114 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=23 | ip=69 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=23 | ip=46 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=23 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=23 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=23 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -2855,6 +3310,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2865,8 +3321,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=51 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=4 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2881,6 +3339,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=7 | ip=57 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=7 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -2891,10 +3350,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=8 | ip=74 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=8 | ip=29 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=8 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=8 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2907,6 +3369,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=5 stackCap=64 stackTop=3 | ip=34 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=5 stackCap=64 stackTop=3 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=6 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -2919,8 +3382,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=12 | ip=80 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=12 | ip=14 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=12 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -2939,12 +3404,16 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=38 | ip=120 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -79
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=38 | ip=46 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=38 | ip=29 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=38 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=38 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -2957,6 +3426,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -2967,8 +3437,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=51 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=14 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=4 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -2983,6 +3455,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=7 | ip=57 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=7 | ip=5 | callAmt=5
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=5
@@ -2995,10 +3468,13 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=46 | ip=126 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -102
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=46 | ip=29 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=46 | ip=14 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=46 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -3011,6 +3487,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=5
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=5
@@ -3027,16 +3504,22 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=188 | ip=178 | callAmt=2
 [RUNTIME] CALL
+[RUNTIME] -91
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=188 | ip=92 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=188 | ip=69 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=188 | ip=46 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=188 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=188 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=188 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -3049,6 +3532,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3059,8 +3543,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3075,6 +3561,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -3085,10 +3572,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=74 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=29 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=8 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3101,6 +3591,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -3113,8 +3604,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=80 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=14 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=12 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -3131,12 +3624,16 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=97 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -56
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=46 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=29 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=15 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3149,6 +3646,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -3159,8 +3657,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=51 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=14 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=4 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -3175,6 +3675,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=7 | ip=57 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=7 | ip=5 | callAmt=5
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=5
@@ -3191,14 +3692,19 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=211 | ip=184 | callAmt=2
 [RUNTIME] CALL
+[RUNTIME] -120
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=211 | ip=69 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=211 | ip=46 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=211 | ip=29 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=211 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=211 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3211,6 +3717,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -3221,8 +3728,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -3237,6 +3746,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=5
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=5
@@ -3247,10 +3757,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=74 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=29 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=14 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=8 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -3263,6 +3776,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=5
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=5
@@ -3275,8 +3789,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=80 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=14 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=12 | ip=5 | callAmt=5
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=5
@@ -3295,12 +3811,16 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=226 | ip=190 | callAmt=2
 [RUNTIME] CALL
+[RUNTIME] -149
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=226 | ip=46 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=226 | ip=29 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=226 | ip=14 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=226 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -3313,6 +3833,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=5
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=5
@@ -3323,8 +3844,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=5
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=5
@@ -3339,6 +3862,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=4
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=4
@@ -3355,20 +3879,28 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=468 | ip=228 | callAmt=1
 [RUNTIME] CALL
+[RUNTIME] -95
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=468 | ip=138 | callAmt=2
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=468 | ip=109 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=468 | ip=92 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=468 | ip=69 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=468 | ip=46 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=468 | ip=29 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=468 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=468 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -3381,6 +3913,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=3 | ip=34 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=3 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -3391,8 +3924,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=51 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=4 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=4 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -3407,6 +3942,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=7 | ip=57 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=7 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3417,10 +3953,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=74 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=8 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=8 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -3433,6 +3972,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3445,8 +3985,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=12 | ip=80 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=12 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=12 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3463,12 +4005,16 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=97 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -56
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=46 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=15 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=15 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -3481,6 +4027,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3491,8 +4038,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3507,6 +4056,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -3521,14 +4071,19 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=23 | ip=114 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=23 | ip=69 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=23 | ip=46 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=23 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=23 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=23 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -3541,6 +4096,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3551,8 +4107,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3567,6 +4125,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -3577,10 +4136,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=74 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=29 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=8 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3593,6 +4155,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -3605,8 +4168,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=80 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=14 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=12 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -3625,12 +4190,16 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=38 | ip=120 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -79
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=38 | ip=46 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=38 | ip=29 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=38 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=38 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3643,6 +4212,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -3653,8 +4223,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -3669,6 +4241,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=5
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=5
@@ -3681,10 +4254,13 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=46 | ip=126 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -102
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=46 | ip=29 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=46 | ip=14 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=46 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -3697,6 +4273,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=5
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=5
@@ -3711,18 +4288,25 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=50 | ip=143 | callAmt=2
 [RUNTIME] CALL
+[RUNTIME] -39
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=50 | ip=109 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=50 | ip=92 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=50 | ip=69 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=50 | ip=46 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=50 | ip=29 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=50 | ip=14 | callAmt=8
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=50 | ip=5 | callAmt=9
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=9
@@ -3735,6 +4319,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -3745,8 +4330,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -3761,6 +4348,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3771,10 +4359,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=74 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=8 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -3787,6 +4378,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3799,8 +4391,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=80 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=12 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3817,12 +4411,16 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=97 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -56
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=46 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=15 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -3835,6 +4433,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3845,8 +4444,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=51 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=4 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3861,6 +4462,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=7 | ip=57 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=7 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -3875,14 +4477,19 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=23 | ip=114 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=23 | ip=69 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=23 | ip=46 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=23 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=23 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=23 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -3895,6 +4502,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3905,8 +4513,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=51 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=4 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3921,6 +4531,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=7 | ip=57 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=7 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -3931,10 +4542,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=8 | ip=74 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=8 | ip=29 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=8 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=8 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3947,6 +4561,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=5 stackCap=64 stackTop=3 | ip=34 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=5 stackCap=64 stackTop=3 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=6 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -3959,8 +4574,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=12 | ip=80 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=12 | ip=14 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=12 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -3979,12 +4596,16 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=38 | ip=120 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -79
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=38 | ip=46 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=38 | ip=29 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=38 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=38 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -3997,6 +4618,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -4007,8 +4629,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=51 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=14 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=4 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -4023,6 +4647,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=7 | ip=57 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=7 | ip=5 | callAmt=5
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=5
@@ -4035,10 +4660,13 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=46 | ip=126 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -102
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=46 | ip=29 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=46 | ip=14 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=46 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -4051,6 +4679,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=5
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=5
@@ -4067,16 +4696,22 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=100 | ip=149 | callAmt=2
 [RUNTIME] CALL
+[RUNTIME] -62
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=100 | ip=92 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=100 | ip=69 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=100 | ip=46 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=100 | ip=29 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=100 | ip=14 | callAmt=7
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=100 | ip=5 | callAmt=8
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=8
@@ -4089,6 +4724,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -4099,8 +4735,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -4115,6 +4753,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -4125,10 +4764,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=74 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=29 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=8 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -4141,6 +4783,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -4153,8 +4796,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=80 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=14 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=12 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -4171,12 +4816,16 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=97 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -56
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=46 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=29 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=15 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=15 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -4189,6 +4838,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -4199,8 +4849,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=51 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=4 | ip=14 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=4 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -4215,6 +4867,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=7 | ip=57 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=7 | ip=5 | callAmt=5
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=5
@@ -4231,14 +4884,19 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=123 | ip=155 | callAmt=2
 [RUNTIME] CALL
+[RUNTIME] -91
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=123 | ip=69 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -28
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=123 | ip=46 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -22
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=123 | ip=29 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=2 stackCap=64 stackTop=123 | ip=14 | callAmt=6
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=123 | ip=5 | callAmt=7
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=3 stackCap=64 stackTop=1 | ip=8 | callAmt=7
@@ -4251,6 +4909,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=3 | ip=34 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=3 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -4261,8 +4920,10 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=51 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -42
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=4 | ip=14 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=4 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -4277,6 +4938,7 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=7 | ip=57 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -57
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=7 | ip=5 | callAmt=5
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=5
@@ -4287,10 +4949,13 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=74 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -50
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=29 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -20
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=8 | ip=14 | callAmt=5
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=8 | ip=5 | callAmt=6
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=6
@@ -4303,6 +4968,7 @@
 [RUNTIME] RETURN
 [RUNTIME] OP=0x71 | stackPointer=4 stackCap=64 stackTop=3 | ip=34 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -34
 [RUNTIME] OP=0x41 | stackPointer=4 stackCap=64 stackTop=3 | ip=5 | callAmt=5
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=5 stackCap=64 stackTop=1 | ip=8 | callAmt=5
@@ -4315,8 +4981,10 @@
 [RUNTIME] ADD
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=80 | callAmt=3
 [RUNTIME] CALL
+[RUNTIME] -71
 [RUNTIME] OP=0x71 | stackPointer=3 stackCap=64 stackTop=12 | ip=14 | callAmt=4
 [RUNTIME] CALL
+[RUNTIME] -14
 [RUNTIME] OP=0x41 | stackPointer=3 stackCap=64 stackTop=12 | ip=5 | callAmt=5
 [RUNTIME] CONST_LOAD
 [RUNTIME] OP=0x72 | stackPointer=4 stackCap=64 stackTop=1 | ip=8 | callAmt=5

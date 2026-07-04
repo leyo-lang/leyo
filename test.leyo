@@ -1,0 +1,5 @@
+fnc hi() <int> {
+    rtn 2;
+}
+
+hi();

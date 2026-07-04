@@ -98,21 +98,28 @@ static const char *valueToString(Value v, char *buf, size_t size) {
 }
 
 static void dumpState(uint8_t op) {
-    if (vm->sp <= 0) {
-        return;
-    }
     char buf[512];
     char rBuf[64];
-
-    snprintf(buf, sizeof(buf),
-        "OP=0x%02X | stackPointer=%d stackCap=%d stackTop=%s | ip=%d | callAmt=%d",
-        op,
-        vm->sp,
-        vm->stackCap,
-        valueToString(peek(), rBuf, sizeof(rBuf)),
-        vm->ip,
-        vm->callAmt
-    );
+    if (vm->sp <= 0) {
+        snprintf(buf, sizeof(buf),
+            "OP=0x%02X | stackPointer=%d stackCap=%d stackTop=None | ip=%d | callAmt=%d",
+            op,
+            vm->sp,
+            vm->stackCap,
+            vm->ip,
+            vm->callAmt
+        );
+    } else {
+        snprintf(buf, sizeof(buf),
+            "OP=0x%02X | stackPointer=%d stackCap=%d stackTop=%s | ip=%d | callAmt=%d",
+            op,
+            vm->sp,
+            vm->stackCap,
+            valueToString(peek(), rBuf, sizeof(rBuf)),
+            vm->ip,
+            vm->callAmt
+        );
+    }
 
     logRuntime(buf);
 }
@@ -571,10 +578,7 @@ static void power(void) {
     }
 }
 
-
-
-
-int runVM(ByteCodeResult bc) {
+int runVM(ByteCodeResult bc, bool verbose) {
     logRuntime("Starting VM execution");
     vmStd.code = bc.data;
     vmStd.ip = 0;
@@ -604,7 +608,9 @@ int runVM(ByteCodeResult bc) {
     while (1) {
         uint8_t op = readByte();
 
-        dumpState(op);
+        if (verbose) {
+            dumpState(op);
+        }
 
         char buf[64];
         snprintf(buf, 64, "%s", opcode_name(op));
@@ -674,7 +680,7 @@ int runVM(ByteCodeResult bc) {
 
             case OP_STORE: {
                 uint16_t slot = read16();
-                if (slot < 0 || slot >= GLOBALS_MAX) {
+                if (slot >= GLOBALS_MAX) {
                     raise("Global slot out of range", vm->ip, 0);
                     callAllErr();
                     freeConstPool(vmStd.consts, vmStd.constCount);
@@ -686,7 +692,7 @@ int runVM(ByteCodeResult bc) {
 
             case OP_LOAD: {
                 uint16_t slot = read16();
-                if (slot < 0 || slot >= GLOBALS_MAX) {
+                if (slot >= GLOBALS_MAX) {
                     raise("Global slot out of range", vm->ip, 0);
                     callAllErr();
                     freeConstPool(vmStd.consts, vmStd.constCount);
@@ -731,6 +737,11 @@ int runVM(ByteCodeResult bc) {
                     raise("Invalid Jump Offset", vm->ip,0);
                     callAllErr();
                 }
+                if (verbose) {
+                    char buf[64];
+                    snprintf(buf, 64, "%d", offset);
+                    logRuntime(buf);
+                }
                 vm->ip += offset;
                 break;
             }
@@ -738,7 +749,17 @@ int runVM(ByteCodeResult bc) {
             case OP_CALL: {
                 checkCallStack();
                 vm->callStack[vm->callAmt++] = (Call){.rtnAdr = vm->ip+4};
-                vm->ip = read32();
+                int32_t offset = (int32_t)read32();
+                if (offset < 0 && vm->ip < (uint32_t)(-offset)) {
+                    raise("Invalid Jump Offset", vm->ip,0);
+                    callAllErr();
+                }
+                if (verbose) {
+                    char buf[64];
+                    snprintf(buf, 64, "%d", offset);
+                    logRuntime(buf);
+                }
+                vm->ip += offset;
                 break;
             }
 

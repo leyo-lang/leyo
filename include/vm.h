@@ -3,6 +3,6 @@
 
 #include "../include/parser.h"
 
-int runVM(ByteCodeResult); 
+int runVM(ByteCodeResult, bool); 
 
 #endif
