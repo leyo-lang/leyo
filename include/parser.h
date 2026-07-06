@@ -41,6 +41,7 @@ typedef struct {
 
     uint8_t *bytebuff;
     uint32_t byteIndex;
+    uint32_t byteCap;
 
     Global globals[65535];
     int globalCount;
