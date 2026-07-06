@@ -119,7 +119,7 @@ int main(int argc, char *argv[]) {
         char *source = getPositional(&parser, 0);
 
         if (!source) {
-            char *script = getOption(&parser, "-s");
+            char *script = getOption(&parser, "-S");
             if (script) {
                 isScript = true;
                 source = script;
@@ -148,7 +148,7 @@ int main(int argc, char *argv[]) {
             callAllErr();
         }
 
-        return run(source, isFlag(&parser, "-v") || isFlag(&parser, "--verbose"));
+        return run(source, isFlag(&parser, "-V") || isFlag(&parser, "--verbose"));
 
     } else if (isCommand(&parser, "repl")) {
 
