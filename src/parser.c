@@ -300,6 +300,12 @@ static uint32_t resolvef(char *name) {
         }
     }
 
+    if (strcmp(name, "main") == 0) {
+        raise("Undefined func (HINT: 'main' entry point required)", current().line, current().collumn);
+        callAllErr();
+        return -1;
+    }
+
     raise("Undefined func", current().line, current().collumn);
     callAllErr();
     return -1;
@@ -766,6 +772,10 @@ ByteCodeResult parse(TokenStream *ts) {
         parseStatement();
         logBuildParser("Returned from parseStatement()");
     }
+
+    // Entry Point
+    emit(OP_CALL);
+    emit32((int32_t)(resolvef("main") - (b->byteIndex + 4)));
 
     logBuildParser("Reached EOF");
 

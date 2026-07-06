@@ -37,7 +37,8 @@ typedef enum {
     M_STRING,
     M_NUMBER,
     M_IDENTIFIER,
-    M_COMMENT
+    M_COMMENT,
+    M_LINE_COMMENT
 } LexerMode;
 
 typedef struct {
@@ -95,16 +96,24 @@ static void advance(void) {
     }
 }
 
-void handleNormal(void) {
+static void handleNormal(void) {
     char c = current();
 
     logBuildLexer("Entering NORMAL mode");
 
     if (isspace(c) || c == '\n') { advance(); return; }
 
-    if (c == '~') {
-        l->mode = M_COMMENT;
-        logBuildLexer("Switching to COMMENT mode");
+    if (c == '/' && peek() == '/') {
+        l->mode = M_LINE_COMMENT;
+        logBuildLexer("Switching to LINE COMMENT mode");
+        advance();
+        advance();
+        return;
+    }
+    else if (c == '/' && peek() == '*') {
+        l->mode = M_LINE_COMMENT;
+        logBuildLexer("Switching to MULTI-LINE COMMENT mode");
+        advance();
         advance();
         return;
     } 
@@ -177,7 +186,7 @@ void handleNormal(void) {
     advance();
 }
 
-void handleString(void) {
+static void handleString(void) {
     logBuildLexer("Entering STRING mode");
 
     int buffSize = 0;
@@ -227,7 +236,7 @@ void handleString(void) {
     free(buff);
 }
 
-void handleIdentifier(void) {
+static void handleIdentifier(void) {
     logBuildLexer("Entering IDENTIFIER mode");
 
     int buffSize = 0;
@@ -271,7 +280,7 @@ void handleIdentifier(void) {
     free(buff);
 }
 
-void handleNumber(void) {
+static void handleNumber(void) {
     logBuildLexer("Entering NUMBER mode");
 
     int buffSize = 0;
@@ -327,12 +336,27 @@ void handleNumber(void) {
     free(buff);
 }
 
-void handleComment(void) {
+static void handleLineComment(void) {
     logBuildLexer("Entering COMMENT mode");
 
     while (true) {
-        if (current() == '~') {
+        if (current() == '\n') {
             l->mode = M_NORMAL;
+            advance();
+            break;
+        } else {
+            advance();
+        }
+    }
+}
+
+static void handleComment(void) {
+    logBuildLexer("Entering COMMENT mode");
+
+    while (true) {
+        if (current() == '*' && peek() == '/') {
+            l->mode = M_NORMAL;
+            advance();
             advance();
             break;
         } else {
@@ -363,6 +387,7 @@ TokenStream tokenise(char* _src) {
             case M_IDENTIFIER: handleIdentifier(); break;
             case M_NUMBER: handleNumber(); break;
             case M_COMMENT: handleComment(); break;
+            case M_LINE_COMMENT: handleLineComment(); break;
         }
     }
 

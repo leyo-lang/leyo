@@ -1,4 +1,4 @@
-~ HARD FUNCTION STRESS TEST ~
+// HARD FUNCTION STRESS TEST 
 
 fnc a() <int> {
     rtn 1;
@@ -28,7 +28,7 @@ fnc g() <int> {
     rtn f() + e() + d() + c();
 }
 
-~ deep nesting + repeated calls ~
+// deep nesting + repeated calls 
 
 fnc h() <int> {
     rtn g() + g() + f() + e();
@@ -38,19 +38,17 @@ fnc i() <int> {
     rtn h() + g() + f() + e() + d();
 }
 
-~ unreachable code + return validation ~
+// unreachable code + return validation 
 
 fnc j() <int> {
     rtn i();
 
-    ~ unreachable branch test ~
+    // unreachable branch test 
     rtn 999;
 }
 
-~ chained entry function ~
+// chained entry function 
 
 fnc main() <int> {
     rtn j() + i() + h();
 }
-
-main();
