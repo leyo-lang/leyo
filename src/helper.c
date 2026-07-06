@@ -14,7 +14,7 @@ static const HelpEntry helpEntries[] = {
     {"help", "help [query]", "Show all CLI commands or filter by a search term"},
     {"init", "init [--defaults]", "Create or rewrite .lyst configuration"},
     {"build", "build <source> [output]", "Compile Leyo source into .lybc output"},
-    {"run", "run <file.lybc>", "Execute compiled bytecode in the VM"},
+    {"run", "run <file.lybc> [-V, --verbose]", "Execute compiled bytecode in the VM"},
     {"repl", "repl", "Start the interactive evaluator"},
     {"test", "test", "Run the built-in smoke test"},
     {"disassemble", "disassemble <file.lybc> [--hex] [--head]", "Inspect bytecode in readable or hex form"},
@@ -94,6 +94,7 @@ void printHelp(const char *query) {
     puts("  --diagnostics, -D    Print build and runtime diagnostics");
     puts("");
     puts("Notes:");
+    puts("  -s and --speed can be used anywhere and disables logging for performance");
     puts("  - help uses the first positional argument as a search term");
     puts("  - init --defaults writes the default .lyst without prompting");
 }
