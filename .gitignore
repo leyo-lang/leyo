@@ -63,3 +63,4 @@ build/*.stamp
 bin/leyo
 bin/leyo.exe
 !bin/.gitkeep
+logs/latest.lylog
