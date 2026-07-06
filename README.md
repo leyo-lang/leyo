@@ -5,7 +5,7 @@ Leyo is a type-safe observable permission-based bytecode language and runtime, w
 ## Download
 
 Releases can be found at the [Releases Page](https://github.com/JoshRuds/leyo/releases).
-Source code can be found there and the windows executable, the other platforms have been marked as compatible (v0.7.0+) and will just need to built with `make`. 
+Source code can be found there and the windows executable, the other platforms have been marked as compatible (v0.7.0+) and will just need to built with `make`. Please ensure the code is on the releases page else it may not be usable and may cause errors or crash. All releases are stable unless otherwise stated (only v1.0.0+). Any code ran is at the computer owner's discretion.
 
 Tested on:  
 MacOs Clang  
