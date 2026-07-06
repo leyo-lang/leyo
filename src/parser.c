@@ -27,6 +27,15 @@ typedef enum {
 
 static void parseStatement(void);
 
+static void checkByteBuff(void) {
+    logBuildParser("Checking ByteBuff Size");
+    if (b->byteIndex >= b->byteCap - 1) {
+        logBuildParser("Doubling ByteBuff Capacity");
+        b->byteCap = b->byteCap ** 2
+        b->bytebuff = realloc(b->bytebuff, b->byteCap * sizeof(uint8_t));
+    }
+}
+
 static Token current(void) {
     return b->tokens[b->pos];
 }
@@ -86,6 +95,7 @@ static void expectAndPass(TokenType type, char *errorStr) {
 }
 
 static void emit(uint8_t value) {
+    checkByteBuff();
     if ((size_t)b->byteIndex >= sizeof(b->bytebuff)) {
         logBuildParser("Byte buffer overflow detected");
         raise("Byte buffer overflow", current().line, current().collumn);
@@ -699,6 +709,8 @@ ByteCodeResult parse(TokenStream *ts) {
     b->tokens = ts->stream;
     b->count = ts->count;
     b->pos = 0;
+    b->byteCap = 64;
+    b->byteBuff = malloc(sizeof(uint8_t) * b->byteCap);
     b->byteIndex = 0;
     b->globalCount = 0;
     b->funcs = malloc(sizeof(Func) * 1024);
@@ -820,6 +832,8 @@ ByteCodeResult parse(TokenStream *ts) {
     cb.length = amount;
     memcpy(cb.data, constsFinal, cb.length);
     res.cb = cb;
+
+    free(b->byteBuff);
     
     return res;
 }
