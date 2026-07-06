@@ -27,6 +27,15 @@ typedef enum {
 
 static void parseStatement(void);
 
+static void checkByteBuff(void) {
+    logBuildParser("Checking ByteBuff Size");
+    if (b->byteIndex >= b->byteCap - 1) {
+        logBuildParser("Doubling ByteBuff Capacity");
+        b->byteCap = b->byteCap ** 2
+        b->bytebuff = realloc(b->bytebuff, b->byteCap * sizeof(uint8_t));
+    }
+}
+
 static Token current(void) {
     return b->tokens[b->pos];
 }
