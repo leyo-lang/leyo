@@ -1,5 +1,6 @@
 #include "../include/type.h"
 #include "../include/parser.h"
+#include "../include/lexer.h"
 #include "../include/errors.h"
 #include "../include/bytecode.h"
 #include "../include/native.h"
@@ -137,6 +138,27 @@ static void patch32(uint32_t loc, uint32_t value) {
 
 static void constEmit(uint8_t v) {
     constBuf.data[constBuf.length++] = v;
+}
+
+static void addModule(const char *name) {
+    if (b->moduleAmt == b->moduleCap) {
+        b->moduleCap *= 2;
+        b->modulesLoaded = realloc(
+            b->modulesLoaded,
+            sizeof(char *) * b->moduleCap
+        );
+    }
+
+    b->modulesLoaded[b->moduleAmt++] = strdup(name);
+}
+
+static bool isModuleLoaded(const char *name) {
+    for (int i = 0; i < b->moduleAmt; i++) {
+        if (strcmp(b->modulesLoaded[i], name) == 0) {
+            return true;
+        }
+    }
+    return false;
 }
 
 static TokenType getTypeVar(void) {
@@ -658,6 +680,36 @@ static void parseFunction(void) {
     return;
 }
 
+static void parseModule(void) {
+    char *name = current().value;
+    if (isModuleLoaded(name)) {
+        expectAndPass(SEMICOLON, "No Semicolon After Statement");
+        return;
+    }
+
+    addModule(name);
+
+    char path[PATH_MAX];
+    snprintf(path, sizeof(path), "pkg/%s.leyo", name);
+    FILE *fp = fopen(path, "rb");
+    if (!fp) {
+        raise("Cannot open module", current().line, current().collumn);
+        callAllErr();
+        return;
+    }
+
+    fseek(fp, 0, SEEK_END);
+    long size = ftell(fp);
+    rewind(fp);
+
+    char *src = malloc(size + 1);
+    fread(src, 1, size, fp);
+    src[size] = '\0';
+    fclose(fp);
+
+    TokenStream ts = tokenise(src);
+    
+}
 
 static void parseStatement(void) {
     logBuildParser("Parsing statement");
@@ -688,6 +740,9 @@ static void parseStatement(void) {
                 parseVarDecl();
             } else if (strcmp(current().value, "fnc") == 0) {
                 parseFunction();
+            } else if (strcmp(current().value, "use") == 0) {
+                advance();
+                parseModule();
             } else if (peek().type == EQUALS) {
                 parseAssign();
             } else if (peek().type == OPENBRAC) {
@@ -723,6 +778,9 @@ ByteCodeResult parse(TokenStream *ts) {
     b->funcAmt = 0;
     b->constAmt = 0;
     b->consts = malloc(sizeof(Value) * 1024);
+    b->moduleCap = 8;
+    b->moduleAmt = 0;
+    b->modulesLoaded = malloc(sizeof(char *) * b->moduleCap);
 
     if (!b->funcs) {
         raise("Failed to allocate function table", 0, 0);
@@ -844,6 +902,10 @@ ByteCodeResult parse(TokenStream *ts) {
     res.cb = cb;
 
     free(b->bytebuff);
+    for (int i = 0; i < b->moduleAmt; i++) {
+        free(b->modulesLoaded[i]);
+    }
+    free(b->modulesLoaded);
     
     return res;
 }

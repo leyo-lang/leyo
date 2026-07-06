@@ -51,6 +51,10 @@ typedef struct {
 
     Func *funcs;
     int funcAmt;
+
+    char **modulesLoaded;
+    int moduleAmt;
+    int moduleCap;
 } ByteCoder;
 
 typedef struct {
