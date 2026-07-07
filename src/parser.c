@@ -709,6 +709,29 @@ static void parseModule(void) {
 
     TokenStream ts = tokenise(src);
     
+    Token *oldTokens = b->tokens;
+    uint32_t oldCount = b->count;
+    uint32_t oldPos = b->pos;
+
+    b->tokens = ts.stream;
+    b->count = ts.count;
+    b->pos = 0;
+
+    while (current().type != ENDOFSTREAM) {
+        logBuildParser("[MODULE] Entering parseStatement()");
+        parseStatement();
+        logBuildParser("[MODULE] Returned from parseStatement()");
+    }
+
+    // No OP_FINISH as more code to come
+
+    free(ts.stream);
+
+    b->tokens = oldTokens;
+    b->count = oldCount;
+    b->pos = oldPos;
+
+    expectAndPass(SEMICOLON, "No Semicolon After Statement");
 }
 
 static void parseStatement(void) {

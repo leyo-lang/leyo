@@ -1,11 +1,11 @@
 [CONTROLLER] Logger initialized
 [CONTROLLER] LYST configuration loaded
 [CONTROLLER] logs/latest.lylog
-[CONTROLLER] Arg parser ready: command=github flags=0 options=0 positionals=0
+[CONTROLLER] Arg parser ready: command=rm flags=0 options=0 positionals=1
 [CONTROLLER] Fetching Version...
 [CONTROLLER] Version Fetched.
 [CONTROLLER] Running Leyo
-[CONTROLLER] 0.8.2
+[CONTROLLER] 0.9.0
 [CONTROLLER] Initialising ArgParser
 [CONTROLLER] Initialised
-[CONTROLLER] Opening Github
+[CONTROLLER] Removing items

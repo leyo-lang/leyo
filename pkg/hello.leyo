@@ -1,0 +1,3 @@
+fnc hello() <int> {
+    rtn 1;
+}
