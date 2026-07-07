@@ -712,10 +712,13 @@ static void parseModule(void) {
     Token *oldTokens = b->tokens;
     uint32_t oldCount = b->count;
     uint32_t oldPos = b->pos;
+    char oldFuncPrefix[256];
+    snprintf(oldFuncPrefix, sizeof(oldFuncPrefix), "%s", b->funcPrefix);
 
     b->tokens = ts.stream;
     b->count = ts.count;
     b->pos = 0;
+    snprintf(b->funcPrefix, sizeof(b->funcPrefix), "%s::", name);
 
     while (current().type != ENDOFSTREAM) {
         logBuildParser("[MODULE] Entering parseStatement()");
@@ -730,6 +733,7 @@ static void parseModule(void) {
     b->tokens = oldTokens;
     b->count = oldCount;
     b->pos = oldPos;
+    snprintf(b->funcPrefix, sizeof(b->funcPrefix), "%s", oldFuncPrefix);
 
     expectAndPass(SEMICOLON, "No Semicolon After Statement");
 }

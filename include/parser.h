@@ -52,6 +52,8 @@ typedef struct {
     Func *funcs;
     int funcAmt;
 
+    char funcPrefix[256];
+
     char **modulesLoaded;
     int moduleAmt;
     int moduleCap;
