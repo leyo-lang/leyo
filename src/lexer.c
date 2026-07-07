@@ -151,6 +151,7 @@ static void handleNormal(void) {
     if (c == ']') { push(token(charToStr(c), CLOSESQUARE)); } else
     if (c == '{') { push(token(charToStr(c), OPENBRACE)); } else
     if (c == '}') { push(token(charToStr(c), CLOSEBRACE)); } else
+    if (c == ':') { push(token(charToStr(c), COLON)); } else
     if (c == '=') {
         if (peek() == '=') {
             advance();

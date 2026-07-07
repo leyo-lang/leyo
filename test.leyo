@@ -5,6 +5,6 @@ fnc hi() <int> {
 }
 
 fnc main() <int> {
-    int res = hello() + hi();
+    int res = hello::hello() + hi();
     rtn res;
 }

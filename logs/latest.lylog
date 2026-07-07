@@ -1,11 +1,52 @@
 [CONTROLLER] Logger initialized
 [CONTROLLER] LYST configuration loaded
 [CONTROLLER] logs/latest.lylog
-[CONTROLLER] Arg parser ready: command=rm flags=0 options=0 positionals=1
+[CONTROLLER] Arg parser ready: command=run flags=1 options=0 positionals=1
 [CONTROLLER] Fetching Version...
 [CONTROLLER] Version Fetched.
 [CONTROLLER] Running Leyo
 [CONTROLLER] 0.9.0
 [CONTROLLER] Initialising ArgParser
 [CONTROLLER] Initialised
-[CONTROLLER] Removing items
+[CONTROLLER] Run target=a.lybc
+[RUNTIME] VM START
+[RUNTIME] Starting VM execution
+[RUNTIME] Decoding constant pool
+[RUNTIME] Constant pool decoded: 2 values
+[RUNTIME] Constant pool loaded into VM
+[RUNTIME] OP=0x61 | stackPointer=0 stackCap=64 stackTop=None | ip=0 | callAmt=0
+[RUNTIME] JUMP
+[RUNTIME] 4
+[RUNTIME] OP=0x61 | stackPointer=0 stackCap=64 stackTop=None | ip=9 | callAmt=0
+[RUNTIME] JUMP
+[RUNTIME] 4
+[RUNTIME] OP=0x61 | stackPointer=0 stackCap=64 stackTop=None | ip=18 | callAmt=0
+[RUNTIME] JUMP
+[RUNTIME] 18
+[RUNTIME] OP=0x71 | stackPointer=0 stackCap=64 stackTop=None | ip=41 | callAmt=0
+[RUNTIME] CALL
+[RUNTIME] -23
+[RUNTIME] OP=0x71 | stackPointer=0 stackCap=64 stackTop=None | ip=23 | callAmt=1
+[RUNTIME] CALL
+[RUNTIME] -23
+[RUNTIME] OP=0x41 | stackPointer=0 stackCap=64 stackTop=None | ip=5 | callAmt=2
+[RUNTIME] CONST_LOAD
+[RUNTIME] OP=0x72 | stackPointer=1 stackCap=64 stackTop=1 | ip=8 | callAmt=2
+[RUNTIME] RETURN
+[RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=1 | ip=28 | callAmt=1
+[RUNTIME] CALL
+[RUNTIME] -19
+[RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=1 | ip=14 | callAmt=2
+[RUNTIME] CONST_LOAD
+[RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=2 | ip=17 | callAmt=2
+[RUNTIME] RETURN
+[RUNTIME] OP=0x13 | stackPointer=2 stackCap=64 stackTop=2 | ip=33 | callAmt=1
+[RUNTIME] ADD
+[RUNTIME] OP=0x21 | stackPointer=1 stackCap=64 stackTop=3 | ip=34 | callAmt=1
+[RUNTIME] STORE
+[RUNTIME] OP=0x22 | stackPointer=0 stackCap=64 stackTop=None | ip=37 | callAmt=1
+[RUNTIME] LOAD
+[RUNTIME] OP=0x72 | stackPointer=1 stackCap=64 stackTop=3 | ip=40 | callAmt=1
+[RUNTIME] RETURN
+[RUNTIME] OP=0xFF | stackPointer=1 stackCap=64 stackTop=3 | ip=46 | callAmt=0
+[RUNTIME] FINISH

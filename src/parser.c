@@ -61,6 +61,15 @@ static Token peek(void) {
     return b->tokens[b->pos+1];
 }
 
+static Token peek2(void) {
+    if (b->count-2==b->pos) {
+        logBuildParser("Too far - peeked into eos");
+        raise("Internal Parser Error: Too far - peeked into eos", current().line, current().collumn);
+        callAllErr();
+    }
+    return b->tokens[b->pos+2];
+}
+
 static void advance(void) {
     if (b->count+1==b->pos) {
         logBuildParser("Too far - advanced into eos");
@@ -300,6 +309,9 @@ static uint32_t definef(char *name, TokenType ret) {
     b->funcs[b->funcAmt].retType = ret;
     b->funcAmt++;
 
+    logBuildParser("Registered Func With Name: ");
+    logBuildParser(name);
+
     return b->byteIndex;
 }
 
@@ -358,8 +370,16 @@ static TokenType resolveTypef(char *name) {
     return UNKNOWN;
 }
 
-static TokenType functionCall(void) {
-    char *name = current().value;  
+static TokenType functionCall(bool isModuleFunction) {
+    char *cv = current().value;
+    char name[1024];
+    if (isModuleFunction) {
+        expectAndPass(COLON, "Internal Parser Error - No double colon");
+        expectCurrent(COLON, "Internal Parser Error - No double colon");
+        snprintf(name, sizeof(name), "%s::%s", cv, current().value);
+    } else {
+        snprintf(name, sizeof(name), "%s", cv);
+    }
     logBuildParser("atom is ident func");
     emit(OP_CALL);
     emit32((int32_t)(resolvef(name) - (b->byteIndex + 4)));
@@ -423,7 +443,9 @@ static TokenType parseAtom(void) { // small singular unit of expression (number,
 
         case IDENTIFIER: {
             if (peek().type == OPENBRAC) {
-                return functionCall();
+                return functionCall(false);
+            } else if (peek().type == COLON && peek2().type == COLON) {
+                return functionCall(true);
             }
             logBuildParser("atom is ident");
             uint16_t slot = resolve(current().value);
@@ -600,7 +622,9 @@ static void parseFunction(void) {
 
     logBuildParser("[FN] Parsing function name");
 
-    char *name = current().value;
+    char name[256];
+    snprintf(name, sizeof(name), "%s", current().value);
+
     expectCurrent(IDENTIFIER, "Function must be named");
 
     logBuildParser("[FN] Function name captured");
@@ -658,7 +682,9 @@ static void parseFunction(void) {
         logBuildParser("[FN] Reserved jump patch slot");
     }
 
-    definef(name, retType);
+    char nameWithPrefix[1024];
+    snprintf(nameWithPrefix, sizeof(nameWithPrefix), "%s%s", b->funcPrefix, name);
+    definef(nameWithPrefix, retType);
     logBuildParser("[FN] Function registered in symbol table");
 
     parseFuncBody(retType);
@@ -773,8 +799,11 @@ static void parseStatement(void) {
             } else if (peek().type == EQUALS) {
                 parseAssign();
             } else if (peek().type == OPENBRAC) {
-                functionCall();
+                functionCall(false);
                 consumeStatementTerminator("Function call");
+            } else if (peek().type == COLON && peek2().type == COLON) {
+                functionCall(true);
+                consumeStatementTerminator("Function call: from module");
             } else {
                 raise("Unknown identifier statement", current().line, current().collumn);
             }
@@ -803,6 +832,7 @@ ByteCodeResult parse(TokenStream *ts) {
     b->globalCount = 0;
     b->funcs = malloc(sizeof(Func) * 1024);
     b->funcAmt = 0;
+    b->funcPrefix[0] = '\0';
     b->constAmt = 0;
     b->consts = malloc(sizeof(Value) * 1024);
     b->moduleCap = 8;

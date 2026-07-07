@@ -26,6 +26,7 @@ static const char *tokenTypeName(TokenType t) {
         case CHR: return "CHAR";
         case FLT: return "FLOAT";
         case NATIVE: return "NATIVE";
+        case COLON: return "COLON";
         default: return "???";
     }
 }
