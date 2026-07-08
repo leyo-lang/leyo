@@ -707,7 +707,26 @@ static void parseFunction(void) {
 }
 
 static void parseModule(void) {
-    char *name = current().value;
+    int nameMaxLen = 8;
+    char *name = malloc(nameMaxLen * sizeof(char));
+    name[0] = '\0';
+    int needed;
+
+    do {
+        needed = strlen(name) + strlen(current().value) + 1;
+
+        if (needed >= nameMaxLen) {
+            while (needed >= nameMaxLen)
+                nameMaxLen *= 2;
+
+            name = realloc(name, nameMaxLen);
+        }
+
+        strcat(name, current().value);
+
+        advance();
+    } while (current().type != SEMICOLON);
+
     if (isModuleLoaded(name)) {
         expectAndPass(SEMICOLON, "No Semicolon After Statement");
         return;
@@ -761,7 +780,7 @@ static void parseModule(void) {
     b->pos = oldPos;
     snprintf(b->funcPrefix, sizeof(b->funcPrefix), "%s", oldFuncPrefix);
 
-    expectAndPass(SEMICOLON, "No Semicolon After Statement");
+    expectCurrent(SEMICOLON, "No Semicolon After Statement");
 }
 
 static void parseStatement(void) {

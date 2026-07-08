@@ -1,0 +1,3 @@
+fnc number() <int> {
+    rtn 2+1;
+}

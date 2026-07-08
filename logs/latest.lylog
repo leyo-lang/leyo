@@ -1,52 +1,505 @@
 [CONTROLLER] Logger initialized
 [CONTROLLER] LYST configuration loaded
 [CONTROLLER] logs/latest.lylog
-[CONTROLLER] Arg parser ready: command=run flags=1 options=0 positionals=1
+[CONTROLLER] Arg parser ready: command=build flags=0 options=0 positionals=1
 [CONTROLLER] Fetching Version...
 [CONTROLLER] Version Fetched.
 [CONTROLLER] Running Leyo
-[CONTROLLER] 0.9.0
+[CONTROLLER] 0.10.0
 [CONTROLLER] Initialising ArgParser
 [CONTROLLER] Initialised
-[CONTROLLER] Run target=a.lybc
-[RUNTIME] VM START
-[RUNTIME] Starting VM execution
-[RUNTIME] Decoding constant pool
-[RUNTIME] Constant pool decoded: 2 values
-[RUNTIME] Constant pool loaded into VM
-[RUNTIME] OP=0x61 | stackPointer=0 stackCap=64 stackTop=None | ip=0 | callAmt=0
-[RUNTIME] JUMP
-[RUNTIME] 4
-[RUNTIME] OP=0x61 | stackPointer=0 stackCap=64 stackTop=None | ip=9 | callAmt=0
-[RUNTIME] JUMP
-[RUNTIME] 4
-[RUNTIME] OP=0x61 | stackPointer=0 stackCap=64 stackTop=None | ip=18 | callAmt=0
-[RUNTIME] JUMP
-[RUNTIME] 18
-[RUNTIME] OP=0x71 | stackPointer=0 stackCap=64 stackTop=None | ip=41 | callAmt=0
-[RUNTIME] CALL
-[RUNTIME] -23
-[RUNTIME] OP=0x71 | stackPointer=0 stackCap=64 stackTop=None | ip=23 | callAmt=1
-[RUNTIME] CALL
-[RUNTIME] -23
-[RUNTIME] OP=0x41 | stackPointer=0 stackCap=64 stackTop=None | ip=5 | callAmt=2
-[RUNTIME] CONST_LOAD
-[RUNTIME] OP=0x72 | stackPointer=1 stackCap=64 stackTop=1 | ip=8 | callAmt=2
-[RUNTIME] RETURN
-[RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=1 | ip=28 | callAmt=1
-[RUNTIME] CALL
-[RUNTIME] -19
-[RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=1 | ip=14 | callAmt=2
-[RUNTIME] CONST_LOAD
-[RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=2 | ip=17 | callAmt=2
-[RUNTIME] RETURN
-[RUNTIME] OP=0x13 | stackPointer=2 stackCap=64 stackTop=2 | ip=33 | callAmt=1
-[RUNTIME] ADD
-[RUNTIME] OP=0x21 | stackPointer=1 stackCap=64 stackTop=3 | ip=34 | callAmt=1
-[RUNTIME] STORE
-[RUNTIME] OP=0x22 | stackPointer=0 stackCap=64 stackTop=None | ip=37 | callAmt=1
-[RUNTIME] LOAD
-[RUNTIME] OP=0x72 | stackPointer=1 stackCap=64 stackTop=3 | ip=40 | callAmt=1
-[RUNTIME] RETURN
-[RUNTIME] OP=0xFF | stackPointer=1 stackCap=64 stackTop=3 | ip=46 | callAmt=0
-[RUNTIME] FINISH
+[CONTROLLER] Build started
+[CONTROLLER] Input=test.leyo Output=a.lybc
+[CONTROLLER] Input file opened successfully
+[CONTROLLER] File loaded into memory
+[BUILD][LEXER] Lexer started
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to NUMBER mode
+[BUILD][LEXER] Entering NUMBER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to LINE COMMENT mode
+[BUILD][LEXER] Entering COMMENT mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to NUMBER mode
+[BUILD][LEXER] Entering NUMBER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Lexer finished
+[CONTROLLER] Tokenisation completed
+[CONTROLLER] Printing token stream
+[CONTROLLER] Finished printing token stream
+[BUILD][PARSER] Parser started
+[BUILD][PARSER] Assigning parser state
+[BUILD][PARSER] State assigned
+[BUILD][PARSER] tokens=00F67FC8
+[BUILD][PARSER] count=56
+[BUILD][PARSER] pos=0
+[BUILD][PARSER] count=56
+[BUILD][PARSER] token0.type=2
+[BUILD][PARSER] token0.value=use
+[BUILD][PARSER] About to enter while loop
+[BUILD][PARSER] Entering parseStatement()
+[BUILD][PARSER] Parsing statement
+[BUILD][LEXER] Lexer started
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to NUMBER mode
+[BUILD][LEXER] Entering NUMBER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Lexer finished
+[BUILD][PARSER] [MODULE] Entering parseStatement()
+[BUILD][PARSER] Parsing statement
+[BUILD][PARSER] [FN] Enter parseFunction()
+[BUILD][PARSER] [FN] Consumed 'fnc'
+[BUILD][PARSER] [FN] Parsing function name
+[BUILD][PARSER] [FN] Function name captured
+[BUILD][PARSER] [FN] Keyword check passed
+[BUILD][PARSER] [FN] Enter parameter list
+[BUILD][PARSER] [FN] End parameter list
+[BUILD][PARSER] [FN] Parsing return type start
+[BUILD][PARSER] [FN] Reading return type
+[BUILD][PARSER] [FN] Expecting '>'
+[BUILD][PARSER] [FN] Return type parsed successfully
+[BUILD][PARSER] [FN] Enter function body
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] [FN] Reserved jump patch slot
+[BUILD][PARSER] Registered Func With Name: 
+[BUILD][PARSER] hello::hello
+[BUILD][PARSER] [FN] Function registered in symbol table
+[BUILD][PARSER] Parsing atom
+[BUILD][PARSER] atom is number
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] [FN] Function body closed
+[BUILD][PARSER] [FN] Patching jump address
+[BUILD][PARSER] [FN] Function fully parsed
+[BUILD][PARSER] [MODULE] Returned from parseStatement()
+[BUILD][PARSER] Returned from parseStatement()
+[BUILD][PARSER] Entering parseStatement()
+[BUILD][PARSER] Parsing statement
+[BUILD][LEXER] Lexer started
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to IDENTIFIER mode
+[BUILD][LEXER] Entering IDENTIFIER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to NUMBER mode
+[BUILD][LEXER] Entering NUMBER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Switching to NUMBER mode
+[BUILD][LEXER] Entering NUMBER mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Entering NORMAL mode
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Token pushed to stream
+[BUILD][LEXER] Lexer finished
+[BUILD][PARSER] [MODULE] Entering parseStatement()
+[BUILD][PARSER] Parsing statement
+[BUILD][PARSER] [FN] Enter parseFunction()
+[BUILD][PARSER] [FN] Consumed 'fnc'
+[BUILD][PARSER] [FN] Parsing function name
+[BUILD][PARSER] [FN] Function name captured
+[BUILD][PARSER] [FN] Keyword check passed
+[BUILD][PARSER] [FN] Enter parameter list
+[BUILD][PARSER] [FN] End parameter list
+[BUILD][PARSER] [FN] Parsing return type start
+[BUILD][PARSER] [FN] Reading return type
+[BUILD][PARSER] [FN] Expecting '>'
+[BUILD][PARSER] [FN] Return type parsed successfully
+[BUILD][PARSER] [FN] Enter function body
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] [FN] Reserved jump patch slot
+[BUILD][PARSER] Registered Func With Name: 
+[BUILD][PARSER] std/test::number
+[BUILD][PARSER] [FN] Function registered in symbol table
+[BUILD][PARSER] Parsing atom
+[BUILD][PARSER] atom is number
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Parsing atom
+[BUILD][PARSER] atom is number
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] [FN] Function body closed
+[BUILD][PARSER] [FN] Patching jump address
+[BUILD][PARSER] [FN] Function fully parsed
+[BUILD][PARSER] [MODULE] Returned from parseStatement()
+[BUILD][PARSER] Returned from parseStatement()
+[BUILD][PARSER] Entering parseStatement()
+[BUILD][PARSER] Parsing statement
+[BUILD][PARSER] [FN] Enter parseFunction()
+[BUILD][PARSER] [FN] Consumed 'fnc'
+[BUILD][PARSER] [FN] Parsing function name
+[BUILD][PARSER] [FN] Function name captured
+[BUILD][PARSER] [FN] Keyword check passed
+[BUILD][PARSER] [FN] Enter parameter list
+[BUILD][PARSER] [FN] End parameter list
+[BUILD][PARSER] [FN] Parsing return type start
+[BUILD][PARSER] [FN] Reading return type
+[BUILD][PARSER] [FN] Expecting '>'
+[BUILD][PARSER] [FN] Return type parsed successfully
+[BUILD][PARSER] [FN] Enter function body
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] [FN] Reserved jump patch slot
+[BUILD][PARSER] Registered Func With Name: 
+[BUILD][PARSER] hi
+[BUILD][PARSER] [FN] Function registered in symbol table
+[BUILD][PARSER] Parsing atom
+[BUILD][PARSER] atom is number
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] [FN] Function body closed
+[BUILD][PARSER] [FN] Patching jump address
+[BUILD][PARSER] [FN] Function fully parsed
+[BUILD][PARSER] Returned from parseStatement()
+[BUILD][PARSER] Entering parseStatement()
+[BUILD][PARSER] Parsing statement
+[BUILD][PARSER] [FN] Enter parseFunction()
+[BUILD][PARSER] [FN] Consumed 'fnc'
+[BUILD][PARSER] [FN] Parsing function name
+[BUILD][PARSER] [FN] Function name captured
+[BUILD][PARSER] [FN] Keyword check passed
+[BUILD][PARSER] [FN] Enter parameter list
+[BUILD][PARSER] [FN] End parameter list
+[BUILD][PARSER] [FN] Parsing return type start
+[BUILD][PARSER] [FN] Reading return type
+[BUILD][PARSER] [FN] Expecting '>'
+[BUILD][PARSER] [FN] Return type parsed successfully
+[BUILD][PARSER] [FN] Enter function body
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] [FN] Reserved jump patch slot
+[BUILD][PARSER] Registered Func With Name: 
+[BUILD][PARSER] main
+[BUILD][PARSER] [FN] Function registered in symbol table
+[BUILD][PARSER] Parsing statement
+[BUILD][PARSER] Parsing variable declaration
+[BUILD][PARSER] Parsing atom
+[BUILD][PARSER] atom is ident func
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Parsing atom
+[BUILD][PARSER] atom is ident func
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Checking ByteBuff Size
+[BUILD][PARSER] Parsing atom
+[BUILD][PARSER] atom is ident func
+[BUILD][PARSER] Checking ByteBuff Size
+[ERROR] Line:10 Column:44 Undefined func

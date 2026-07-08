@@ -63,7 +63,7 @@ MAINTAINERS: UPDATE AFTER COMPLETION
 - [ ] Unicode identifiers
 - [ ] Escape sequences
 - [ ] Numeric literals
-- [ ] Comments
+- [x] Comments
 
 ### Parser
 - [ ] Error recovery
@@ -71,7 +71,7 @@ MAINTAINERS: UPDATE AFTER COMPLETION
 - [ ] AST validation
 
 ### Semantic Analysis
-- [ ] Undefined variable detection
+- [x] Undefined variable detection
 - [ ] Unused variable warnings
 - [ ] Type checking
 - [ ] Constant folding
@@ -107,8 +107,8 @@ MAINTAINERS: UPDATE AFTER COMPLETION
 
 ## Modules
 
-- [ ] Modules
-- [ ] Imports
+- [x] Modules
+- [x] Imports
 - [ ] Public/private visibility
 - [ ] Circular import detection
 
@@ -140,7 +140,7 @@ MAINTAINERS: UPDATE AFTER COMPLETION
 - [ ] Language Server (LSP)
 - [ ] Syntax highlighting
 - [ ] Debugger
-- [ ] Bytecode disassembler
+- [x] Bytecode disassembler
 
 ---
 
