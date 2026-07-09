@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+bool inStd = false;
+
 ConstBuffer constBuf = {0};
 
 ByteCoder bytecoder = {0};
@@ -41,7 +43,6 @@ static Token current(void) {
     return b->tokens[b->pos];
 }
 
-/*
 static Token previous(void) {
     if (b->count-1==b->pos) {
         logBuildParser("Too far - previoused into eos");
@@ -50,7 +51,6 @@ static Token previous(void) {
     }
     return b->tokens[b->pos-1];
 }
-*/
 
 static Token peek(void) {
     if (b->count-1==b->pos) {
@@ -567,6 +567,10 @@ static void parseNative(void) {
     advance(); //past @
     NativeCommand nc;
 
+    if (inStd) {
+        // if (strcmp(current().value, "_print") == 0) {nc = NAT_TRACE;} else
+        if (strcmp(current().value, "_print") == 0) {nc = NAT_PRINT; advance(); emit(OP_CONST_LOAD); emit16(emitConst());}
+    } else
     if (strcmp(current().value, "log") == 0) {nc = NAT_LOG;} else
     if (strcmp(current().value, "dump") == 0) {nc = NAT_DUMP;} else
     if (strcmp(current().value, "trace") == 0) {nc = NAT_TRACE;} else
@@ -711,6 +715,11 @@ static void parseModule(void) {
     char *name = malloc(nameMaxLen * sizeof(char));
     name[0] = '\0';
     int needed;
+    char *prefixName;
+
+    if (strcmp(current().value, "std") == 0) {
+        inStd = true;
+    }
 
     do {
         needed = strlen(name) + strlen(current().value) + 1;
@@ -725,14 +734,29 @@ static void parseModule(void) {
         strcat(name, current().value);
 
         advance();
+
+        if (current().type == IDENTIFIER && strcmp(current().value, "as") == 0) {
+            advance();
+            prefixName = malloc((strlen(current().value)+1) * sizeof(char));
+            sprintf(prefixName, "%s", current().value);
+            advance(); // onto semicolon
+            goto module;
+        }
     } while (current().type != SEMICOLON);
 
-    if (isModuleLoaded(name)) {
-        expectAndPass(SEMICOLON, "No Semicolon After Statement");
+    prefixName = malloc((strlen(previous().value)+1) * sizeof(char));
+    sprintf(prefixName, "%s", previous().value);
+
+module:
+    if (isModuleLoaded(name) || isModuleLoaded(prefixName)) {
+        raise("Module is already loaded", previous().line, previous().collumn);
+        callAllErr();
+        // expectAndPass(SEMICOLON, "No Semicolon After Statement");
         return;
     }
 
     addModule(name);
+    addModule(prefixName);
 
     char path[PATH_MAX];
     snprintf(path, sizeof(path), "pkg/%s.leyo", name);
@@ -763,7 +787,7 @@ static void parseModule(void) {
     b->tokens = ts.stream;
     b->count = ts.count;
     b->pos = 0;
-    snprintf(b->funcPrefix, sizeof(b->funcPrefix), "%s::", name);
+    snprintf(b->funcPrefix, sizeof(b->funcPrefix), "%s::", prefixName);
 
     while (current().type != ENDOFSTREAM) {
         logBuildParser("[MODULE] Entering parseStatement()");
@@ -779,6 +803,8 @@ static void parseModule(void) {
     b->count = oldCount;
     b->pos = oldPos;
     snprintf(b->funcPrefix, sizeof(b->funcPrefix), "%s", oldFuncPrefix);
+
+    inStd = false;
 
     expectCurrent(SEMICOLON, "No Semicolon After Statement");
 }

@@ -1,3 +1,4 @@
 fnc number() <int> {
-    rtn 2+1;
+    @_print "hello";
+    rtn 2+1+11;
 }

@@ -1,5 +1,5 @@
 use hello;
-use std/test;
+use std/test as test;
 
 fnc hi() <int> {
     rtn 2;

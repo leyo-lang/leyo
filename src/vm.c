@@ -97,6 +97,29 @@ static const char *valueToString(Value v, char *buf, size_t size) {
     return buf;
 }
 
+static void printValue(Value v) {
+    switch (v.flag) {
+        case VAL_INT:
+            printf("%d", v.as.i);
+            break;
+
+        case VAL_FLOAT:
+            printf("%g", v.as.f);
+            break;
+
+        case VAL_CHAR:
+            printf("%c", v.as.c);
+            break;
+
+        case VAL_STR:
+            printf("%s", v.as.s);
+            break;
+
+        default:
+            break;
+    }
+}
+
 static void dumpState(uint8_t op) {
     char buf[512];
     char rBuf[64];
@@ -722,6 +745,9 @@ int runVM(ByteCodeResult bc, bool verbose) {
                 switch (nc) {
                     case NAT_DUMP:
                         dumpState(op);
+                        break;
+                    case NAT_PRINT:
+                        printValue(pop());  
                         break;
                     default:
                         raise("Unkown Native Command", vm->ip,0);

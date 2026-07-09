@@ -131,7 +131,7 @@ static void handleNormal(void) {
         advance();
         return;
     } 
-    else if (isalpha(c)) {
+    else if (isalpha(c) || c == '_') {
         l->mode = M_IDENTIFIER;
         logBuildLexer("Switching to IDENTIFIER mode");
         return;

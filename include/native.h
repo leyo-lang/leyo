@@ -4,7 +4,8 @@
 typedef enum {
     NAT_LOG,
     NAT_DUMP,
-    NAT_TRACE
+    NAT_TRACE,
+    NAT_PRINT
 } NativeCommand;
 
 #endif
