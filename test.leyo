@@ -2,11 +2,13 @@ use hello;
 use std/test as test;
 
 fnc hi() <int> {
+    int a = 2;
     rtn 2;
 }
 
 fnc main() <int> {
     // expect 5
+    ;
     int res = hello::hello() + hi() + test::number() - 1;
     rtn res;
 }

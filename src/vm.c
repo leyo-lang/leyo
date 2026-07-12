@@ -10,13 +10,13 @@
 #include <stdint.h>
 #include <math.h>
 
-#define SPEED_STACK_MAX 256
-#define GLOBALS_MAX 65535
+#define SLOTS_MAX 65535
 
 // extern struct Value;
 
 typedef struct {
     uint32_t rtnAdr;
+    uint32_t base;   // Index of the first local (arguments start here)
     //uint32_t stackPos;
 } Call;
 
@@ -28,7 +28,7 @@ typedef struct {
     uint32_t sp;
     uint32_t stackCap;
 
-    Value globals[GLOBALS_MAX];
+    Value slots[SLOTS_MAX];
     
     Value *consts;
     int constCount;
@@ -51,8 +51,18 @@ static void checkCallStack(void) {
     }
 }
 
+static void checkStack(void) {
+    if (vm->sp >= vm->stackCap-1) {
+        vm->stackCap *= 2;
+        vm->stack = realloc(
+            vm->stack,
+            vm->stackCap * sizeof(Value)
+        );
+    }
+}
+
 static inline void push(Value v) {
-    checkCallStack();
+    checkStack();
     vm->stack[vm->sp++] = v;
 }
 
@@ -703,28 +713,40 @@ int runVM(ByteCodeResult bc, bool verbose) {
 
             case OP_STORE: {
                 uint16_t slot = read16();
-                if (slot >= GLOBALS_MAX) {
-                    raise("Global slot out of range", vm->ip, 0);
+                if (slot >= SLOTS_MAX) {
+                    raise("Slot out of range", vm->ip, 0);
                     callAllErr();
                     freeConstPool(vmStd.consts, vmStd.constCount);
                     return 1;
                 }
-                vm->globals[slot] = pop();
+                vm->slots[slot] = pop();
                 break;
             }
 
             case OP_LOAD: {
                 uint16_t slot = read16();
-                if (slot >= GLOBALS_MAX) {
-                    raise("Global slot out of range", vm->ip, 0);
+                if (slot >= SLOTS_MAX) {
+                    raise("Slot out of range", vm->ip, 0);
                     callAllErr();
                     freeConstPool(vmStd.consts, vmStd.constCount);
                     return 1;
                 }
-                push(vm->globals[slot]);
+                push(vm->slots[slot]);
+                break;
+            }
+/*
+            case OP_STORE_LOCAL: {
+                uint16_t slot = read16();
+                vm->stack[vm->callStack[vm->callAmt-1].base + slot] = pop();
                 break;
             }
 
+            case OP_LOAD_LOCAL: {
+                uint16_t slot = read16();
+                push(vm->stack[vm->callStack[vm->callAmt-1].base + slot]);
+                break;
+            }
+*/
             case OP_CONST_LOAD: {
                 uint16_t constIndex = read16();
 

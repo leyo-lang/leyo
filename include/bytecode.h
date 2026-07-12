@@ -1,7 +1,7 @@
 #ifndef BYTECODE_H
 #define BYTECODE_H
 
-#define OP_PUSH               0x01 // put onto next use stack A
+#define OP_PUSH               0x01 // put onto next use stack
 #define OP_POP                0x02 // discard top of stack
 #define OP_DUP                0x03 // duplicate top
 #define OP_SWAP               0x04 // swap top two
@@ -16,7 +16,10 @@
 #define OP_STORE              0x21 // store top into slot given
 #define OP_LOAD               0x22 // load from slot given into top
 
-#define OP_CONST_LOAD         0x41 // takes slot from A and gets associated const into R
+#define OP_STORE_LOCAL        0x23 // store top into slot given
+#define OP_LOAD_LOCAL         0x24 // load from slot given into top
+
+#define OP_CONST_LOAD         0x41 // takes slot passed and gets associated const to top
 
 #define OP_CALL_NATIVE        0x51 // calls native command 
 

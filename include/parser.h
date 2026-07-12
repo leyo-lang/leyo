@@ -2,13 +2,16 @@
 #define PARSER_H
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "../include/type.h"
 
 typedef struct {
     char *name;
     uint16_t slot;
     TokenType type;
-} Global;
+    bool isEmpty;
+    int id;
+} Slot;
 
 typedef enum {
     VAL_FLOAT,
@@ -29,9 +32,15 @@ typedef struct {
 
 typedef struct {
     char *name;
+    TokenType type;
+} Arg;
+
+typedef struct {
+    char *name;
     uint32_t address;
     TokenType retType;
-    // todo add args 
+    Arg *args;
+    uint16_t argCount;
 } Func;
 
 typedef struct {
@@ -43,8 +52,8 @@ typedef struct {
     uint32_t byteIndex;
     uint32_t byteCap;
 
-    Global globals[65535];
-    int globalCount;
+    Slot slots[65535];
+    int slotCount;
 
     Value *consts;
     int constAmt;

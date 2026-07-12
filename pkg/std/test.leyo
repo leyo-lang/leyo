@@ -1,4 +1,5 @@
-fnc number() <int> {
-    @_print "hello";
+fnc number(int a) <int> {
+    int a = 2;
+    @_print a;
     rtn 2+1+11;
 }

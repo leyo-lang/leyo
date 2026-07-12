@@ -11,6 +11,7 @@
 #include <stdint.h>
 
 bool inStd = false;
+int currentID = 0;
 
 ConstBuffer constBuf = {0};
 
@@ -29,6 +30,7 @@ typedef enum {
 // HOISTS
 
 static void parseStatement(void);
+static void parseScope(TokenType retType, bool isFunction);
 
 static void checkByteBuff(void) {
     logBuildParser("Checking ByteBuff Size");
@@ -36,6 +38,15 @@ static void checkByteBuff(void) {
         logBuildParser("Doubling ByteBuff Capacity");
         b->byteCap = b->byteCap * 2;
         b->bytebuff = realloc(b->bytebuff, b->byteCap * sizeof(uint8_t));
+    }
+}
+
+static void initSlots(Slot *slots, int count) {
+    for (int i = 0; i < count; i++) {
+        slots[i].name = NULL;
+        slots[i].slot = i;
+        slots[i].type = UNKNOWN; // or your empty/default type
+        slots[i].isEmpty = true;
     }
 }
 
@@ -262,12 +273,32 @@ static bool isKeyword(char *tc) {
     return false;
 }
 
+static void emptySlots(int beforeID) {
+    for (int i = 0; i < b->slotCount; i++) {
+        if (b->slots[i].id >= beforeID) {
+            b->slots[i].isEmpty = true;
+            b->slots[i].name = NULL;
+        }
+    }
+}
+
+static int firstFreeSlot(void) {
+    for (int i = 0; i < b->slotCount; i++) {
+        if (b->slots[i].isEmpty) {
+            return b->slots[i].slot;
+        }
+    }
+    raise("No free slots", current().line, current().collumn);
+    callAllErr();
+    return -1;
+}
+
 static int define(char *name, TokenType type) {
     isKeyword(name);
-    for (int i = 0; i < b->globalCount; i++) {
-        if (strcmp(b->globals[i].name, name) == 0) {
+    for (int i = 0; i < b->slotCount; i++) {
+        if (b->slots[i].name != NULL && strcmp(b->slots[i].name, name) == 0) {
             raise("Previously Defined", current().line, current().collumn);
-            return b->globals[i].slot;
+            return b->slots[i].slot;
         }
     }
     for (int i = 0; i < b->funcAmt; i++) {
@@ -278,23 +309,27 @@ static int define(char *name, TokenType type) {
     }
     
 
+    int slot = firstFreeSlot();
 
-    int slot = b->globalCount;
-
-    b->globals[b->globalCount].name = strdup(name);
-    b->globals[b->globalCount].slot = slot;
-    b->globals[b->globalCount].type = type;
-    b->globalCount++;
-
+    b->slots[slot].name = strdup(name);
+    b->slots[slot].slot = slot;
+    b->slots[slot].type = type;
+    b->slots[slot].isEmpty = false;
+    if (b->slotCount == slot) {
+        b->slotCount++;
+    }
+    b->slots[slot].id = currentID++;
+    
     return slot;
 }
 
-static uint32_t definef(char *name, TokenType ret) {
+static uint32_t definef(char *name, TokenType ret, Arg *args, uint16_t argCount) {
+    logBuildParser("Defining Function");
     isKeyword(name);
-    for (int i = 0; i < b->globalCount; i++) {
-        if (strcmp(b->globals[i].name, name) == 0) {
+    for (int i = 0; i < b->slotCount; i++) {
+        if (b->slots[i].name != NULL && strcmp(b->slots[i].name, name) == 0) {
             raise("Previously Defined", current().line, current().collumn);
-            return b->globals[i].slot;
+            return b->slots[i].slot;
         }
     }
     for (int i = 0; i < b->funcAmt; i++) {
@@ -307,6 +342,8 @@ static uint32_t definef(char *name, TokenType ret) {
     b->funcs[b->funcAmt].name = strdup(name);
     b->funcs[b->funcAmt].address = b->byteIndex;
     b->funcs[b->funcAmt].retType = ret;
+    b->funcs[b->funcAmt].args = args;
+    b->funcs[b->funcAmt].argCount = argCount;
     b->funcAmt++;
 
     logBuildParser("Registered Func With Name: ");
@@ -316,9 +353,9 @@ static uint32_t definef(char *name, TokenType ret) {
 }
 
 static int resolve(char *name) {
-    for (int i = 0; i < b->globalCount; i++) {
-        if (strcmp(b->globals[i].name, name) == 0) {
-            return b->globals[i].slot;
+    for (int i = 0; i < b->slotCount; i++) {
+        if (b->slots[i].name != NULL && strcmp(b->slots[i].name, name) == 0 && !b->slots[i].isEmpty) {
+            return b->slots[i].slot;
         }
     }
 
@@ -346,13 +383,13 @@ static uint32_t resolvef(char *name) {
 }
 
 static TokenType resolveType(char *name) {
-    for (int i = 0; i < b->globalCount; i++) {
-        if (strcmp(b->globals[i].name, name) == 0) {
-            return b->globals[i].type;
+    for (int i = 0; i < b->slotCount; i++) {
+        if (strcmp(b->slots[i].name, name) == 0) {
+            return b->slots[i].type;
         }
     }
 
-    raise("Undefined variable", current().line, current().collumn);
+    raise("Undefined variable (t)", current().line, current().collumn);
 
     callAllErr();
     return UNKNOWN;
@@ -569,19 +606,19 @@ static void parseNative(void) {
 
     if (inStd) {
         // if (strcmp(current().value, "_print") == 0) {nc = NAT_TRACE;} else
-        if (strcmp(current().value, "_print") == 0) {nc = NAT_PRINT; advance(); emit(OP_CONST_LOAD); emit16(emitConst());}
+        if (strcmp(current().value, "_print") == 0) {nc = NAT_PRINT; advance(); parseExpression();}
     } else
-    if (strcmp(current().value, "log") == 0) {nc = NAT_LOG;} else
-    if (strcmp(current().value, "dump") == 0) {nc = NAT_DUMP;} else
-    if (strcmp(current().value, "trace") == 0) {nc = NAT_TRACE;} else
+    if (strcmp(current().value, "log") == 0) {nc = NAT_LOG; advance();} else
+    if (strcmp(current().value, "dump") == 0) {nc = NAT_DUMP; advance();} else
+    if (strcmp(current().value, "trace") == 0) {nc = NAT_TRACE; advance();} else
     {raise("Native Function Unkown", current().line, current().collumn); callAllErr(); return;}
 
     emit(OP_CALL_NATIVE);
     emit((uint8_t)nc);
-    expectAndPass(SEMICOLON, "No semicolon after statement");    
+    expectCurrent(SEMICOLON, "No semicolon after statement");    
 }
 
-
+/*
 static void parseFuncBody(TokenType retType) {
     while (current().type != CLOSEBRACE &&
            current().type != ENDOFSTREAM) {
@@ -609,6 +646,7 @@ static void parseFuncBody(TokenType retType) {
         }
     }
 }
+*/
 
 static void parseFunction(void) {
     logBuildParser("[FN] Enter parseFunction()");
@@ -639,9 +677,28 @@ static void parseFunction(void) {
     expectCurrent(OPENBRAC, "[FN] Expect '(' for params");
     logBuildParser("[FN] Enter parameter list");
 
+    Arg *args = NULL;
+    uint16_t argCount = 0;
+
+
+
     while (current().type != CLOSEBRAC) {
         logBuildParser("[FN] Parsing param token");
+        TokenType t = getTypeVar();
         advance();
+        char *name = current().value;
+        define(name, t);
+
+        args = realloc(args, sizeof(Arg) * (argCount + 1));
+        args[argCount].name = current().value;
+        args[argCount].type = t;
+        argCount++;
+
+        advance();
+        if (current().type == COMMA) {
+            advance();
+            continue;
+        }
     }
 
     logBuildParser("[FN] End parameter list");
@@ -688,10 +745,10 @@ static void parseFunction(void) {
 
     char nameWithPrefix[1024];
     snprintf(nameWithPrefix, sizeof(nameWithPrefix), "%s%s", b->funcPrefix, name);
-    definef(nameWithPrefix, retType);
+    definef(nameWithPrefix, retType, args, argCount);
     logBuildParser("[FN] Function registered in symbol table");
 
-    parseFuncBody(retType);
+    parseScope(retType, true);
 
     logBuildParser("[FN] Function body closed");
 
@@ -861,6 +918,26 @@ static void parseStatement(void) {
     }
 }
 
+static void parseScope(TokenType retType, bool isFunction) {
+    int beforeID = currentID;
+
+    while (current().type != CLOSEBRACE &&
+           current().type != ENDOFSTREAM) {
+
+        if (isFunction && strcmp(current().value, "rtn") == 0) {
+            advance();
+            parseExpressionTC(retType);
+            emit(OP_RETURN);
+            expectCurrent(SEMICOLON, "Expected ';' after return");
+            continue;
+        }
+
+        parseStatement();
+    }
+
+    emptySlots(beforeID);
+}
+
 ByteCodeResult parse(TokenStream *ts) {
     logBuildParser("Parser started");
 
@@ -874,7 +951,7 @@ ByteCodeResult parse(TokenStream *ts) {
     b->byteCap = 64;
     b->bytebuff = malloc(sizeof(uint8_t) * b->byteCap);
     b->byteIndex = 0;
-    b->globalCount = 0;
+    b->slotCount = 65535;
     b->funcs = malloc(sizeof(Func) * 1024);
     b->funcAmt = 0;
     b->funcPrefix[0] = '\0';
@@ -883,6 +960,7 @@ ByteCodeResult parse(TokenStream *ts) {
     b->moduleCap = 8;
     b->moduleAmt = 0;
     b->modulesLoaded = malloc(sizeof(char *) * b->moduleCap);
+    initSlots(b->slots, 65535);
 
     if (!b->funcs) {
         raise("Failed to allocate function table", 0, 0);
@@ -925,13 +1003,9 @@ ByteCodeResult parse(TokenStream *ts) {
         logBuildParser(buf);
     }
 
-    logBuildParser("About to enter while loop");
+    logBuildParser("Entering global scope");
 
-    while (current().type != ENDOFSTREAM) {
-        logBuildParser("Entering parseStatement()");
-        parseStatement();
-        logBuildParser("Returned from parseStatement()");
-    }
+    parseScope(UNKNOWN, false);
 
     // Entry Point
     emit(OP_CALL);
