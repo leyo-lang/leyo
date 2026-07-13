@@ -45,8 +45,8 @@ all: dirs version.h $(TARGET)
 
 dirs:
 ifeq ($(OS),Windows_NT)
-	@if not exist "$(BUILD_DIR)" mkdir "$(BUILD_DIR)"
-	@if not exist "$(BIN_DIR)" mkdir "$(BIN_DIR)"
+	@mkdir "$(BUILD_DIR)" 2>NUL || exit 0
+	@mkdir "$(BIN_DIR)" 2>NUL || exit 0
 else
 	mkdir -p $(BUILD_DIR) $(BIN_DIR)
 endif
