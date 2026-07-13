@@ -1,11 +1,11 @@
 [CONTROLLER] Logger initialized
 [CONTROLLER] LYST configuration loaded
 [CONTROLLER] logs/latest.lylog
-[CONTROLLER] Arg parser ready: command=run flags=1 options=0 positionals=1
+[CONTROLLER] Arg parser ready: command=run flags=0 options=0 positionals=1
 [CONTROLLER] Fetching Version...
 [CONTROLLER] Version Fetched.
 [CONTROLLER] Running Leyo
-[CONTROLLER] 0.10.1
+[CONTROLLER] 0.10.2
 [CONTROLLER] Initialising ArgParser
 [CONTROLLER] Initialised
 [CONTROLLER] Run target=a.lybc
@@ -14,67 +14,31 @@
 [RUNTIME] Decoding constant pool
 [RUNTIME] Constant pool decoded: 7 values
 [RUNTIME] Constant pool loaded into VM
-[RUNTIME] OP=0x61 | stackPointer=0 stackCap=64 stackTop=None | ip=0 | callAmt=0
 [RUNTIME] JUMP
-[RUNTIME] 4
-[RUNTIME] OP=0x61 | stackPointer=0 stackCap=64 stackTop=None | ip=9 | callAmt=0
 [RUNTIME] JUMP
-[RUNTIME] 17
-[RUNTIME] OP=0x61 | stackPointer=0 stackCap=64 stackTop=None | ip=31 | callAmt=0
 [RUNTIME] JUMP
-[RUNTIME] 4
-[RUNTIME] OP=0x61 | stackPointer=0 stackCap=64 stackTop=None | ip=40 | callAmt=0
 [RUNTIME] JUMP
-[RUNTIME] 28
-[RUNTIME] OP=0x71 | stackPointer=0 stackCap=64 stackTop=None | ip=73 | callAmt=0
 [RUNTIME] CALL
-[RUNTIME] -33
-[RUNTIME] OP=0x71 | stackPointer=0 stackCap=64 stackTop=None | ip=45 | callAmt=1
 [RUNTIME] CALL
-[RUNTIME] -45
-[RUNTIME] OP=0x41 | stackPointer=0 stackCap=64 stackTop=None | ip=5 | callAmt=2
 [RUNTIME] CONST_LOAD
-[RUNTIME] OP=0x72 | stackPointer=1 stackCap=64 stackTop=1 | ip=8 | callAmt=2
 [RUNTIME] RETURN
-[RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=1 | ip=50 | callAmt=1
 [RUNTIME] CALL
-[RUNTIME] -19
-[RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=1 | ip=36 | callAmt=2
 [RUNTIME] CONST_LOAD
-[RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=2 | ip=39 | callAmt=2
 [RUNTIME] RETURN
-[RUNTIME] OP=0x13 | stackPointer=2 stackCap=64 stackTop=2 | ip=55 | callAmt=1
 [RUNTIME] ADD
-[RUNTIME] OP=0x71 | stackPointer=1 stackCap=64 stackTop=3 | ip=56 | callAmt=1
 [RUNTIME] CALL
-[RUNTIME] -47
-[RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=3 | ip=14 | callAmt=2
 [RUNTIME] CONST_LOAD
-[RUNTIME] OP=0x51 | stackPointer=2 stackCap=64 stackTop="hello" | ip=17 | callAmt=2
 [RUNTIME] CALL_NATIVE
-[RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=3 | ip=19 | callAmt=2
 [RUNTIME] CONST_LOAD
-[RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=2 | ip=22 | callAmt=2
 [RUNTIME] CONST_LOAD
-[RUNTIME] OP=0x13 | stackPointer=3 stackCap=64 stackTop=1 | ip=25 | callAmt=2
 [RUNTIME] ADD
-[RUNTIME] OP=0x41 | stackPointer=2 stackCap=64 stackTop=3 | ip=26 | callAmt=2
 [RUNTIME] CONST_LOAD
-[RUNTIME] OP=0x13 | stackPointer=3 stackCap=64 stackTop=11 | ip=29 | callAmt=2
 [RUNTIME] ADD
-[RUNTIME] OP=0x72 | stackPointer=2 stackCap=64 stackTop=14 | ip=30 | callAmt=2
 [RUNTIME] RETURN
-[RUNTIME] OP=0x13 | stackPointer=2 stackCap=64 stackTop=14 | ip=61 | callAmt=1
 [RUNTIME] ADD
-[RUNTIME] OP=0x41 | stackPointer=1 stackCap=64 stackTop=17 | ip=62 | callAmt=1
 [RUNTIME] CONST_LOAD
-[RUNTIME] OP=0x14 | stackPointer=2 stackCap=64 stackTop=1 | ip=65 | callAmt=1
 [RUNTIME] SUB
-[RUNTIME] OP=0x21 | stackPointer=1 stackCap=64 stackTop=16 | ip=66 | callAmt=1
 [RUNTIME] STORE
-[RUNTIME] OP=0x22 | stackPointer=0 stackCap=64 stackTop=None | ip=69 | callAmt=1
 [RUNTIME] LOAD
-[RUNTIME] OP=0x72 | stackPointer=1 stackCap=64 stackTop=16 | ip=72 | callAmt=1
 [RUNTIME] RETURN
-[RUNTIME] OP=0xFF | stackPointer=1 stackCap=64 stackTop=16 | ip=78 | callAmt=0
 [RUNTIME] FINISH

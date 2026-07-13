@@ -22,6 +22,6 @@ int repl(void) {
 
         res = parse(&tokens);
 
-        runVM(res);
+        runVM(res, false);
     }
 }
