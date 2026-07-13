@@ -84,13 +84,18 @@ jobs:
 
       - name: Build (Windows)
         if: runner.os == 'Windows'
-        shell: cmd
+        shell: msys2 {0}
         run: |
           make clean
-          make CC=${{ matrix.cc }} CFLAGS="${{ matrix.cflags }}"
-          mkdir release
-          copy bin\leyo${{ matrix.ext }} release\leyo-${{ matrix.platform }}-${{ matrix.arch }}${{ matrix.ext }}
 
+          make \
+            CC=${{ matrix.cc }} \
+            CFLAGS="${{ matrix.cflags }}"
+
+          mkdir -p release
+
+          cp bin/leyo${{ matrix.ext }} \
+            release/leyo-${{ matrix.platform }}-${{ matrix.arch }}${{ matrix.ext }}
       - name: Build (Linux/macOS)
         if: runner.os != 'Windows'
         shell: bash
