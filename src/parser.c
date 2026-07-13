@@ -1,5 +1,6 @@
 #include "../include/type.h"
 #include "../include/parser.h"
+#include "../include/lexer.h"
 #include "../include/errors.h"
 #include "../include/bytecode.h"
 #include "../include/native.h"
@@ -8,6 +9,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+
+bool inStd = false;
 
 ConstBuffer constBuf = {0};
 
@@ -40,7 +43,6 @@ static Token current(void) {
     return b->tokens[b->pos];
 }
 
-/*
 static Token previous(void) {
     if (b->count-1==b->pos) {
         logBuildParser("Too far - previoused into eos");
@@ -49,7 +51,6 @@ static Token previous(void) {
     }
     return b->tokens[b->pos-1];
 }
-*/
 
 static Token peek(void) {
     if (b->count-1==b->pos) {
@@ -58,6 +59,15 @@ static Token peek(void) {
         callAllErr();
     }
     return b->tokens[b->pos+1];
+}
+
+static Token peek2(void) {
+    if (b->count-2==b->pos) {
+        logBuildParser("Too far - peeked into eos");
+        raise("Internal Parser Error: Too far - peeked into eos", current().line, current().collumn);
+        callAllErr();
+    }
+    return b->tokens[b->pos+2];
 }
 
 static void advance(void) {
@@ -137,6 +147,27 @@ static void patch32(uint32_t loc, uint32_t value) {
 
 static void constEmit(uint8_t v) {
     constBuf.data[constBuf.length++] = v;
+}
+
+static void addModule(const char *name) {
+    if (b->moduleAmt == b->moduleCap) {
+        b->moduleCap *= 2;
+        b->modulesLoaded = realloc(
+            b->modulesLoaded,
+            sizeof(char *) * b->moduleCap
+        );
+    }
+
+    b->modulesLoaded[b->moduleAmt++] = strdup(name);
+}
+
+static bool isModuleLoaded(const char *name) {
+    for (int i = 0; i < b->moduleAmt; i++) {
+        if (strcmp(b->modulesLoaded[i], name) == 0) {
+            return true;
+        }
+    }
+    return false;
 }
 
 static TokenType getTypeVar(void) {
@@ -278,6 +309,9 @@ static uint32_t definef(char *name, TokenType ret) {
     b->funcs[b->funcAmt].retType = ret;
     b->funcAmt++;
 
+    logBuildParser("Registered Func With Name: ");
+    logBuildParser(name);
+
     return b->byteIndex;
 }
 
@@ -336,8 +370,16 @@ static TokenType resolveTypef(char *name) {
     return UNKNOWN;
 }
 
-static TokenType functionCall(void) {
-    char *name = current().value;  
+static TokenType functionCall(bool isModuleFunction) {
+    char *cv = current().value;
+    char name[1024];
+    if (isModuleFunction) {
+        expectAndPass(COLON, "Internal Parser Error - No double colon");
+        expectCurrent(COLON, "Internal Parser Error - No double colon");
+        snprintf(name, sizeof(name), "%s::%s", cv, current().value);
+    } else {
+        snprintf(name, sizeof(name), "%s", cv);
+    }
     logBuildParser("atom is ident func");
     emit(OP_CALL);
     emit32((int32_t)(resolvef(name) - (b->byteIndex + 4)));
@@ -401,7 +443,9 @@ static TokenType parseAtom(void) { // small singular unit of expression (number,
 
         case IDENTIFIER: {
             if (peek().type == OPENBRAC) {
-                return functionCall();
+                return functionCall(false);
+            } else if (peek().type == COLON && peek2().type == COLON) {
+                return functionCall(true);
             }
             logBuildParser("atom is ident");
             uint16_t slot = resolve(current().value);
@@ -523,6 +567,10 @@ static void parseNative(void) {
     advance(); //past @
     NativeCommand nc;
 
+    if (inStd) {
+        // if (strcmp(current().value, "_print") == 0) {nc = NAT_TRACE;} else
+        if (strcmp(current().value, "_print") == 0) {nc = NAT_PRINT; advance(); emit(OP_CONST_LOAD); emit16(emitConst());}
+    } else
     if (strcmp(current().value, "log") == 0) {nc = NAT_LOG;} else
     if (strcmp(current().value, "dump") == 0) {nc = NAT_DUMP;} else
     if (strcmp(current().value, "trace") == 0) {nc = NAT_TRACE;} else
@@ -578,7 +626,9 @@ static void parseFunction(void) {
 
     logBuildParser("[FN] Parsing function name");
 
-    char *name = current().value;
+    char name[256];
+    snprintf(name, sizeof(name), "%s", current().value);
+
     expectCurrent(IDENTIFIER, "Function must be named");
 
     logBuildParser("[FN] Function name captured");
@@ -636,7 +686,9 @@ static void parseFunction(void) {
         logBuildParser("[FN] Reserved jump patch slot");
     }
 
-    definef(name, retType);
+    char nameWithPrefix[1024];
+    snprintf(nameWithPrefix, sizeof(nameWithPrefix), "%s%s", b->funcPrefix, name);
+    definef(nameWithPrefix, retType);
     logBuildParser("[FN] Function registered in symbol table");
 
     parseFuncBody(retType);
@@ -658,6 +710,104 @@ static void parseFunction(void) {
     return;
 }
 
+static void parseModule(void) {
+    int nameMaxLen = 8;
+    char *name = malloc(nameMaxLen * sizeof(char));
+    name[0] = '\0';
+    int needed;
+    char *prefixName;
+
+    if (strcmp(current().value, "std") == 0) {
+        inStd = true;
+    }
+
+    do {
+        needed = strlen(name) + strlen(current().value) + 1;
+
+        if (needed >= nameMaxLen) {
+            while (needed >= nameMaxLen)
+                nameMaxLen *= 2;
+
+            name = realloc(name, nameMaxLen);
+        }
+
+        strcat(name, current().value);
+
+        advance();
+
+        if (current().type == IDENTIFIER && strcmp(current().value, "as") == 0) {
+            advance();
+            prefixName = malloc((strlen(current().value)+1) * sizeof(char));
+            sprintf(prefixName, "%s", current().value);
+            advance(); // onto semicolon
+            goto module;
+        }
+    } while (current().type != SEMICOLON);
+
+    prefixName = malloc((strlen(previous().value)+1) * sizeof(char));
+    sprintf(prefixName, "%s", previous().value);
+
+module:
+    if (isModuleLoaded(name) || isModuleLoaded(prefixName)) {
+        raise("Module is already loaded", previous().line, previous().collumn);
+        callAllErr();
+        // expectAndPass(SEMICOLON, "No Semicolon After Statement");
+        return;
+    }
+
+    addModule(name);
+    addModule(prefixName);
+
+    char path[PATH_MAX];
+    snprintf(path, sizeof(path), "pkg/%s.leyo", name);
+    FILE *fp = fopen(path, "rb");
+    if (!fp) {
+        raise("Cannot open module", current().line, current().collumn);
+        callAllErr();
+        return;
+    }
+
+    fseek(fp, 0, SEEK_END);
+    long size = ftell(fp);
+    rewind(fp);
+
+    char *src = malloc(size + 1);
+    fread(src, 1, size, fp);
+    src[size] = '\0';
+    fclose(fp);
+
+    TokenStream ts = tokenise(src);
+    
+    Token *oldTokens = b->tokens;
+    uint32_t oldCount = b->count;
+    uint32_t oldPos = b->pos;
+    char oldFuncPrefix[256];
+    snprintf(oldFuncPrefix, sizeof(oldFuncPrefix), "%s", b->funcPrefix);
+
+    b->tokens = ts.stream;
+    b->count = ts.count;
+    b->pos = 0;
+    snprintf(b->funcPrefix, sizeof(b->funcPrefix), "%s::", prefixName);
+
+    while (current().type != ENDOFSTREAM) {
+        logBuildParser("[MODULE] Entering parseStatement()");
+        parseStatement();
+        logBuildParser("[MODULE] Returned from parseStatement()");
+    }
+
+    // No OP_FINISH as more code to come
+
+    free(ts.stream);
+
+    b->tokens = oldTokens;
+    b->count = oldCount;
+    b->pos = oldPos;
+    snprintf(b->funcPrefix, sizeof(b->funcPrefix), "%s", oldFuncPrefix);
+
+    inStd = false;
+
+    expectCurrent(SEMICOLON, "No Semicolon After Statement");
+}
 
 static void parseStatement(void) {
     logBuildParser("Parsing statement");
@@ -688,11 +838,17 @@ static void parseStatement(void) {
                 parseVarDecl();
             } else if (strcmp(current().value, "fnc") == 0) {
                 parseFunction();
+            } else if (strcmp(current().value, "use") == 0) {
+                advance();
+                parseModule();
             } else if (peek().type == EQUALS) {
                 parseAssign();
             } else if (peek().type == OPENBRAC) {
-                functionCall();
+                functionCall(false);
                 consumeStatementTerminator("Function call");
+            } else if (peek().type == COLON && peek2().type == COLON) {
+                functionCall(true);
+                consumeStatementTerminator("Function call: from module");
             } else {
                 raise("Unknown identifier statement", current().line, current().collumn);
             }
@@ -721,8 +877,12 @@ ByteCodeResult parse(TokenStream *ts) {
     b->globalCount = 0;
     b->funcs = malloc(sizeof(Func) * 1024);
     b->funcAmt = 0;
+    b->funcPrefix[0] = '\0';
     b->constAmt = 0;
     b->consts = malloc(sizeof(Value) * 1024);
+    b->moduleCap = 8;
+    b->moduleAmt = 0;
+    b->modulesLoaded = malloc(sizeof(char *) * b->moduleCap);
 
     if (!b->funcs) {
         raise("Failed to allocate function table", 0, 0);
@@ -844,6 +1004,10 @@ ByteCodeResult parse(TokenStream *ts) {
     res.cb = cb;
 
     free(b->bytebuff);
+    for (int i = 0; i < b->moduleAmt; i++) {
+        free(b->modulesLoaded[i]);
+    }
+    free(b->modulesLoaded);
     
     return res;
 }

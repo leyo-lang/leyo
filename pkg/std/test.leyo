@@ -1,0 +1,4 @@
+fnc number() <int> {
+    @_print "hello";
+    rtn 2+1+11;
+}

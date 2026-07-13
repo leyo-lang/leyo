@@ -131,7 +131,7 @@ static void handleNormal(void) {
         advance();
         return;
     } 
-    else if (isalpha(c)) {
+    else if (isalpha(c) || c == '_') {
         l->mode = M_IDENTIFIER;
         logBuildLexer("Switching to IDENTIFIER mode");
         return;
@@ -151,6 +151,7 @@ static void handleNormal(void) {
     if (c == ']') { push(token(charToStr(c), CLOSESQUARE)); } else
     if (c == '{') { push(token(charToStr(c), OPENBRACE)); } else
     if (c == '}') { push(token(charToStr(c), CLOSEBRACE)); } else
+    if (c == ':') { push(token(charToStr(c), COLON)); } else
     if (c == '=') {
         if (peek() == '=') {
             advance();
