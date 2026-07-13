@@ -40,11 +40,12 @@ jobs:
             cflags: -m64
             ext: ".exe"
 
+          # Windows x86
           - os: windows-latest
             platform: windows
             arch: x86
-            cc: gcc
-            cflags: -m32
+            cc: i686-w64-mingw32-gcc
+            cflags:
             ext: ".exe"
 
           # macOS
