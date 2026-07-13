@@ -1,44 +1,10 @@
 [CONTROLLER] Logger initialized
 [CONTROLLER] LYST configuration loaded
 [CONTROLLER] logs/latest.lylog
-[CONTROLLER] Arg parser ready: command=run flags=0 options=0 positionals=1
+[CONTROLLER] Arg parser ready: command=(none) flags=1 options=0 positionals=0
 [CONTROLLER] Fetching Version...
 [CONTROLLER] Version Fetched.
 [CONTROLLER] Running Leyo
-[CONTROLLER] 0.10.2
+[CONTROLLER] 0.11.0
 [CONTROLLER] Initialising ArgParser
 [CONTROLLER] Initialised
-[CONTROLLER] Run target=a.lybc
-[RUNTIME] VM START
-[RUNTIME] Starting VM execution
-[RUNTIME] Decoding constant pool
-[RUNTIME] Constant pool decoded: 7 values
-[RUNTIME] Constant pool loaded into VM
-[RUNTIME] JUMP
-[RUNTIME] JUMP
-[RUNTIME] JUMP
-[RUNTIME] JUMP
-[RUNTIME] CALL
-[RUNTIME] CALL
-[RUNTIME] CONST_LOAD
-[RUNTIME] RETURN
-[RUNTIME] CALL
-[RUNTIME] CONST_LOAD
-[RUNTIME] RETURN
-[RUNTIME] ADD
-[RUNTIME] CALL
-[RUNTIME] CONST_LOAD
-[RUNTIME] CALL_NATIVE
-[RUNTIME] CONST_LOAD
-[RUNTIME] CONST_LOAD
-[RUNTIME] ADD
-[RUNTIME] CONST_LOAD
-[RUNTIME] ADD
-[RUNTIME] RETURN
-[RUNTIME] ADD
-[RUNTIME] CONST_LOAD
-[RUNTIME] SUB
-[RUNTIME] STORE
-[RUNTIME] LOAD
-[RUNTIME] RETURN
-[RUNTIME] FINISH
