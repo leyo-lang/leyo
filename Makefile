@@ -2,7 +2,6 @@
 # Leyo Makefile
 # ------------------------------------------------------------
 
-# Allow CI/GitHub Actions to override these.
 CC = gcc
 
 GIT_COMMIT := $(shell git describe --always --tags)
@@ -21,12 +20,8 @@ include VERSION.mk
 
 ifeq ($(OS),Windows_NT)
 TARGET := $(BIN_DIR)/leyo.exe
-RM := del /Q
-MKDIR := if not exist "$(BUILD_DIR)" mkdir "$(BUILD_DIR)" & if not exist "$(BIN_DIR)" mkdir "$(BIN_DIR)"
 else
 TARGET := $(BIN_DIR)/leyo
-RM := rm -f
-MKDIR := mkdir -p $(BUILD_DIR) $(BIN_DIR)
 endif
 
 # ------------------------------------------------------------
@@ -42,14 +37,19 @@ GIT_INFO_STAMP := $(BUILD_DIR)/git-info-$(GIT_COMMIT)-$(GIT_DIRTY).stamp
 # Default target
 # ------------------------------------------------------------
 
-all: version.h dirs $(TARGET)
+all: dirs version.h $(TARGET)
 
 # ------------------------------------------------------------
 # Directories
 # ------------------------------------------------------------
 
 dirs:
-	$(MKDIR)
+ifeq ($(OS),Windows_NT)
+	@if not exist "$(BUILD_DIR)" mkdir "$(BUILD_DIR)"
+	@if not exist "$(BIN_DIR)" mkdir "$(BIN_DIR)"
+else
+	mkdir -p $(BUILD_DIR) $(BIN_DIR)
+endif
 
 # ------------------------------------------------------------
 # Version header
@@ -76,7 +76,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | dirs
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # ------------------------------------------------------------
-# Rebuild main.c whenever git state changes
+# Git state tracking
 # ------------------------------------------------------------
 
 $(BUILD_DIR)/main.o: $(GIT_INFO_STAMP)
@@ -99,13 +99,13 @@ run: all
 
 clean:
 ifeq ($(OS),Windows_NT)
-	-$(RM) $(BUILD_DIR)\*.o 2>nul
-	-$(RM) $(BUILD_DIR)\git-info-*.stamp 2>nul
-	-$(RM) $(BIN_DIR)\* 2>nul
+	-del /Q $(BUILD_DIR)\*.o 2>nul
+	-del /Q $(BUILD_DIR)\git-info-*.stamp 2>nul
+	-del /Q $(BIN_DIR)\* 2>nul
 else
-	$(RM) $(BUILD_DIR)/*.o
-	$(RM) $(BUILD_DIR)/git-info-*.stamp
-	$(RM) $(BIN_DIR)/*
+	rm -f $(BUILD_DIR)/*.o
+	rm -f $(BUILD_DIR)/git-info-*.stamp
+	rm -f $(BIN_DIR)/*
 endif
 
 rebuild: clean all
