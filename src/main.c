@@ -25,10 +25,6 @@
 #define GIT_DIRTY "unknown"
 #endif
 
-#ifndef PATH_MAX
-#define PATH_MAX 4096
-#endif
-
 void openGithub(void) {
 #ifdef _WIN32
     system("start https://github.com/JoshRuds/Leyo");

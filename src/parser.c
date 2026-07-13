@@ -10,6 +10,10 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
+
 bool inStd = false;
 
 ConstBuffer constBuf = {0};
