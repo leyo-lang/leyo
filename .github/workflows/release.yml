@@ -1,0 +1,129 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build (${{ matrix.platform }}-${{ matrix.arch }})
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Linux
+          - os: ubuntu-latest
+            platform: linux
+            arch: x64
+            cc: gcc
+            cflags: -m64
+            ext: ""
+
+          - os: ubuntu-latest
+            platform: linux
+            arch: x86
+            cc: gcc
+            cflags: -m32
+            ext: ""
+
+          # Windows
+          - os: windows-latest
+            platform: windows
+            arch: x64
+            cc: gcc
+            cflags: -m64
+            ext: ".exe"
+
+          - os: windows-latest
+            platform: windows
+            arch: x86
+            cc: gcc
+            cflags: -m32
+            ext: ".exe"
+
+          # macOS
+          - os: macos-latest
+            platform: macos
+            arch: x64
+            cc: clang
+            cflags: -arch x86_64
+            ext: ""
+
+          - os: macos-latest
+            platform: macos
+            arch: arm64
+            cc: clang
+            cflags: -arch arm64
+            ext: ""
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-multilib g++-multilib make
+
+      - name: Install Windows dependencies
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >
+            make
+            gcc
+
+      - name: Build
+        shell: bash
+        run: |
+          make clean
+
+          make \
+            CC=${{ matrix.cc }} \
+            CFLAGS="${{ matrix.cflags }}"
+
+          mkdir -p release
+
+          cp bin/leyo${{ matrix.ext }} \
+            release/leyo-${{ matrix.platform }}-${{ matrix.arch }}${{ matrix.ext }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: leyo-${{ matrix.platform }}-${{ matrix.arch }}
+          path: release/*
+
+  release:
+    name: Create Draft Release
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Collect binaries
+        run: |
+          mkdir upload
+          find artifacts -type f -exec cp {} upload/ \;
+
+      - name: Create draft release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          generate_release_notes: true
+          files: upload/*
