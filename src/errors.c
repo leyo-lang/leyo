@@ -469,7 +469,7 @@ void _logError(const char *msg, int line, int collumn) {
     writeTagged("[ERROR]", buffer);
 }
 
-void raise(const char *msg, int line, int col) {
+void lraise(const char *msg, int line, int col) {
     _logError(msg, line, col);
     isErr = true;
 

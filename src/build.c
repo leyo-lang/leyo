@@ -78,7 +78,7 @@ int build(char *filename, char *bcrfilename, bool isFlnameScript) {
     FILE *file = fopen(filename, "rb");
     if (!file) {
         logController("Failed to open input file");
-        raise("File open error", 0, 0);
+        lraise("File open error", 0, 0);
         return 1;
     }
 
@@ -137,7 +137,7 @@ tokenising:
 
     if (!filebcr) {
         logController("Fail to open bcr file");
-        raise("Failed to open file", 0,0);
+        lraise("Failed to open file", 0,0);
         callAllErr();
     }
 

@@ -53,7 +53,7 @@ static void advance() {
 static void expect(TokenType type, char *errorStr) {
     LOG("except");
     if (type != peek().type) {
-        raise(errorStr, peek().line, peek().collumn);
+        lraise(errorStr, peek().line, peek().collumn);
     }
     advance();
 }
@@ -105,7 +105,7 @@ static ASTNode *parseAtom() { // smallest possible node
             ASTNode *expr = parseExpression(0);
 
             if (current().type != CLOSEBRAC) {
-                raise("Expected ')'", tok.line, tok.collumn);
+                lraise("Expected ')'", tok.line, tok.collumn);
                 exit(1);
             }
 
@@ -113,7 +113,7 @@ static ASTNode *parseAtom() { // smallest possible node
             return expr;
 
         default:
-            raise("Expected expression", tok.line, tok.collumn);
+            lraise("Expected expression", tok.line, tok.collumn);
             exit(1);
     }
 }
@@ -160,7 +160,7 @@ static void pushProgram(Statement node) {
         program.body = realloc(program.body, sizeof(ASTNode) * program.capacity);
         
         if (!program.body) {
-            raise("Memory allocation failed", current().line, current().collumn);
+            lraise("Memory allocation failed", current().line, current().collumn);
             exit(1);
         }
     }
@@ -173,7 +173,7 @@ static void pushStatement(Statement *stmt, ASTNode node) {
         stmt->capacity = 8;
         stmt->body = malloc(sizeof(ASTNode) * stmt->capacity);
         if (!stmt->body) {
-            raise("Memory allocation failed", 0, 0);
+            lraise("Memory allocation failed", 0, 0);
             exit(1);
         }
     }
@@ -185,7 +185,7 @@ static void pushStatement(Statement *stmt, ASTNode node) {
         stmt->body = realloc(stmt->body, sizeof(ASTNode) * stmt->capacity);
 
         if (!stmt->body) {
-            raise("Memory allocation failed", 0, 0);
+            lraise("Memory allocation failed", 0, 0);
             exit(1);
         }
     }
@@ -223,7 +223,7 @@ void parseVarDef(Statement *stmt) {
 
     // current() is now on ';' — check it directly
     if (current().type != SEMICOLON) {
-        raise("Did not find semicolon after statement.", current().line, current().collumn);
+        lraise("Did not find semicolon after statement.", current().line, current().collumn);
         exit(1);
     }
     advance(); // move past ';'
@@ -237,7 +237,7 @@ void parseIdentifier(Statement *stmt) {
         parseVarDef(stmt);
         return;
     } else {
-        raise("Unkown Identifier In Body", current().line, current().collumn);
+        lraise("Unkown Identifier In Body", current().line, current().collumn);
     }
 }
 
@@ -259,7 +259,7 @@ Statement parseStatement() {
             break;
         
         default:
-            raise("Unknown Token Type", current().line, current().collumn);
+            lraise("Unknown Token Type", current().line, current().collumn);
             break;
     }
 

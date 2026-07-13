@@ -121,7 +121,7 @@ static void expectCurrent(uint8_t type, char *errorStr) {
 
     if (type != currentByte()) {
         logRuntime("Expect failed (current mismatch)");
-        raise(errorStr, v->stmt, 0);
+        lraise(errorStr, v->stmt, 0);
         return;
     }
 
@@ -140,7 +140,7 @@ static void expect(uint8_t type, char *errorStr) {
 
     if (type != peekByte()) {
         logRuntime("Expect failed (peek mismatch)");
-        raise(errorStr, v->stmt, 0);
+        lraise(errorStr, v->stmt, 0);
         return;
     }
 
@@ -159,7 +159,7 @@ static void expectAndPass(uint8_t type, char *errorStr) {
 
     if (type != peekByte()) {
         logRuntime("ExpectAndPass failed");
-        raise(errorStr, v->stmt, 0);
+        lraise(errorStr, v->stmt, 0);
         return;
     }
 
@@ -259,7 +259,7 @@ static Variable getVar(char *name, int *pos) {
         }
     }
 
-    raise("No var under name", v->stmt,0);
+    lraise("No var under name", v->stmt,0);
     callAllErr();
 }
 
@@ -348,7 +348,7 @@ static char* readExpr() {
 
     if (!str) {
         logRuntime("Malloc fail mid readExpr()");
-        raise("Malloc Error", v->stmt, 0);
+        lraise("Malloc Error", v->stmt, 0);
         callAllErr();
         return NULL;
     }
@@ -413,7 +413,7 @@ void runAssignment() {
     char *value = ;
     var.value = parseValue(value, detectType(value));
     if (var.type != detectType(value)) {
-        raise("Type Error: type mismatch", v->stmt, 0);
+        lraise("Type Error: type mismatch", v->stmt, 0);
         callAllErr();
     }
     vars->value[pos] = var;
@@ -478,7 +478,7 @@ void runVarDecl() {
 
         default:
             logRuntime("Bad bytecode opcode in runVarDecl()");
-            raise("Bad bytecode", v->stmt, 0);
+            lraise("Bad bytecode", v->stmt, 0);
             callAllErr();
             return;
     }
@@ -542,7 +542,7 @@ int runByteCode(ByteCodeResult bcr) {
 
     if (currentByte() != BC_START_END) {
         logRuntime("Missing bytecode start marker");
-        raise("Missing 0xFF start marker", 0, 0);
+        lraise("Missing 0xFF start marker", 0, 0);
         callAllErr();
         return -1;
     }
@@ -582,7 +582,7 @@ int runByteCode(ByteCodeResult bcr) {
             advanceByte();
         } else {
             logRuntime("Unknown opcode encountered");
-            raise("Unknown opcode", v->stmt, 0);
+            lraise("Unknown opcode", v->stmt, 0);
             callAllErr();
             return -1;
         }

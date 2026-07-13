@@ -57,17 +57,17 @@ static inline void push(Value v) {
 }
 
 static inline Value pop(void) {
-    if (vm->sp <= 0) {raise("Underflow", vm->ip,0); callAllErr();};
+    if (vm->sp <= 0) {lraise("Underflow", vm->ip,0); callAllErr();};
     return vm->stack[--vm->sp];
 }
 
 static inline Value peek(void) {
-    if (vm->sp <= 0) {raise("Underflow", vm->ip,0); callAllErr();};
+    if (vm->sp <= 0) {lraise("Underflow", vm->ip,0); callAllErr();};
     return vm->stack[vm->sp - 1];
 }
 
 static inline Value prev(void) {
-    if (vm->sp <= 1) {raise("Underflow", vm->ip,0); callAllErr();};
+    if (vm->sp <= 1) {lraise("Underflow", vm->ip,0); callAllErr();};
     return vm->stack[vm->sp - 2];
 }
 
@@ -287,12 +287,12 @@ static void addition(void) {
 
     switch (lhs.flag) {
         case VAL_CHAR:
-            raise("Char addition unsupported", vm->ip, 0);
+            lraise("Char addition unsupported", vm->ip, 0);
             callAllErr();
             return;
 
         case VAL_STR:
-            raise("String addition unsupported", vm->ip, 0);
+            lraise("String addition unsupported", vm->ip, 0);
             callAllErr();
             return;
 
@@ -313,7 +313,7 @@ static void addition(void) {
                     return;
 
                 default:
-                    raise("Cannot add text type (chr+str) to number type", vm->ip, 0);
+                    lraise("Cannot add text type (chr+str) to number type", vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -335,7 +335,7 @@ static void addition(void) {
                     return;
 
                 default:
-                    raise("Cannot add text type (chr+str) to number type", vm->ip, 0);
+                    lraise("Cannot add text type (chr+str) to number type", vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -351,12 +351,12 @@ static void subtraction(void) {
 
     switch (lhs.flag) {
         case VAL_CHAR:
-            raise("Char subtraction unsupported", vm->ip, 0);
+            lraise("Char subtraction unsupported", vm->ip, 0);
             callAllErr();
             return;
 
         case VAL_STR:
-            raise("String subtraction unsupported", vm->ip, 0);
+            lraise("String subtraction unsupported", vm->ip, 0);
             callAllErr();
             return;
 
@@ -377,7 +377,7 @@ static void subtraction(void) {
                     return;
 
                 default:
-                    raise("Cannot subtract text type (chr+str) from number type", vm->ip, 0);
+                    lraise("Cannot subtract text type (chr+str) from number type", vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -399,7 +399,7 @@ static void subtraction(void) {
                     return;
 
                 default:
-                    raise("Cannot subtract text type (chr+str) from number type", vm->ip, 0);
+                    lraise("Cannot subtract text type (chr+str) from number type", vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -415,12 +415,12 @@ static void multiplication(void) {
 
     switch (lhs.flag) {
         case VAL_CHAR:
-            raise("Char multiplication unsupported", vm->ip, 0);
+            lraise("Char multiplication unsupported", vm->ip, 0);
             callAllErr();
             return;
 
         case VAL_STR:
-            raise("String multiplication unsupported", vm->ip, 0);
+            lraise("String multiplication unsupported", vm->ip, 0);
             callAllErr();
             return;
 
@@ -441,7 +441,7 @@ static void multiplication(void) {
                     return;
 
                 default:
-                    raise("Cannot multiply text type (chr+str) with number type", vm->ip, 0);
+                    lraise("Cannot multiply text type (chr+str) with number type", vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -463,7 +463,7 @@ static void multiplication(void) {
                     return;
 
                 default:
-                    raise("Cannot multiply text type (chr+str) with number type", vm->ip, 0);
+                    lraise("Cannot multiply text type (chr+str) with number type", vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -479,12 +479,12 @@ static void division(void) {
 
     switch (lhs.flag) {
         case VAL_CHAR:
-            raise("Char division unsupported", vm->ip, 0);
+            lraise("Char division unsupported", vm->ip, 0);
             callAllErr();
             return;
 
         case VAL_STR:
-            raise("String division unsupported", vm->ip, 0);
+            lraise("String division unsupported", vm->ip, 0);
             callAllErr();
             return;
 
@@ -505,7 +505,7 @@ static void division(void) {
                     return;
 
                 default:
-                    raise("Cannot divide text type (chr+str) by number type", vm->ip, 0);
+                    lraise("Cannot divide text type (chr+str) by number type", vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -527,7 +527,7 @@ static void division(void) {
                     return;
 
                 default:
-                    raise("Cannot divide text type (chr+str) by number type", vm->ip, 0);
+                    lraise("Cannot divide text type (chr+str) by number type", vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -543,12 +543,12 @@ static void power(void) {
 
     switch (lhs.flag) {
         case VAL_CHAR:
-            raise("Char exponents unsupported", vm->ip, 0);
+            lraise("Char exponents unsupported", vm->ip, 0);
             callAllErr();
             return;
 
         case VAL_STR:
-            raise("String exponents unsupported", vm->ip, 0);
+            lraise("String exponents unsupported", vm->ip, 0);
             callAllErr();
             return;
 
@@ -569,7 +569,7 @@ static void power(void) {
                     return;
 
                 default:
-                    raise("Cannot exponentiate text type (chr+str) with number type", vm->ip, 0);
+                    lraise("Cannot exponentiate text type (chr+str) with number type", vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -591,7 +591,7 @@ static void power(void) {
                     return;
 
                 default:
-                    raise("Cannot exponentiate text type (chr+str) with number type", vm->ip, 0);
+                    lraise("Cannot exponentiate text type (chr+str) with number type", vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -620,7 +620,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
 
         if (!vmStd.consts) {
             logRuntime("Failed to decode constant pool");
-            raise("Failed to decode constant pool", vm->ip, 0);
+            lraise("Failed to decode constant pool", vm->ip, 0);
             callAllErr();
             return 1;
         }
@@ -654,7 +654,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
 
             case OP_SWAP: {
                 if (vm->sp < 2) {
-                    raise("stack underflow on SWAP", vm->ip, 0);
+                    lraise("stack underflow on SWAP", vm->ip, 0);
                     callAllErr();
                 }
 
@@ -704,7 +704,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
             case OP_STORE: {
                 uint16_t slot = read16();
                 if (slot >= GLOBALS_MAX) {
-                    raise("Global slot out of range", vm->ip, 0);
+                    lraise("Global slot out of range", vm->ip, 0);
                     callAllErr();
                     freeConstPool(vmStd.consts, vmStd.constCount);
                     return 1;
@@ -716,7 +716,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
             case OP_LOAD: {
                 uint16_t slot = read16();
                 if (slot >= GLOBALS_MAX) {
-                    raise("Global slot out of range", vm->ip, 0);
+                    lraise("Global slot out of range", vm->ip, 0);
                     callAllErr();
                     freeConstPool(vmStd.consts, vmStd.constCount);
                     return 1;
@@ -729,7 +729,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
                 uint16_t constIndex = read16();
 
                 if (constIndex >= (uint16_t)vm->constCount) {
-                    raise("Const load slot out of range", vm->ip, 0);
+                    lraise("Const load slot out of range", vm->ip, 0);
                     callAllErr();
                     freeConstPool(vmStd.consts, vmStd.constCount);
                     return 1;
@@ -750,7 +750,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
                         printValue(pop());  
                         break;
                     default:
-                        raise("Unkown Native Command", vm->ip,0);
+                        lraise("Unkown Native Command", vm->ip,0);
                         callAllErr();
                         break;
                 }
@@ -760,7 +760,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
             case OP_JUMP: {
                 int32_t offset = (int32_t)read32();
                 if (offset < 0 && vm->ip < (uint32_t)(-offset)) {
-                    raise("Invalid Jump Offset", vm->ip,0);
+                    lraise("Invalid Jump Offset", vm->ip,0);
                     callAllErr();
                 }
                 if (verbose) {
@@ -777,7 +777,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
                 vm->callStack[vm->callAmt++] = (Call){.rtnAdr = vm->ip+4};
                 int32_t offset = (int32_t)read32();
                 if (offset < 0 && vm->ip < (uint32_t)(-offset)) {
-                    raise("Invalid Jump Offset", vm->ip,0);
+                    lraise("Invalid Jump Offset", vm->ip,0);
                     callAllErr();
                 }
                 if (verbose) {
@@ -811,7 +811,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
     }
 
     logRuntime("VM exited unexpectedly");
-    raise("Exited Early", vm->ip, 0);
+    lraise("Exited Early", vm->ip, 0);
     freeConstPool(vmStd.consts, vmStd.constCount);
     callAllErr();
     return 1;

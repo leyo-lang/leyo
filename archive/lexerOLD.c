@@ -162,7 +162,7 @@ TokenStream tokenise(char* src) {
                 memset(ident, 0, sizeof(ident));
                 for (; src[i] != '\0' && src[i] != '"'; i++) {
                     if (src[i] == '\n') {
-                        raise("Unterminated String Literal", lineNum, collumn);
+                        lraise("Unterminated String Literal", lineNum, collumn);
                         break;
                     }
                     ident[identCount++] = src[i];
@@ -180,7 +180,7 @@ TokenStream tokenise(char* src) {
                 tokens[tokenCount++] = token(tmp, UNKNOWN, lineNum, collumn);
                 char buffer[48];
                 snprintf(buffer, sizeof(buffer), "Invalid Character: %c", src[i]);
-                raise(buffer, lineNum, collumn);
+                lraise(buffer, lineNum, collumn);
             }
         }
         

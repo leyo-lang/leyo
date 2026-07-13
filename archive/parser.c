@@ -42,7 +42,7 @@ static Token current() {
 static Token previous() {
     if (b->count-1==b->pos) {
         logBuildParser("Too far - previoused into eos");
-        raise("Internal Parser Error: Too far - previoused into eos", current().line, current().collumn);
+        lraise("Internal Parser Error: Too far - previoused into eos", current().line, current().collumn);
         callAllErr();
     }
     return b->tokens[b->pos-1];
@@ -51,7 +51,7 @@ static Token previous() {
 static Token peek() {
     if (b->count-1==b->pos) {
         logBuildParser("Too far - peeked into eos");
-        raise("Internal Parser Error: Too far - peeked into eos", current().line, current().collumn);
+        lraise("Internal Parser Error: Too far - peeked into eos", current().line, current().collumn);
         callAllErr();
     }
     return b->tokens[b->pos+1];
@@ -64,7 +64,7 @@ static void advance() {
 static void expectCurrent(TokenType type, char *errorStr) {
     if (type != current().type) {
         logBuildParser("Expect failed (current mismatch)");
-        raise(errorStr, current().line, current().collumn);
+        lraise(errorStr, current().line, current().collumn);
     }
     advance();
 }
@@ -72,7 +72,7 @@ static void expectCurrent(TokenType type, char *errorStr) {
 static void expect(TokenType type, char *errorStr) {
     if (type != peek().type) {
         logBuildParser("Expect failed (peek mismatch)");
-        raise(errorStr, peek().line, peek().collumn);
+        lraise(errorStr, peek().line, peek().collumn);
     }
     advance();
 }
@@ -81,7 +81,7 @@ static void expectAndPass(TokenType type, char *errorStr) {
     advance();
     if (type != current().type) {
         logBuildParser("ExpectAndPass failed");
-        raise(errorStr, current().line, current().collumn);
+        lraise(errorStr, current().line, current().collumn);
     }
     advance();
 }
@@ -89,7 +89,7 @@ static void expectAndPass(TokenType type, char *errorStr) {
 static void writeByte(uint8_t value) {
     if ((size_t)b->byteIndex >= sizeof(b->bytebuff)) {
         logBuildParser("Byte buffer overflow detected");
-        raise("Byte buffer overflow", current().line, current().collumn);
+        lraise("Byte buffer overflow", current().line, current().collumn);
     }
 
     b->bytebuff[b->byteIndex++] = value;
@@ -154,7 +154,7 @@ static void parseAssign() {
 
     writeRawExpr(current().value, BC_EXPR_DELIM);
     /*if (previous().type != SEMICOLON) {
-        raise("No semicolon after statement", previous().line, previous().collumn);
+        lraise("No semicolon after statement", previous().line, previous().collumn);
         callAllErr()
     }*/
     expectCurrent(SEMICOLON, "No semicolon after statement");
@@ -183,7 +183,7 @@ static void parseVarDecl() {
         writeHalfByte(BC_VAR_DECL_CHR + arrOff);
     } else {
         logBuildParser("Invalid variable declaration type");
-        raise("Internal Parser Error - Dead Var Decl",
+        lraise("Internal Parser Error - Dead Var Decl",
             current().line,
             current().collumn);
         callAllErr();
@@ -208,7 +208,7 @@ static void parseVarDecl() {
     while (current().type != SEMICOLON) {
         if (current().type == ENDOFSTREAM) {
             logBuildParser("No semicolom before EndOfStream");
-            raise("No semicolon before EndOfStream", previous().line, previous().collumn);
+            lraise("No semicolon before EndOfStream", previous().line, previous().collumn);
             callAllErr();
         }
         char *val = current().value;
@@ -247,19 +247,19 @@ static void parseStatement() {
                 expectAndPass(SEMICOLON, "No semicolon after statement");
             } else {
                 logBuildParser("Unknown identifier in body");
-                raise("Unknown identifier in body", current().line, current().collumn);
+                lraise("Unknown identifier in body", current().line, current().collumn);
             }
             break;
 
         default:
             logBuildParser("Unknown token in statement parser");
-            raise("Unknown Token Type", current().line, current().collumn);
+            lraise("Unknown Token Type", current().line, current().collumn);
             break;
     }
 
     if (previous().type != SEMICOLON) {
         logBuildParser("No semicolom after statement (statement controller catch)");
-        raise("No semicolon after statement", previous().line, previous().collumn);
+        lraise("No semicolon after statement", previous().line, previous().collumn);
         callAllErr();
     }
     writeByte(BC_END_OF_LINE);
@@ -285,7 +285,7 @@ ByteCodeResult parseToByteCode(TokenStream ts) {
 
     if (b->hasHalfByte) {
         logBuildParser("Unpaired half-byte detected at end of parsing");
-        raise("Unpaired half-byte", current().line, current().collumn);
+        lraise("Unpaired half-byte", current().line, current().collumn);
         callAllErr();
     }
 

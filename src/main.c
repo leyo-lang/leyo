@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
 
     if (!lystLoad(".lyst")) {
         fprintf(stderr, "Failed to load .lyst configuration\n");
-        raise("Initialisation Failed", 0,0);
+        lraise("Initialisation Failed", 0,0);
         callAllErr();
         return -1;
     }
@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
         }
 
         logController("Unknown global flag");
-        raise("Unknown global flag", 0, 0);
+        lraise("Unknown global flag", 0, 0);
         callAllErr();
     }
 
@@ -124,7 +124,7 @@ int main(int argc, char *argv[]) {
                 source = script;
             } else {
                 logController("Missing source file");
-                raise("Missing source file", 0, 0);
+                lraise("Missing source file", 0, 0);
                 callAllErr();
             }
         }
@@ -143,7 +143,7 @@ int main(int argc, char *argv[]) {
 
         if (!source) {
             logController("Missing source file");
-            raise("Missing source file", 0, 0);
+            lraise("Missing source file", 0, 0);
             callAllErr();
         }
 
@@ -163,7 +163,7 @@ int main(int argc, char *argv[]) {
 
         if (!file) {
             logController("Missing input file");
-            raise("Missing input file", 0, 0);
+            lraise("Missing input file", 0, 0);
             callAllErr();
         }
 
@@ -210,7 +210,7 @@ int main(int argc, char *argv[]) {
                 system("rm -f logs/archive/*");
             #endif
         } else {
-            raise("Unkown RM command", 0,0);
+            lraise("Unkown RM command", 0,0);
             callAllErr();
             return -1;
         }
@@ -218,7 +218,7 @@ int main(int argc, char *argv[]) {
     } else {
 
         logController("Unknown command line argument");
-        raise("Unknown command line argument", 0, 0);
+        lraise("Unknown command line argument", 0, 0);
         callAllErr();
     }
 

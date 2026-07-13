@@ -7,7 +7,7 @@
 
 int repl(void) {
     logController("REPL requested");
-    raise("Repl Not Built", 0,0);
+    lraise("Repl Not Built", 0,0);
     callAllErr();
     return 1;
     TokenStream tokens;

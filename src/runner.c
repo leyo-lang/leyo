@@ -16,7 +16,7 @@ int run(char *filename, bool verbose) {
 
     FILE *file = fopen(filename, "rb");
     if (!file) {
-        raise("Failed to open .lybc file", 0, 0);
+        lraise("Failed to open .lybc file", 0, 0);
         callAllErr();
         return -1;
     }
@@ -28,7 +28,7 @@ int run(char *filename, bool verbose) {
     // Read header
     LeyoHeader header;
     if (fread(&header, sizeof(LeyoHeader), 1, file) != 1) {
-        raise("Failed to read header", 0, 0);
+        lraise("Failed to read header", 0, 0);
         callAllErr();
         fclose(file);
         return -1;
@@ -36,7 +36,7 @@ int run(char *filename, bool verbose) {
 
     long payloadSize = fileSize - sizeof(LeyoHeader);
     if (payloadSize < 0 || payloadSize < (long)header.code_size) {
-        raise("Bytecode file is truncated", 0, 0);
+        lraise("Bytecode file is truncated", 0, 0);
         callAllErr();
         fclose(file);
         return -1;
@@ -44,7 +44,7 @@ int run(char *filename, bool verbose) {
 
     // Validate magic
     if (memcmp(header.magic, "LYBC", 4) != 0) {
-        raise("Invalid bytecode magic", 0, 0);
+        lraise("Invalid bytecode magic", 0, 0);
         callAllErr();
         fclose(file);
         return -1;
@@ -53,7 +53,7 @@ int run(char *filename, bool verbose) {
     // Allocate bytecode buffer
     uint8_t *code = malloc(header.code_size);
     if (!code) {
-        raise("Memory allocation failed", 0, 0);
+        lraise("Memory allocation failed", 0, 0);
         callAllErr();
         fclose(file);
         return -1;
@@ -61,7 +61,7 @@ int run(char *filename, bool verbose) {
 
     // Read bytecode
     if (fread(code, 1, header.code_size, file) != header.code_size) {
-        raise("Failed to read bytecode", 0, 0);
+        lraise("Failed to read bytecode", 0, 0);
         callAllErr();
         free(code);
         fclose(file);
@@ -73,7 +73,7 @@ int run(char *filename, bool verbose) {
     if (constSize > 0) {
         constData = malloc((size_t)constSize);
         if (!constData) {
-            raise("Memory allocation failed", 0, 0);
+            lraise("Memory allocation failed", 0, 0);
             callAllErr();
             free(code);
             fclose(file);
@@ -81,7 +81,7 @@ int run(char *filename, bool verbose) {
         }
 
         if (fread(constData, 1, (size_t)constSize, file) != (size_t)constSize) {
-            raise("Failed to read const pool", 0, 0);
+            lraise("Failed to read const pool", 0, 0);
             callAllErr();
             free(constData);
             free(code);
