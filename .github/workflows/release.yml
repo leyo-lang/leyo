@@ -85,6 +85,7 @@ jobs:
             git
             mingw-w64-i686-gcc
             mingw-w64-x86_64-gcc
+            i686-w64-mingw32-gcc
 
       - name: Build (Windows)
         if: runner.os == 'Windows'
