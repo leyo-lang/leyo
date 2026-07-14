@@ -32,20 +32,20 @@ jobs:
             cflags: -m32
             ext: ""
 
-          # Windows
-          - os: windows-latest
-            platform: windows
-            arch: x64
-            cc: gcc
-            cflags: -m64
-            ext: ".exe"
-
-          # Windows x86
           - os: windows-latest
             platform: windows
             arch: x86
-            cc: i686-w64-mingw32-gcc
-            cflags:
+            msystem: MINGW32
+            cc: gcc
+            cflags: ""
+            ext: ".exe"
+
+          - os: windows-latest
+            platform: windows
+            arch: x64
+            msystem: MINGW64
+            cc: gcc
+            cflags: ""
             ext: ".exe"
 
           # macOS
@@ -77,15 +77,13 @@ jobs:
         if: runner.os == 'Windows'
         uses: msys2/setup-msys2@v2
         with:
-          msystem: MINGW64
+          msystem: ${{ matrix.msystem }}
           update: true
           install: |
             make
-            gcc
             git
             mingw-w64-i686-gcc
             mingw-w64-x86_64-gcc
-            i686-w64-mingw32-gcc
 
       - name: Build (Windows)
         if: runner.os == 'Windows'
@@ -101,6 +99,7 @@ jobs:
 
           cp bin/leyo${{ matrix.ext }} \
             release/leyo-${{ matrix.platform }}-${{ matrix.arch }}${{ matrix.ext }}
+            
       - name: Build (Linux/macOS)
         if: runner.os != 'Windows'
         shell: bash
