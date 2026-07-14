@@ -14,10 +14,11 @@
 #endif
 
 #include "../include/errors.h"
+#include "../include/codes.h"
 
 #define STRICT_MODE 1
 
-static Error errors[100];
+static RaisedError errors[100];
 static int error_count = 0;
 
 bool isErr = false;
@@ -469,35 +470,50 @@ void _logError(const char *msg, int line, int collumn) {
     writeTagged("[ERROR]", buffer);
 }
 
-void lraise(const char *msg, int line, int col) {
-    _logError(msg, line, col);
+const Error *lookupError(ErrorCode code) {
+    for (int i = 0; i < sizeof(errorTable) / sizeof(errorTable[0]); i++) {
+        if (errorTable[i].ec == code) {
+            return &errorTable[i];
+        }
+    }
+
+    return NULL;
+}
+
+void lraise(ErrorCode code, int line, int col) {
+    const Error *err = lookupError(code);
+
+    if (err == NULL) {
+        _logError("Unknown error", line, col);
+        return;
+    }
+
+    _logError(err->msg, line, col);
     isErr = true;
 
-    if (error_count >= 100) return;
+    if (error_count >= 100)
+        return;
 
-    strncpy(errors[error_count].message,
-            msg,
-            sizeof(errors[error_count].message) - 1);
-
-    errors[error_count].message[sizeof(errors[error_count].message) - 1] = '\0';
-
+    errors[error_count].ec = code;
     errors[error_count].line = line;
     errors[error_count].column = col;
 
     error_count++;
 
-    if (STRICT_MODE) {
+    if (err->fatal || STRICT_MODE) {
         callAllErr();
     }
 }
 
 void callAllErr(void) {
     for (int i = 0; i < error_count; i++) {
-        Error currErr = errors[i];
-        printf("Error at position %d:%d: %s\n\n",
-               currErr.line,
-               currErr.column,
-               currErr.message);
+        const Error *err = lookupError(errors[i].ec);
+
+        printf("[%s] %s (%d:%d)\n",
+            err->name,
+            err->msg,
+            errors[i].line,
+            errors[i].column);
     }
 
     closeLog();

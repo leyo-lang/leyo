@@ -6,12 +6,6 @@
 enum { LOG_PATH_MAX = 512 };
 
 typedef struct {
-    char message[256];
-    int line;
-    int column;
-} Error;
-
-typedef struct {
     bool enabled;
     bool rotate;
     bool build;
