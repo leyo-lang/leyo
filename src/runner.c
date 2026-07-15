@@ -29,7 +29,7 @@ int run(char *filename, bool verbose) {
     // Read header
     LeyoHeader header;
     if (fread(&header, sizeof(LeyoHeader), 1, file) != 1) {
-        lraise("Failed to read header", 0, 0);
+        lraise(ERR_INVALID_BYTECODE_HEADER, 0, 0);
         callAllErr();
         fclose(file);
         return -1;
@@ -37,7 +37,7 @@ int run(char *filename, bool verbose) {
 
     long payloadSize = fileSize - sizeof(LeyoHeader);
     if (payloadSize < 0 || payloadSize < (long)header.code_size) {
-        lraise("Bytecode file is truncated", 0, 0);
+        lraise(ERR_INVALID_BYTECODE, 0, 0);
         callAllErr();
         fclose(file);
         return -1;
@@ -45,7 +45,7 @@ int run(char *filename, bool verbose) {
 
     // Validate magic
     if (memcmp(header.magic, "LYBC", 4) != 0) {
-        lraise("Invalid bytecode magic", 0, 0);
+        lraise(ERR_INVALID_BYTECODE_HEADER, 0, 0);
         callAllErr();
         fclose(file);
         return -1;
@@ -54,7 +54,7 @@ int run(char *filename, bool verbose) {
     // Allocate bytecode buffer
     uint8_t *code = malloc(header.code_size);
     if (!code) {
-        lraise("Memory allocation failed", 0, 0);
+        lraise(ERR_VM_CANNOT_ALLOCATE, 0, 0);
         callAllErr();
         fclose(file);
         return -1;
@@ -62,7 +62,7 @@ int run(char *filename, bool verbose) {
 
     // Read bytecode
     if (fread(code, 1, header.code_size, file) != header.code_size) {
-        lraise("Failed to read bytecode", 0, 0);
+        lraise(ERR_CANNOT_READ_BYTECODE, 0, 0);
         callAllErr();
         free(code);
         fclose(file);
@@ -74,7 +74,7 @@ int run(char *filename, bool verbose) {
     if (constSize > 0) {
         constData = malloc((size_t)constSize);
         if (!constData) {
-            lraise("Memory allocation failed", 0, 0);
+            lraise(ERR_VM_CANNOT_ALLOCATE, 0, 0);
             callAllErr();
             free(code);
             fclose(file);
@@ -82,7 +82,7 @@ int run(char *filename, bool verbose) {
         }
 
         if (fread(constData, 1, (size_t)constSize, file) != (size_t)constSize) {
-            lraise("Failed to read const pool", 0, 0);
+            lraise(ERR_VM_INVALID_CONST_POOL, 0, 0);
             callAllErr();
             free(constData);
             free(code);

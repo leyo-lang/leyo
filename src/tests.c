@@ -150,7 +150,7 @@ int testLeyo(const char *leyoBin) {
         goto cleanup;
     }
 
-    fputs("int a = 5;\n", f);
+    fputs("fnc main() <int> {int a = 5; rtn a;};\n", f);
     fclose(f);
     f = NULL;
 

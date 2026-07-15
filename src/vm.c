@@ -288,12 +288,12 @@ static void addition(void) {
 
     switch (lhs.flag) {
         case VAL_CHAR:
-            lraise("Char addition unsupported", vm->ip, 0);
+            lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
             callAllErr();
             return;
 
         case VAL_STR:
-            lraise("String addition unsupported", vm->ip, 0);
+            lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
             callAllErr();
             return;
 
@@ -314,7 +314,7 @@ static void addition(void) {
                     return;
 
                 default:
-                    lraise("Cannot add text type (chr+str) to number type", vm->ip, 0);
+                    lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -336,7 +336,7 @@ static void addition(void) {
                     return;
 
                 default:
-                    lraise("Cannot add text type (chr+str) to number type", vm->ip, 0);
+                    lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -352,12 +352,12 @@ static void subtraction(void) {
 
     switch (lhs.flag) {
         case VAL_CHAR:
-            lraise("Char subtraction unsupported", vm->ip, 0);
+            lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
             callAllErr();
             return;
 
         case VAL_STR:
-            lraise("String subtraction unsupported", vm->ip, 0);
+            lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
             callAllErr();
             return;
 
@@ -378,7 +378,7 @@ static void subtraction(void) {
                     return;
 
                 default:
-                    lraise(ERR_VM_INVALID_BINARY_OP, vm->ip, 0);
+                    lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -400,7 +400,7 @@ static void subtraction(void) {
                     return;
 
                 default:
-                    lraise(ERR_VM_INVALID_BINARY_OP, vm->ip, 0);
+                    lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -416,12 +416,12 @@ static void multiplication(void) {
 
     switch (lhs.flag) {
         case VAL_CHAR:
-            lraise("Char multiplication unsupported", vm->ip, 0);
+            lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
             callAllErr();
             return;
 
         case VAL_STR:
-            lraise("String multiplication unsupported", vm->ip, 0);
+            lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
             callAllErr();
             return;
 
@@ -442,7 +442,7 @@ static void multiplication(void) {
                     return;
 
                 default:
-                    lraise("Cannot multiply text type (chr+str) with number type", vm->ip, 0);
+                    lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -464,7 +464,7 @@ static void multiplication(void) {
                     return;
 
                 default:
-                    lraise("Cannot multiply text type (chr+str) with number type", vm->ip, 0);
+                    lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -480,12 +480,12 @@ static void division(void) {
 
     switch (lhs.flag) {
         case VAL_CHAR:
-            lraise("Char division unsupported", vm->ip, 0);
+            lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
             callAllErr();
             return;
 
         case VAL_STR:
-            lraise("String division unsupported", vm->ip, 0);
+            lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
             callAllErr();
             return;
 
@@ -506,7 +506,7 @@ static void division(void) {
                     return;
 
                 default:
-                    lraise("Cannot divide text type (chr+str) by number type", vm->ip, 0);
+                    lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -528,7 +528,7 @@ static void division(void) {
                     return;
 
                 default:
-                    lraise("Cannot divide text type (chr+str) by number type", vm->ip, 0);
+                    lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -544,12 +544,12 @@ static void power(void) {
 
     switch (lhs.flag) {
         case VAL_CHAR:
-            lraise("Char exponents unsupported", vm->ip, 0);
+            lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
             callAllErr();
             return;
 
         case VAL_STR:
-            lraise("String exponents unsupported", vm->ip, 0);
+            lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
             callAllErr();
             return;
 
@@ -570,7 +570,7 @@ static void power(void) {
                     return;
 
                 default:
-                    lraise("Cannot exponentiate text type (chr+str) with number type", vm->ip, 0);
+                    lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -592,7 +592,7 @@ static void power(void) {
                     return;
 
                 default:
-                    lraise("Cannot exponentiate text type (chr+str) with number type", vm->ip, 0);
+                    lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -705,7 +705,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
             case OP_STORE: {
                 uint16_t slot = read16();
                 if (slot >= GLOBALS_MAX) {
-                    lraise("Global slot out of range", vm->ip, 0);
+                    lraise(ERR_VM_GLOBAL_SLOT_OUT_OF_RANGE, vm->ip, 0);
                     callAllErr();
                     freeConstPool(vmStd.consts, vmStd.constCount);
                     return 1;
@@ -717,7 +717,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
             case OP_LOAD: {
                 uint16_t slot = read16();
                 if (slot >= GLOBALS_MAX) {
-                    lraise("Global slot out of range", vm->ip, 0);
+                    lraise(ERR_VM_GLOBAL_SLOT_OUT_OF_RANGE, vm->ip, 0);
                     callAllErr();
                     freeConstPool(vmStd.consts, vmStd.constCount);
                     return 1;
@@ -730,7 +730,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
                 uint16_t constIndex = read16();
 
                 if (constIndex >= (uint16_t)vm->constCount) {
-                    lraise("Const load slot out of range", vm->ip, 0);
+                    lraise(ERR_VM_CONST_OUT_OF_RANGE, vm->ip, 0);
                     callAllErr();
                     freeConstPool(vmStd.consts, vmStd.constCount);
                     return 1;
@@ -751,7 +751,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
                         printValue(pop());  
                         break;
                     default:
-                        lraise("Unkown Native Command", vm->ip,0);
+                        lraise(ERR_VM_UNKOWN_NATIVE_COMMAND, vm->ip,0);
                         callAllErr();
                         break;
                 }
@@ -761,7 +761,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
             case OP_JUMP: {
                 int32_t offset = (int32_t)read32();
                 if (offset < 0 && vm->ip < (uint32_t)(-offset)) {
-                    lraise("Invalid Jump Offset", vm->ip,0);
+                    lraise(ERR_VM_INVALID_JUMP, vm->ip,0);
                     callAllErr();
                 }
                 if (verbose) {
@@ -778,7 +778,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
                 vm->callStack[vm->callAmt++] = (Call){.rtnAdr = vm->ip+4};
                 int32_t offset = (int32_t)read32();
                 if (offset < 0 && vm->ip < (uint32_t)(-offset)) {
-                    lraise("Invalid Jump Offset", vm->ip,0);
+                    lraise(ERR_VM_INVALID_JUMP, vm->ip,0);
                     callAllErr();
                 }
                 if (verbose) {

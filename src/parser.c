@@ -84,27 +84,39 @@ static void advance(void) {
     b->pos++;
 }
 
-static void expectCurrent(TokenType type, char *errorStr) {
+static void expectCurrent(TokenType type) {
     if (type != current().type) {
         logBuildParser("Expect failed (current mismatch)");
-        lraise(errorStr, current().line, current().collumn);
+        if (type == SEMICOLON) {
+            lraise(ERR_PARSER_NO_SEMICOLON, current().line, current().collumn);
+        } else {
+            lraise(ERR_PARSER_EXPECTED_TOKEN, current().line, current().collumn);
+        }
     }
     advance();
 }
 
-static void expect(TokenType type, char *errorStr) {
+static void expect(TokenType type) {
     if (type != peek().type) {
         logBuildParser("Expect failed (peek mismatch)");
-        lraise(errorStr, peek().line, peek().collumn);
+        if (type == SEMICOLON) {
+            lraise(ERR_PARSER_NO_SEMICOLON, current().line, current().collumn);
+        } else {
+            lraise(ERR_PARSER_EXPECTED_TOKEN, current().line, current().collumn);
+        }
     }
     advance();
 }
 
-static void expectAndPass(TokenType type, char *errorStr) {
+static void expectAndPass(TokenType type) {
     advance();
     if (type != current().type) {
         logBuildParser("ExpectAndPass failed");
-        lraise(errorStr, current().line, current().collumn);
+        if (type == SEMICOLON) {
+            lraise(ERR_PARSER_NO_SEMICOLON, current().line, current().collumn);
+        } else {
+            lraise(ERR_PARSER_EXPECTED_TOKEN, current().line, current().collumn);
+        }
     }
     advance();
 }
@@ -379,8 +391,8 @@ static TokenType functionCall(bool isModuleFunction) {
     char *cv = current().value;
     char name[1024];
     if (isModuleFunction) {
-        expectAndPass(COLON, "Internal Parser Error - No double colon");
-        expectCurrent(COLON, "Internal Parser Error - No double colon");
+        expectAndPass(COLON);
+        expectCurrent(COLON);
         snprintf(name, sizeof(name), "%s::%s", cv, current().value);
     } else {
         snprintf(name, sizeof(name), "%s", cv);
@@ -388,7 +400,7 @@ static TokenType functionCall(bool isModuleFunction) {
     logBuildParser("atom is ident func");
     emit(OP_CALL);
     emit32((int32_t)(resolvef(name) - (b->byteIndex + 4)));
-    expectAndPass(OPENBRAC, "Function must be opened '('");
+    expectAndPass(OPENBRAC);
     while (current().type != CLOSEBRAC) {
         advance();
     }
@@ -402,7 +414,8 @@ static void consumeStatementTerminator(const char *ctx) {
     if (current().type != SEMICOLON) {
         char buffer[256];
         snprintf(buffer, sizeof(buffer), "%s: expected ';'", ctx ? ctx : "Statement");
-        lraise(buffer, current().line, current().collumn);
+        logBuildParser(buffer);
+        lraise(ERR_PARSER_NO_SEMICOLON, current().line, current().collumn);
         callAllErr();
         return;
     }
@@ -525,14 +538,14 @@ static void parseAssign(void) {
     char *name = current().value;
     uint16_t slot = resolve(name);
 
-    expectAndPass(EQUALS, "Expected '='");
+    expectAndPass(EQUALS);
 
     parseExpressionTC(resolveType(name));
 
     emit(OP_STORE);
     emit16(slot);
 
-    expectCurrent(SEMICOLON, "Expected ';'");
+    expectCurrent(SEMICOLON);
 }
 
 static void parseVarDecl(void) {
@@ -552,19 +565,19 @@ static void parseVarDecl(void) {
         lraise(ERR_PARSER_UNEXPECTED_STATE, current().line, current().collumn);
     }
 
-    expect(IDENTIFIER, "Expected variable name");
+    expect(IDENTIFIER);
 
     char *name = current().value;
     uint16_t slot = define(name, aim);
 
-    expectAndPass(EQUALS, "Expected '='");
+    expectAndPass(EQUALS);
 
     parseExpressionTC(aim);
 
     emit(OP_STORE);
     emit16(slot);    
 
-    expectCurrent(SEMICOLON, "Expected ';'");
+    expectCurrent(SEMICOLON);
 }
 
 static void parseNative(void) {
@@ -583,7 +596,7 @@ static void parseNative(void) {
 
     emit(OP_CALL_NATIVE);
     emit((uint8_t)nc);
-    expectAndPass(SEMICOLON, "No semicolon after statement");    
+    expectAndPass(SEMICOLON);    
 }
 
 
@@ -600,7 +613,7 @@ static void parseFuncBody(TokenType retType) {
 
             emit(OP_RETURN);
 
-            expectCurrent(SEMICOLON, "Expected ';' after return");
+            expectCurrent(SEMICOLON);
 
             // IMPORTANT: return ends statement cleanly
             continue;
@@ -634,14 +647,14 @@ static void parseFunction(void) {
     char name[256];
     snprintf(name, sizeof(name), "%s", current().value);
 
-    expectCurrent(IDENTIFIER, "Function must be named");
+    expectCurrent(IDENTIFIER);
 
     logBuildParser("[FN] Function name captured");
 
     isKeyword(name);
     logBuildParser("[FN] Keyword check passed");
 
-    expectCurrent(OPENBRAC, "[FN] Expect '(' for params");
+    expectCurrent(OPENBRAC);
     logBuildParser("[FN] Enter parameter list");
 
     while (current().type != CLOSEBRAC) {
@@ -678,7 +691,7 @@ static void parseFunction(void) {
 
     logBuildParser("[FN] Return type parsed successfully");
 
-    expectAndPass(OPENBRACE, "[FN] Expect function body '{'");
+    expectAndPass(OPENBRACE);
     logBuildParser("[FN] Enter function body");
 
     uint32_t reservedLoc = 0;
@@ -811,7 +824,7 @@ module:
 
     inStd = false;
 
-    expectCurrent(SEMICOLON, "No Semicolon After Statement");
+    expectCurrent(SEMICOLON);
 }
 
 static void parseStatement(void) {
