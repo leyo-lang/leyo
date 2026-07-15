@@ -4,6 +4,7 @@
 #include "../include/parser.h"
 #include "../include/headerer.h"
 #include "../include/errors.h"
+#include "../include/codes.h"
 
 static const char *tokenTypeName(TokenType t) {
     switch (t) {
@@ -78,7 +79,7 @@ int build(char *filename, char *bcrfilename, bool isFlnameScript) {
     FILE *file = fopen(filename, "rb");
     if (!file) {
         logController("Failed to open input file");
-        lraise("File open error", 0, 0);
+        lraise(ERR_FILE_OPEN_ERROR, 0, 0);
         return 1;
     }
 
@@ -137,7 +138,7 @@ tokenising:
 
     if (!filebcr) {
         logController("Fail to open bcr file");
-        lraise("Failed to open file", 0,0);
+        lraise(ERR_FILE_OPEN_ERROR, 0,0);
         callAllErr();
     }
 

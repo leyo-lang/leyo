@@ -15,6 +15,7 @@
 
 #include "../include/errors.h"
 #include "../include/codes.h"
+#include "../include/codes.h"
 
 #define STRICT_MODE 1
 
@@ -471,7 +472,7 @@ void _logError(const char *msg, int line, int collumn) {
 }
 
 const Error *lookupError(ErrorCode code) {
-    for (int i = 0; i < sizeof(errorTable) / sizeof(errorTable[0]); i++) {
+    for (unsigned int i = 0; i < sizeof(errorTable) / sizeof(errorTable[0]); i++) {
         if (errorTable[i].ec == code) {
             return &errorTable[i];
         }

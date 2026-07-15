@@ -4,6 +4,7 @@
 
 #include "../include/bytecode.h"
 #include "../include/errors.h"
+#include "../include/codes.h"
 
 /*
 static uint16_t read16(const uint8_t *code, size_t *ip) {

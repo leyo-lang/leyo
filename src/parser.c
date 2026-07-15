@@ -2,6 +2,7 @@
 #include "../include/parser.h"
 #include "../include/lexer.h"
 #include "../include/errors.h"
+#include "../include/codes.h"
 #include "../include/bytecode.h"
 #include "../include/native.h"
 #include <ctype.h>
@@ -50,7 +51,7 @@ static Token current(void) {
 static Token previous(void) {
     if (b->count-1==b->pos) {
         logBuildParser("Too far - previoused into eos");
-        lraise("Internal Parser Error: Too far - previoused into sos/eos", current().line, current().collumn);
+        lraise(ERR_PARSER_INTO_STARTOFSTREAM, current().line, current().collumn);
         callAllErr();
     }
     return b->tokens[b->pos-1];
@@ -59,7 +60,7 @@ static Token previous(void) {
 static Token peek(void) {
     if (b->count-1==b->pos) {
         logBuildParser("Too far - peeked into eos");
-        lraise("Internal Parser Error: Too far - peeked into eos", current().line, current().collumn);
+        lraise(ERR_PARSER_INTO_ENDOFSTREAM, current().line, current().collumn);
         callAllErr();
     }
     return b->tokens[b->pos+1];
@@ -68,7 +69,7 @@ static Token peek(void) {
 static Token peek2(void) {
     if (b->count-2==b->pos) {
         logBuildParser("Too far - peeked into eos");
-        lraise("Internal Parser Error: Too far - peeked into eos", current().line, current().collumn);
+        lraise(ERR_PARSER_INTO_ENDOFSTREAM, current().line, current().collumn);
         callAllErr();
     }
     return b->tokens[b->pos+2];
@@ -77,7 +78,7 @@ static Token peek2(void) {
 static void advance(void) {
     if (b->count+1==b->pos) {
         logBuildParser("Too far - advanced into eos");
-        lraise("Internal Parser Error: Too far - advanced into eos", current().line, current().collumn);
+        lraise(ERR_PARSER_INTO_ENDOFSTREAM, current().line, current().collumn);
         callAllErr();
     }
     b->pos++;
@@ -112,7 +113,7 @@ static void emit(uint8_t value) {
     checkByteBuff();
     if (b->byteIndex >= b->byteCap) {
         logBuildParser("Byte buffer overflow detected");
-        lraise("Byte buffer overflow", current().line, current().collumn);
+        lraise(ERR_PARSER_BYTE_OVERFLOW, current().line, current().collumn);
     }
 
     b->bytebuff[b->byteIndex++] = value;
@@ -139,7 +140,7 @@ static uint32_t reserve32(void) {
 static void patch32(uint32_t loc, uint32_t value) {
     if (loc + 3 >= b->byteIndex) {
         logBuildParser("Invalid patch location");
-        lraise("Byte patch out of bounds", current().line, current().collumn);
+        lraise(ERR_PARSER_OUT_OF_BOUNDS, current().line, current().collumn);
         return;
     }
 
@@ -258,7 +259,7 @@ static bool isKeyword(char *tc) {
 
     for (int i = 0; i < keywordAmt; i++) {
         if (strcmp(keywords[i], tc) == 0) {
-            lraise("Cannot Overwrite Keyword", current().line, current().collumn);
+            lraise(ERR_PARSER_CANNOT_SHADOW_KW, current().line, current().collumn);
             return true;
         }
     }
@@ -270,13 +271,13 @@ static int define(char *name, TokenType type) {
     isKeyword(name);
     for (int i = 0; i < b->globalCount; i++) {
         if (strcmp(b->globals[i].name, name) == 0) {
-            lraise("Previously Defined", current().line, current().collumn);
+            lraise(ERR_PARSER_VAR_PERVIOUSLY_DEFINED, current().line, current().collumn);
             return b->globals[i].slot;
         }
     }
     for (int i = 0; i < b->funcAmt; i++) {
         if (strcmp(b->funcs[i].name, name) == 0) {
-            lraise("Previously Defined", current().line, current().collumn);
+            lraise(ERR_PARSER_FUNC_PERVIOUSLY_DEFINED, current().line, current().collumn);
             return b->funcs[i].address;
         }
     }
@@ -297,13 +298,13 @@ static uint32_t definef(char *name, TokenType ret) {
     isKeyword(name);
     for (int i = 0; i < b->globalCount; i++) {
         if (strcmp(b->globals[i].name, name) == 0) {
-            lraise("Previously Defined", current().line, current().collumn);
+            lraise(ERR_PARSER_VAR_PERVIOUSLY_DEFINED, current().line, current().collumn);
             return b->globals[i].slot;
         }
     }
     for (int i = 0; i < b->funcAmt; i++) {
         if (strcmp(b->funcs[i].name, name) == 0) {
-            lraise("Previously Defined", current().line, current().collumn);
+            lraise(ERR_PARSER_FUNC_PERVIOUSLY_DEFINED, current().line, current().collumn);
             return b->funcs[i].address;
         }
     }
@@ -326,7 +327,7 @@ static int resolve(char *name) {
         }
     }
 
-    lraise("Undefined variable", current().line, current().collumn);
+    lraise(ERR_PARSER_VAR_NOT_DEFINED, current().line, current().collumn);
     callAllErr();
     return -1;
 }
@@ -339,12 +340,12 @@ static uint32_t resolvef(char *name) {
     }
 
     if (strcmp(name, "main") == 0) {
-        lraise("Undefined func (HINT: 'main' entry point required)", current().line, current().collumn);
+        lraise(ERR_PARSER_NO_ENTRY_POINT, current().line, current().collumn);
         callAllErr();
         return -1;
     }
 
-    lraise("Undefined func", current().line, current().collumn);
+    lraise(ERR_PARSER_FUNC_NOT_DEFINED, current().line, current().collumn);
     callAllErr();
     return -1;
 }
@@ -356,7 +357,7 @@ static TokenType resolveType(char *name) {
         }
     }
 
-    lraise("Undefined variable", current().line, current().collumn);
+    lraise(ERR_PARSER_VAR_NOT_DEFINED, current().line, current().collumn);
 
     callAllErr();
     return UNKNOWN;
@@ -369,7 +370,7 @@ static TokenType resolveTypef(char *name) {
         }
     }
 
-    lraise("Undefined function", current().line, current().collumn);
+    lraise(ERR_PARSER_FUNC_NOT_DEFINED, current().line, current().collumn);
     callAllErr();
     return UNKNOWN;
 }
@@ -465,7 +466,7 @@ static TokenType parseAtom(void) { // small singular unit of expression (number,
         }
 
         default: {
-            lraise("Unknown atom", current().line, current().collumn);
+            lraise(ERR_PARSER_ATOM_UNKOWN, current().line, current().collumn);
             callAllErr();
             break;
         }
@@ -486,7 +487,7 @@ static TokenType parseExpression(void) {
         TokenType rtype = parseAtom(); // right operand -> top | left -> 2nd
 
         if (ltype != rtype) {
-            lraise("Types in expression are conflicting", current().line, current().collumn);
+            lraise(ERR_PARSER_TYPE_CONFLICT_EXPR, current().line, current().collumn);
             
             return UNKNOWN;
         }
@@ -499,7 +500,7 @@ static TokenType parseExpression(void) {
             case '^': emit(OP_OPERATE_EXP); break;
 
             default:
-                lraise("Unknown operator",
+                lraise(ERR_PARSER_UNKOWN_OPERATOR,
                       current().line,
                       current().collumn);
                 return UNKNOWN;
@@ -512,7 +513,7 @@ static TokenType parseExpression(void) {
 static void parseExpressionTC(TokenType aim) {
     TokenType type = parseExpression();
     if (aim != type) {
-        lraise("Type is conflicting", current().line, current().collumn);
+        lraise(ERR_PARSER_TYPE_CONFLICT_EXPR, current().line, current().collumn);
         return;
     }
     return;
@@ -538,7 +539,7 @@ static void parseVarDecl(void) {
     logBuildParser("Parsing variable declaration");
 
     if (current().type != IDENTIFIER) {
-        lraise("Expected type", current().line, current().collumn);
+        lraise(ERR_PARSER_EXPECTED_IDENT, current().line, current().collumn);
     };
 
     char *type = current().value;
@@ -548,7 +549,7 @@ static void parseVarDecl(void) {
           strcmp(type, "str") == 0 ||
           strcmp(type, "flt") == 0 ||
           strcmp(type, "chr") == 0)) {
-        lraise("Invalid type", current().line, current().collumn);
+        lraise(ERR_PARSER_UNEXPECTED_STATE, current().line, current().collumn);
     }
 
     expect(IDENTIFIER, "Expected variable name");
@@ -578,7 +579,7 @@ static void parseNative(void) {
     if (strcmp(current().value, "log") == 0) {nc = NAT_LOG;} else
     if (strcmp(current().value, "dump") == 0) {nc = NAT_DUMP;} else
     if (strcmp(current().value, "trace") == 0) {nc = NAT_TRACE;} else
-    {lraise("Native Function Unkown", current().line, current().collumn); callAllErr(); return;}
+    {lraise(ERR_PARSER_UNKOWN_NATIVE, current().line, current().collumn); callAllErr(); return;}
 
     emit(OP_CALL_NATIVE);
     emit((uint8_t)nc);
@@ -608,7 +609,7 @@ static void parseFuncBody(TokenType retType) {
         parseStatement();
 
         if (b->pos == before) {
-            lraise("Parser stalled inside function", current().line, current().collumn);
+            lraise(ERR_PARSER_STALLED, current().line, current().collumn);
             break;
         }
     }
@@ -655,7 +656,7 @@ static void parseFunction(void) {
 
     if (strcmp(current().value, "<") != 0) {
         logBuildParser("[FN] ERROR: missing '<'");
-        lraise("Requires opening type bracket '<'", current().line, current().collumn);
+        lraise(ERR_PARSER_NO_OPEN_TYPE_BRACKET, current().line, current().collumn);
         callAllErr();
         return;
     }
@@ -670,7 +671,7 @@ static void parseFunction(void) {
 
     if (strcmp(current().value, ">") != 0) {
         logBuildParser("[FN] ERROR: missing '>'");
-        lraise("Requires closing type bracket '>'", current().line, current().collumn);
+        lraise(ERR_PARSER_NO_CLOSE_TYPE_BRACKET, current().line, current().collumn);
         callAllErr();
         return;
     }
@@ -753,7 +754,7 @@ static void parseModule(void) {
 
 module:
     if (isModuleLoaded(name) || isModuleLoaded(prefixName)) {
-        lraise("Module is already loaded", previous().line, previous().collumn);
+        lraise(ERR_PARSER_MODULE_PREVIOUSLY_LOADED, previous().line, previous().collumn);
         callAllErr();
         // expectAndPass(SEMICOLON, "No Semicolon After Statement");
         return;
@@ -766,7 +767,7 @@ module:
     snprintf(path, sizeof(path), "pkg/%s.leyo", name);
     FILE *fp = fopen(path, "rb");
     if (!fp) {
-        lraise("Cannot open module", current().line, current().collumn);
+        lraise(ERR_PARSER_MODULE_CANNOT_OPEN, current().line, current().collumn);
         callAllErr();
         return;
     }
@@ -827,7 +828,7 @@ static void parseStatement(void) {
                 parseNative();
                 break;
             }
-            lraise("Internal Parser Error: Lexer Failure Caught", current().line, current().collumn);
+            lraise(ERR_PARSER_LEXER_FAILURE_CAUGHT, current().line, current().collumn);
             callAllErr();
             break;
 
@@ -854,13 +855,13 @@ static void parseStatement(void) {
                 functionCall(true);
                 consumeStatementTerminator("Function call: from module");
             } else {
-                lraise("Unknown identifier statement", current().line, current().collumn);
+                lraise(ERR_PARSER_UNKOWN_IDENT_STMT, current().line, current().collumn);
             }
             break;
         }
 
         default:
-            lraise("Unknown statement", current().line, current().collumn);
+            lraise(ERR_PARSER_UNKOWN_STMT, current().line, current().collumn);
             break;
     }
 }
@@ -889,12 +890,12 @@ ByteCodeResult parse(TokenStream *ts) {
     b->modulesLoaded = malloc(sizeof(char *) * b->moduleCap);
 
     if (!b->funcs) {
-        lraise("Failed to allocate function table", 0, 0);
+        lraise(ERR_PARSER_CANNOT_ALLOCATE, 0, 0);
         callAllErr();
     }
 
     if (!b->consts) {
-        lraise("Failed to allocate const table", 0, 0);
+        lraise(ERR_PARSER_CANNOT_ALLOCATE, 0, 0);
         callAllErr();
     }
 
@@ -902,7 +903,7 @@ ByteCodeResult parse(TokenStream *ts) {
     constBuf.data = malloc(65535);
 
     if (!constBuf.data) {
-        lraise("Failed to allocate const buffer", 0, 0);
+        lraise(ERR_PARSER_CANNOT_ALLOCATE, 0, 0);
         callAllErr();
     }
 

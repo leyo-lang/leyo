@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../include/errors.h"
+#include "../include/codes.h"
 #include <string.h>
 
 #ifdef _WIN32

@@ -1,5 +1,6 @@
 #include "../include/lyst.h"
 #include "../include/errors.h"
+#include "../include/codes.h"
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -1,4 +1,5 @@
 #include "../include/errors.h"
+#include "../include/codes.h"
 #include "../include/parser.h"
 #include "../include/bytecode.h"
 #include "../include/native.h"
@@ -57,17 +58,17 @@ static inline void push(Value v) {
 }
 
 static inline Value pop(void) {
-    if (vm->sp <= 0) {lraise("Underflow", vm->ip,0); callAllErr();};
+    if (vm->sp <= 0) {lraise(ERR_VM_UNDERFLOW, vm->ip,0); callAllErr();};
     return vm->stack[--vm->sp];
 }
 
 static inline Value peek(void) {
-    if (vm->sp <= 0) {lraise("Underflow", vm->ip,0); callAllErr();};
+    if (vm->sp <= 0) {lraise(ERR_VM_UNDERFLOW, vm->ip,0); callAllErr();};
     return vm->stack[vm->sp - 1];
 }
 
 static inline Value prev(void) {
-    if (vm->sp <= 1) {lraise("Underflow", vm->ip,0); callAllErr();};
+    if (vm->sp <= 1) {lraise(ERR_VM_UNDERFLOW, vm->ip,0); callAllErr();};
     return vm->stack[vm->sp - 2];
 }
 
@@ -377,7 +378,7 @@ static void subtraction(void) {
                     return;
 
                 default:
-                    lraise("Cannot subtract text type (chr+str) from number type", vm->ip, 0);
+                    lraise(ERR_VM_INVALID_BINARY_OP, vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -399,7 +400,7 @@ static void subtraction(void) {
                     return;
 
                 default:
-                    lraise("Cannot subtract text type (chr+str) from number type", vm->ip, 0);
+                    lraise(ERR_VM_INVALID_BINARY_OP, vm->ip, 0);
                     callAllErr();
                     return;
             }
@@ -620,7 +621,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
 
         if (!vmStd.consts) {
             logRuntime("Failed to decode constant pool");
-            lraise("Failed to decode constant pool", vm->ip, 0);
+            lraise(ERR_VM_CANNOT_DECODE_CONST_POOL, vm->ip, 0);
             callAllErr();
             return 1;
         }
@@ -654,7 +655,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
 
             case OP_SWAP: {
                 if (vm->sp < 2) {
-                    lraise("stack underflow on SWAP", vm->ip, 0);
+                    lraise(ERR_VM_UNDERFLOW, vm->ip, 0);
                     callAllErr();
                 }
 
@@ -811,7 +812,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
     }
 
     logRuntime("VM exited unexpectedly");
-    lraise("Exited Early", vm->ip, 0);
+    lraise(ERR_VM_UNEXPECTED_EXIT, vm->ip, 0);
     freeConstPool(vmStd.consts, vmStd.constCount);
     callAllErr();
     return 1;

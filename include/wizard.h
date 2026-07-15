@@ -2,6 +2,8 @@
 #define WIZARD_H
 
 #include "../include/errors.h"
+#include "../include/codes.h"
+#include "../include/codes.h"
 
 LogConfig readLogConfig(void);
 bool writeDefaultLyst(void);

@@ -5,6 +5,7 @@
 #include "../include/build.h"
 #include "../include/runner.h"
 #include "../include/errors.h"
+#include "../include/codes.h"
 #include "../include/vm.h"
 #include "../include/version.h"
 #include "../include/headerer.h"
@@ -58,7 +59,7 @@ int main(int argc, char *argv[]) {
 
     if (!lystLoad(".lyst")) {
         fprintf(stderr, "Failed to load .lyst configuration\n");
-        lraise("Initialisation Failed", 0,0);
+        lraise(ERR_LYST_FAILED_LOAD, 0,0);
         callAllErr();
         return -1;
     }
@@ -106,7 +107,7 @@ int main(int argc, char *argv[]) {
         }
 
         logController("Unknown global flag");
-        lraise("Unknown global flag", 0, 0);
+        lraise(ERR_UNKOWN_GLOBAL_FLAG, 0, 0);
         callAllErr();
     }
 
@@ -124,7 +125,7 @@ int main(int argc, char *argv[]) {
                 source = script;
             } else {
                 logController("Missing source file");
-                lraise("Missing source file", 0, 0);
+                lraise(ERR_MISSING_SOURCE_FILE, 0, 0);
                 callAllErr();
             }
         }
@@ -143,7 +144,7 @@ int main(int argc, char *argv[]) {
 
         if (!source) {
             logController("Missing source file");
-            lraise("Missing source file", 0, 0);
+            lraise(ERR_MISSING_SOURCE_FILE, 0, 0);
             callAllErr();
         }
 
@@ -163,7 +164,7 @@ int main(int argc, char *argv[]) {
 
         if (!file) {
             logController("Missing input file");
-            lraise("Missing input file", 0, 0);
+            lraise(ERR_MISSING_INPUT_FILE, 0, 0);
             callAllErr();
         }
 
@@ -210,7 +211,7 @@ int main(int argc, char *argv[]) {
                 system("rm -f logs/archive/*");
             #endif
         } else {
-            lraise("Unkown RM command", 0,0);
+            lraise(ERR_RM_COMMAND_UNKOWN, 0,0);
             callAllErr();
             return -1;
         }
@@ -218,7 +219,7 @@ int main(int argc, char *argv[]) {
     } else {
 
         logController("Unknown command line argument");
-        lraise("Unknown command line argument", 0, 0);
+        lraise(ERR_UNKNOWN_CLI_ARG, 0, 0);
         callAllErr();
     }
 

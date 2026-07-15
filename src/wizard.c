@@ -5,6 +5,7 @@
 #include <ctype.h>
 #include "../include/lyst.h"
 #include "../include/errors.h"
+#include "../include/codes.h"
 
 static void trimInput(char *text) {
     size_t len = strlen(text);

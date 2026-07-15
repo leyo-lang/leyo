@@ -2,6 +2,7 @@
 #define ERROR_H
 
 #include <stdbool.h>
+#include "../include/codes.h"
 
 enum { LOG_PATH_MAX = 512 };
 
@@ -18,7 +19,7 @@ typedef struct {
     char archivePath[LOG_PATH_MAX];
 } LogConfig;
 
-void lraise(const char *msg, int line, int col);
+void lraise(ErrorCode, int line, int col);
 void callAllErr(void);
 
 extern bool isErr;

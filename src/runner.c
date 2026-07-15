@@ -6,6 +6,7 @@
 #include "../include/vm.h"
 #include "../include/headerer.h"
 #include "../include/errors.h"
+#include "../include/codes.h"
 
 int run(char *filename, bool verbose) {
     {
@@ -16,7 +17,7 @@ int run(char *filename, bool verbose) {
 
     FILE *file = fopen(filename, "rb");
     if (!file) {
-        lraise("Failed to open .lybc file", 0, 0);
+        lraise(ERR_FILE_OPEN_ERROR, 0, 0);
         callAllErr();
         return -1;
     }

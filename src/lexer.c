@@ -1,5 +1,6 @@
 #include "../include/type.h"
 #include "../include/errors.h"
+#include "../include/codes.h"
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
@@ -180,7 +181,7 @@ static void handleNormal(void) {
         char buffer[48];
         snprintf(buffer, sizeof(buffer), "Invalid Character: %c", current());
         logBuildLexer(buffer);
-        lraise(buffer, l->line, l->collumn);
+        lraise(ERR_LEX_INVALID_CHAR, l->line, l->collumn);
         push(token(charToStr(c), UNKNOWN));
     }
 
@@ -196,14 +197,14 @@ static void handleString(void) {
 
     if (!buff) {
         logBuildLexer("String buffer allocation failed");
-        lraise("Out of memory", l->line, l->collumn);
+        lraise(ERR_LEX_OUT_OF_MEMORY, l->line, l->collumn);
         return;
     }
 
     while (true) {
         if (current() == '\n' || current() == '\0') {
             logBuildLexer("Unterminated string detected");
-            lraise("Unterminated String Literal", l->line, l->collumn);
+            lraise(ERR_LEX_UNTERMINATED_STR_LIT, l->line, l->collumn);
             free(buff);
             l->mode = M_NORMAL;
             return;
@@ -223,7 +224,7 @@ static void handleString(void) {
             if (!tmp) {
                 logBuildLexer("String realloc failed");
                 free(buff);
-                lraise("Out of memory", l->line, l->collumn);
+                lraise(ERR_LEX_OUT_OF_MEMORY, l->line, l->collumn);
                 return;
             }
             buff = tmp;
@@ -246,7 +247,7 @@ static void handleIdentifier(void) {
 
     if (!buff) {
         logBuildLexer("Identifier allocation failed");
-        lraise("Out of memory", l->line, l->collumn);
+        lraise(ERR_LEX_OUT_OF_MEMORY, l->line, l->collumn);
         return;
     }
 
@@ -267,7 +268,7 @@ static void handleIdentifier(void) {
             if (!tmp) {
                 logBuildLexer("Identifier realloc failed");
                 free(buff);
-                lraise("Out of memory", l->line, l->collumn);
+                lraise(ERR_LEX_OUT_OF_MEMORY, l->line, l->collumn);
                 return;
             }
             buff = tmp;
@@ -290,7 +291,7 @@ static void handleNumber(void) {
 
     if (!buff) {
         logBuildLexer("Number allocation failed");
-        lraise("Out of memory", l->line, l->collumn);
+        lraise(ERR_LEX_OUT_OF_MEMORY, l->line, l->collumn);
         return;
     }
 
@@ -310,7 +311,7 @@ static void handleNumber(void) {
         if (c == '.') {
             if (dotSeen) {
                 logBuildLexer("Invalid number format (multiple dots)");
-                lraise("Invalid number format", l->line, l->collumn);
+                lraise(ERR_LEX_INVALID_NUM, l->line, l->collumn);
                 break;
             }
             flag = FLT;
@@ -324,7 +325,7 @@ static void handleNumber(void) {
             if (!tmp) {
                 logBuildLexer("Number realloc failed");
                 free(buff);
-                lraise("Out of memory", l->line, l->collumn);
+                lraise(ERR_LEX_OUT_OF_MEMORY, l->line, l->collumn);
                 return;
             }
             buff = tmp;
