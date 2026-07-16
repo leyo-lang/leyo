@@ -801,10 +801,12 @@ module:
     uint32_t oldPos = b->pos;
     char oldFuncPrefix[256];
     snprintf(oldFuncPrefix, sizeof(oldFuncPrefix), "%s", b->funcPrefix);
+    char *oldCurrentFileName = b->currentFileName;
 
     b->tokens = ts.stream;
     b->count = ts.count;
     b->pos = 0;
+    b->currentFileName = path;
     snprintf(b->funcPrefix, sizeof(b->funcPrefix), "%s::", prefixName);
 
     while (current().type != ENDOFSTREAM) {
@@ -820,6 +822,7 @@ module:
     b->tokens = oldTokens;
     b->count = oldCount;
     b->pos = oldPos;
+    b->currentFileName = oldCurrentFileName;
     snprintf(b->funcPrefix, sizeof(b->funcPrefix), "%s", oldFuncPrefix);
 
     inStd = false;
@@ -879,7 +882,7 @@ static void parseStatement(void) {
     }
 }
 
-ByteCodeResult parse(TokenStream *ts) {
+ByteCodeResult parse(TokenStream *ts, char *currentFileName) {
     logBuildParser("Parser started");
 
     logBuildParser("Assigning parser state");
@@ -901,6 +904,7 @@ ByteCodeResult parse(TokenStream *ts) {
     b->moduleCap = 8;
     b->moduleAmt = 0;
     b->modulesLoaded = malloc(sizeof(char *) * b->moduleCap);
+    b->currentFileName = currentFileName;
 
     if (!b->funcs) {
         lraise(ERR_PARSER_CANNOT_ALLOCATE, 0, 0);

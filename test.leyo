@@ -5,8 +5,10 @@ fnc hi() <int> {
     rtn 2;
 }
 
-fnc main() <int> {
-    // expect 5
-    int res = hello::hello() + hi() + test::number() - 1;
-    rtn res;
-}
+
+// 
+// fnc main() <int> {
+//     // expect 5
+//     int res = hello::hello() + hi() + test::number() - 1;
+//     rtn res;
+// }
