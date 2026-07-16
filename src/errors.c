@@ -389,9 +389,7 @@ static void rotateLogIfNeeded(const char *path) {
     }
 
     if (rename(path, candidate) != 0) {
-        fprintf(stderr,
-                "Warning: could not archive existing log '%s'\n",
-                path);
+        lraise(ERR_FILE_CANNOT_DEL, 0,0);
     }
 }
 
@@ -544,7 +542,7 @@ void initLog(const char *filename) {
     logFile = fopen(logConfig.path, "w");
 
     if (!logFile) {
-        fprintf(stderr, "Warning: failed to open log file '%s'\n", logConfig.path);
+        lraise(ERR_FILE_OPEN_WARN, 0,0),
         logConfig.enabled = false;
         return;
     }

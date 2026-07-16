@@ -5,7 +5,12 @@
 const Error errorTable[] = {
     // File
     {ERR_FILE_OPEN_ERROR,                "F001", "Failed to open file", .fatal=true},
-
+    {ERR_FILE_TOO_SMALL,                 "F002", "File is too small to be valid", .fatal=true},
+    {ERR_FILE_CANNOT_DEL,                "F003", "File could not be archived or deleted", .fatal=false},
+    {ERR_FILE_OPEN_WARN,                 "F004", "Failed to open file", .fatal=false},    
+    {ERR_FILE_WRITE_ERROR,               "F005", "Failed to write to file", .fatal=false},
+    {ERR_FILE_TEMP_NOT_AVAILABLE,        "F006", "Could not create tempory files/folders", .fatal=false},
+    
     // CLI
     {ERR_MISSING_SOURCE_FILE,            "C001", "Missing source file", .fatal=true},
     {ERR_MISSING_INPUT_FILE,             "C002", "Missing input file", .fatal=true},

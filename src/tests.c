@@ -36,19 +36,19 @@ static int createTmpFolder(void) {
         char uniquePath[MAX_PATH];
 
         if (!GetTempPathA(MAX_PATH, tempPath)) {
-            fprintf(stderr, "GetTempPath failed\n");
+            lraise(ERR_FILE_TEMP_NOT_AVAILABLE, 0,0);
             return 1;
         }
 
         if (!GetTempFileNameA(tempPath, "LYO", 0, uniquePath)) {
-            fprintf(stderr, "GetTempFileName failed\n");
+            lraise(ERR_FILE_TEMP_NOT_AVAILABLE, 0,0);
             return 1;
         }
 
         DeleteFileA(uniquePath);
 
         if (!CreateDirectoryA(uniquePath, NULL)) {
-            fprintf(stderr, "CreateDirectory failed: %lu\n", GetLastError());
+            lraise(ERR_FILE_TEMP_NOT_AVAILABLE, 0,0);
             return 1;
         }
 
@@ -61,7 +61,7 @@ static int createTmpFolder(void) {
 
         char *dir = mkdtemp(template);
         if (!dir) {
-            perror("mkdtemp");
+            lraise(ERR_FILE_TEMP_NOT_AVAILABLE, 0,0);
             return 1;
         }
 
@@ -146,7 +146,7 @@ int testLeyo(const char *leyoBin) {
 
     f = fopen(sourceFile, "w");
     if (!f) {
-        fprintf(stderr, "Failed to create source file\n");
+        lraise(ERR_FILE_WRITE_ERROR, 0,0);
         goto cleanup;
     }
 
@@ -161,13 +161,13 @@ int testLeyo(const char *leyoBin) {
              leyoBin, sourceFile, outputFile);
 
     if (runCommand(cmd)) {
-        fprintf(stderr, "Build command failed\n");
+        writeTest("Build command failed\n");
         goto cleanup;
     }
 
     f = fopen(outputFile, "rb");
     if (!f) {
-        fprintf(stderr, "Build did not produce output\n");
+        writeTest("Build did not produce output\n");
         goto cleanup;
     }
     fclose(f);
@@ -180,7 +180,7 @@ int testLeyo(const char *leyoBin) {
              leyoBin, outputFile);
 
     if (runCommand(cmd)) {
-        fprintf(stderr, "Run command failed\n");
+        writeTest("Run command failed\n");
         goto cleanup;
     }
 
@@ -191,7 +191,7 @@ int testLeyo(const char *leyoBin) {
              leyoBin, outputFile);
 
     if (runCommand(cmd)) {
-        fprintf(stderr, "Disassemble command failed\n");
+        writeTest("Disassemble command failed\n");
         goto cleanup;
     }
 

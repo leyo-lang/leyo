@@ -187,7 +187,7 @@ bool runInitWizard(void) {
             archivePath,
             buildIn,
             buildOut)) {
-        fprintf(stderr, "Failed to write .lyst\n");
+        lraise(ERR_FILE_WRITE_ERROR, 0,0);
         return false;
     }
 

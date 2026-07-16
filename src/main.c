@@ -58,7 +58,6 @@ int main(int argc, char *argv[]) {
     }
 
     if (!lystLoad(".lyst")) {
-        fprintf(stderr, "Failed to load .lyst configuration\n");
         lraise(ERR_LYST_FAILED_LOAD, 0,0);
         callAllErr();
         return -1;

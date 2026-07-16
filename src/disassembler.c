@@ -182,7 +182,7 @@ int dis(char *filename, bool flag_justHex, bool flag_head) {
 
     if ((size_t)size <= ENTRY_POINT) {
         logController("Disassembly target too small");
-        fprintf(stderr, "File too small\n");
+        lraise(ERR_FILE_TOO_SMALL, 0,0);
         free(data);
         return 1;
     } 
