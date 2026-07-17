@@ -60,7 +60,7 @@ static void printByteCode(ByteCodeResult* bc) {
     logController("Finished printing bytecode output");
 }
 
-int build(char *filename, char *bcrfilename, bool isFlnameScript) {
+int build(char *filename, char *bcrfilename, bool isFlnameScript, bool dump) {
     logController("Build started");
     char *buffer = NULL;
 
@@ -108,14 +108,16 @@ tokenising:
     TokenStream ts = tokenise(buffer);
     logController("Tokenisation completed");
 
-    printTokenStream(ts);
-
+    if (dump) {
+        printTokenStream(ts);
+    }
+    
     if (isErr) {
         logController("Errors detected after tokenisation");
         callAllErr();
     }
 
-    ByteCodeResult bcr = headThis(parse(&ts));
+    ByteCodeResult bcr = headThis(parse(&ts, filename));
 
     logController("Parsing to bytecode completed");
 
@@ -125,7 +127,9 @@ tokenising:
         logController("Bytecode generation failed or empty");
     }
 
-    printByteCode(&bcr);
+    if (dump) {
+        printByteCode(&bcr);
+    }
 
     if (isErr) {
         logController("Errors detected after parsing stage");

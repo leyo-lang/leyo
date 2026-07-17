@@ -21,7 +21,7 @@ int repl(void) {
         tokens = tokenise(buff);
         if (strcmp(tokens.stream[0].value, "exit") == 0) {return 0;};
 
-        res = parse(&tokens);
+        res = parse(&tokens, "REPL");
 
         runVM(res, false);
     }

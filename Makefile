@@ -97,6 +97,9 @@ endif
 run: all
 	$(TARGET)
 
+release: CFLAGS += -O2 -DNDEBUG -flto
+release: clean all
+
 clean:
 ifeq ($(OS),Windows_NT)
 	-del /Q $(BUILD_DIR)\*.o 2>nul
