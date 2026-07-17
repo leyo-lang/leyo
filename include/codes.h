@@ -93,10 +93,18 @@ typedef struct {
     bool fatal; // if fatal or recoverable
 } Error;
 
+typedef enum {
+    WF_VM,
+    WF_PARSER,
+    WF_GENERAL,
+} WhereFrom;
+
 typedef struct {
     ErrorCode ec; // like ERR_ZERO_DIV
     int line;
     int column;
+    char filename[512];
+    WhereFrom wf;
 } RaisedError;
 
 extern const Error errorTable[];

@@ -135,7 +135,7 @@ int main(int argc, char *argv[]) {
             dest = "a.lybc";
         }
 
-        return build(source, dest, isScript);
+        return build(source, dest, isScript, isFlag(&parser, "-d"));
 
     } else if (isCommand(&parser, "run")) {
 
@@ -177,7 +177,7 @@ int main(int argc, char *argv[]) {
 
         char *in = (char*)lystGet("build/in");
         char *out = (char*)lystGet("build/out");
-        return build(in, out, false);
+        return build(in, out, false, false); // TODO fix up and add lyst setting
 
     } else if (isCommand(&parser, "github")) {
         logController("Opening Github");

@@ -171,10 +171,7 @@ static const char *getBaseName(const char *path) {
     return slash > backslash ? slash + 1 : backslash + 1;
 }
 
-static void buildArchiveTarget(const char *archiveDir,
-                              const char *sourceName,
-                              char *out,
-                              size_t outSize) {
+static void buildArchiveTarget(const char *archiveDir, const char *sourceName, char *out, size_t outSize) {
     copyPath(out, outSize, archiveDir);
     appendPath(out, outSize, sourceName);
 
@@ -205,9 +202,7 @@ static void buildArchiveTarget(const char *archiveDir,
     }
 }
 
-static void moveOrDeleteOldLog(const char *fullPath,
-                               const char *archiveDir,
-                               RetentionStats *stats) {
+static void moveOrDeleteOldLog(const char *fullPath, const char *archiveDir, RetentionStats *stats) {
     if (logConfig.retentionAction == 0) {
         if (remove(fullPath) == 0) {
             stats->deleted++;
@@ -224,10 +219,7 @@ static void moveOrDeleteOldLog(const char *fullPath,
     }
 }
 
-static void sweepCandidate(const char *fullPath,
-                          const char *archiveDir,
-                          time_t now,
-                          RetentionStats *stats) {
+static void sweepCandidate(const char *fullPath, const char *archiveDir, time_t now, RetentionStats *stats) {
     struct stat st;
 
     if (stat(fullPath, &st) != 0) {
@@ -248,10 +240,7 @@ static void sweepCandidate(const char *fullPath,
     moveOrDeleteOldLog(fullPath, archiveDir, stats);
 }
 
-static void sweepLogsInDirectory(const char *logDir,
-                                 const char *archiveDir,
-                                 const char *activeBase,
-                                 RetentionStats *stats) {
+static void sweepLogsInDirectory(const char *logDir, const char *archiveDir, const char *activeBase, RetentionStats *stats) {
     time_t now = time(NULL);
 
 #ifdef _WIN32
@@ -504,15 +493,31 @@ void lraise(ErrorCode code, int line, int col) {
     }
 }
 
+static void printErr(RaisedError *err, const Error *related) {
+    if (err->wf == WF_GENERAL) {
+        printf("[%s] %s\n",
+            related->name,
+            related->msg);
+    } else if (err->wf == WF_VM) {
+        printf("[%s] %s (%d)\n",
+            related->name,
+            related->msg,
+            err->line);
+    } else if (err->wf == WF_PARSER) {
+        printf("[%s] %s (%s:%d:%d)\n",
+            related->name,
+            related->msg,
+            err->filename,
+            err->line,
+            err->column);
+    }
+}
+
 void callAllErr(void) {
     for (int i = 0; i < error_count; i++) {
         const Error *err = lookupError(errors[i].ec);
 
-        printf("[%s] %s (%d:%d)\n",
-            err->name,
-            err->msg,
-            errors[i].line,
-            errors[i].column);
+        printErr(&errors[i], err);
     }
 
     closeLog();

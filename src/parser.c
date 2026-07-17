@@ -587,13 +587,17 @@ static void parseNative(void) {
 
     if (inStd) {
         // if (strcmp(current().value, "_print") == 0) {nc = NAT_TRACE;} else
-        if (strcmp(current().value, "_print") == 0) {nc = NAT_PRINT; advance(); emit(OP_CONST_LOAD); emit16(emitConst());}
-    } else
-    if (strcmp(current().value, "log") == 0) {nc = NAT_LOG;} else
-    if (strcmp(current().value, "dump") == 0) {nc = NAT_DUMP;} else
-    if (strcmp(current().value, "trace") == 0) {nc = NAT_TRACE;} else
-    {lraise(ERR_PARSER_UNKOWN_NATIVE, current().line, current().collumn); callAllErr(); return;}
+        if (strcmp(current().value, "_print") == 0) {nc = NAT_PRINT; advance(); emit(OP_CONST_LOAD); emit16(emitConst()); goto emitNat;}
+    }
+    if (strcmp(current().value, "log") == 0) {nc = NAT_LOG; goto emitNat;} else
+    if (strcmp(current().value, "dump") == 0) {nc = NAT_DUMP; goto emitNat;} else
+    if (strcmp(current().value, "trace") == 0) {nc = NAT_TRACE; goto emitNat;}
+    
+    lraise(ERR_PARSER_UNKOWN_NATIVE, current().line, current().collumn);
+    callAllErr();
+    return;
 
+emitNat:
     emit(OP_CALL_NATIVE);
     emit((uint8_t)nc);
     expectAndPass(SEMICOLON);    

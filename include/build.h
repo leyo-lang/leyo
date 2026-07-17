@@ -3,6 +3,6 @@
 
 #include <stdbool.h>
 
-int build(char *filename, char *bcrfilename, bool isFlnameScript);
+int build(char *filename, char *bcrfilename, bool isFlnameScript, bool dump);
 
 #endif
