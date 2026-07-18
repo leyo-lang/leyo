@@ -569,7 +569,7 @@ static void parseVarDecl(void) {
 static void parseNative(void) {
     logBuildParser("Parsing Native Call");
     advance(); //past @
-    NativeCommand nc;
+    NativeCommand nc = NAT_UNKOWN;
 
     if (inStd) {
         // if (strcmp(current().value, "_print") == 0) {nc = NAT_TRACE;} else

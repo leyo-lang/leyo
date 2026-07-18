@@ -54,11 +54,11 @@ dkms.conf
 *.dwo
 
 # me
-a.lnk
+*.leyo
+*.lybc
 .vs
+.vscode
 logs/*.lylog
 logs/archive/*.lylog
-build/*.stamp
-bin/leyo
-bin/leyo.exe
-!bin/.gitkeep
+build
+bin
