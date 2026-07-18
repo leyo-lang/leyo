@@ -16,6 +16,7 @@
 #include "../include/diagnostics.h"
 #include "../include/helper.h"
 #include "../include/wizard.h"
+#include "../include/external.h"
 
 #ifndef GIT_COMMIT
 #define GIT_COMMIT "unknown"
@@ -24,16 +25,6 @@
 #ifndef GIT_DIRTY
 #define GIT_DIRTY "unknown"
 #endif
-
-void openGithub(void) {
-#ifdef _WIN32
-    system("start https://github.com/JoshRuds/Leyo");
-#elif __APPLE__
-    system("open https://github.com/JoshRuds/Leyo");
-#else
-    system("xdg-open https://github.com/JoshRuds/Leyo");
-#endif
-}
 
 int main(int argc, char *argv[]) {
     ArgParser parser;
