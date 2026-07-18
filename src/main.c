@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
     }
 
     if (!lystLoad(".lyst")) {
-        lraise(ERR_LYST_FAILED_LOAD, 0,0);
+        lraise(WF_GENERAL, ERR_LYST_FAILED_LOAD, 0,0, NULL);
         return -1;
     }
 
@@ -109,7 +109,7 @@ int main(int argc, char *argv[]) {
         }
 
         logController("Unknown global flag");
-        lraise(ERR_UNKOWN_GLOBAL_FLAG, 0, 0);
+        lraise(WF_GENERAL, ERR_UNKOWN_GLOBAL_FLAG, 0, 0, NULL);
     }
 
     
@@ -126,7 +126,7 @@ int main(int argc, char *argv[]) {
                 source = script;
             } else {
                 logController("Missing source file");
-                lraise(ERR_MISSING_SOURCE_FILE, 0, 0);
+                lraise(WF_GENERAL, ERR_MISSING_SOURCE_FILE, 0, 0, NULL);
             }
         }
 
@@ -144,7 +144,7 @@ int main(int argc, char *argv[]) {
 
         if (!source) {
             logController("Missing source file");
-            lraise(ERR_MISSING_SOURCE_FILE, 0, 0);
+            lraise(WF_GENERAL, ERR_MISSING_SOURCE_FILE, 0, 0, NULL);
         }
 
         return run(source, isFlag(&parser, "-V") || isFlag(&parser, "--verbose"));
@@ -163,7 +163,7 @@ int main(int argc, char *argv[]) {
 
         if (!file) {
             logController("Missing input file");
-            lraise(ERR_MISSING_INPUT_FILE, 0, 0);
+            lraise(WF_GENERAL, ERR_MISSING_INPUT_FILE, 0, 0, NULL);
         }
 
         bool hex = isFlag(&parser, "--hex");
@@ -209,13 +209,13 @@ int main(int argc, char *argv[]) {
                 system("rm -f logs/archive/*");
             #endif
         } else {
-            lraise(ERR_RM_COMMAND_UNKOWN, 0,0);
+            lraise(WF_GENERAL, ERR_RM_COMMAND_UNKOWN, 0,0, NULL);
             return -1;
         }
         return 0;
     } else {
         logController("Unknown command line argument");
-        lraise(ERR_UNKNOWN_CLI_ARG, 0, 0);
+        lraise(WF_GENERAL, ERR_UNKNOWN_CLI_ARG, 0, 0, NULL);
     }
 
     return -1;

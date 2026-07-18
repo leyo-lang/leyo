@@ -1,0 +1,5 @@
+fnc main() <int> {
+    int main = 'f';
+    // wrong assign type
+    main = 'x';
+}

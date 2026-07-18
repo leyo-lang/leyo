@@ -58,7 +58,7 @@ typedef struct {
     int moduleAmt;
     int moduleCap;
 
-    char *currentFileName;
+    char currentFileName[512];
 } ByteCoder;
 
 typedef struct {

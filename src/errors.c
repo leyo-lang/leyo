@@ -17,7 +17,7 @@
 #include "../include/codes.h"
 #include "../include/codes.h"
 
-#define STRICT_MODE 1
+#define STRICT_MODE 0
 
 static RaisedError errors[100];
 static int error_count = 0;
@@ -378,7 +378,7 @@ static void rotateLogIfNeeded(const char *path) {
     }
 
     if (rename(path, candidate) != 0) {
-        lraise(ERR_FILE_CANNOT_DEL, 0,0);
+        lraise(WF_GENERAL, ERR_FILE_CANNOT_DEL, 0,0, NULL);
     }
 }
 
@@ -468,7 +468,7 @@ const Error *lookupError(ErrorCode code) {
     return NULL;
 }
 
-void lraise(ErrorCode code, int line, int col) {
+void lraise(WhereFrom wf, ErrorCode code, int line, int col, char filename[512]) {
     const Error *err = lookupError(code);
 
     if (err == NULL) {
@@ -485,11 +485,14 @@ void lraise(ErrorCode code, int line, int col) {
     errors[error_count].ec = code;
     errors[error_count].line = line;
     errors[error_count].column = col;
-
+    errors[error_count].wf = wf;
+    if (filename) {
+        snprintf(errors[error_count].filename, 511, "%s", filename);
+    }
     error_count++;
 
     if (err->fatal || STRICT_MODE) {
-        callAllErr();
+        exit(1);
     }
 }
 
@@ -501,7 +504,7 @@ static void printErr(RaisedError *err, const Error *related) {
             related->msg);
     } else if (err->wf == WF_VM) {
         fprintf(stderr,
-            "[%s] %s (%d)\n",
+            "[%s] %s (ip: %d)\n",
             related->name,
             related->msg,
             err->line);
@@ -547,7 +550,7 @@ void initLog(const char *filename) {
     logFile = fopen(logConfig.path, "w");
 
     if (!logFile) {
-        lraise(ERR_FILE_OPEN_WARN, 0,0),
+        lraise(WF_GENERAL, ERR_FILE_OPEN_WARN, 0,0, NULL),
         logConfig.enabled = false;
         return;
     }

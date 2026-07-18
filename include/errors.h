@@ -19,7 +19,7 @@ typedef struct {
     char archivePath[LOG_PATH_MAX];
 } LogConfig;
 
-void lraise(ErrorCode, int line, int col);
+void lraise(WhereFrom wf, ErrorCode code, int line, int col, char filename[512]);
 void callAllErr(void);
 
 extern bool isErr;
