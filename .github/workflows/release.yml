@@ -89,9 +89,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
-          make clean
-
-          make \
+          make release \
             CC=${{ matrix.cc }} \
             CFLAGS="${{ matrix.cflags }}"
 
@@ -104,9 +102,7 @@ jobs:
         if: runner.os != 'Windows'
         shell: bash
         run: |
-          make clean
-
-          make \
+          make release \
             CC=${{ matrix.cc }} \
             CFLAGS="${{ matrix.cflags }}"
 
