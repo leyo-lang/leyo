@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <assert.h>
 
 #ifndef PATH_MAX
 #define PATH_MAX 4096
@@ -41,6 +42,58 @@ static void checkByteBuff(void) {
         logBuildParser("Doubling ByteBuff Capacity");
         b->byteCap = b->byteCap * 2;
         b->bytebuff = realloc(b->bytebuff, b->byteCap * sizeof(uint8_t));
+    }
+}
+
+static bool checkConstBuf(size_t needed) {
+    if (needed <= constBuf.capacity)
+        return true;
+
+    size_t newCap = constBuf.capacity * 2;
+
+    while (newCap < needed)
+        newCap *= 2;
+
+    uint8_t *newData = realloc(constBuf.data, newCap);
+
+    if (!newData) {
+        lraise(ERR_PARSER_CANNOT_ALLOCATE, 0, 0);
+        return false;
+    }
+
+    constBuf.data = newData;
+    constBuf.capacity = newCap;
+
+    return true;
+}
+
+static void checkConstBuff(void) {
+    if (b->constAmt >= b->constCap) {
+        size_t newCap = b->constCap * 2;
+
+        Value *newConsts = realloc(b->consts, newCap * sizeof(Value));
+        if (newConsts == NULL) {
+            lraise(ERR_PARSER_CANNOT_ALLOCATE, 0, 0);
+            return;
+        }
+
+        b->consts = newConsts;
+        b->constCap = newCap;
+    }
+}
+
+static void checkGlobalBuff(void) {
+    if (b->globalCount >= b->globalCap-1) {
+        size_t newCap = b->globalCap * 2;
+
+        Global *newGlobals = realloc(b->globals, newCap * sizeof(Global));
+        if (newGlobals == NULL) {
+            lraise(ERR_PARSER_CANNOT_ALLOCATE, 0, 0);
+            return;
+        }
+
+        b->globals = newGlobals;
+        b->globalCap = newCap;
     }
 }
 
@@ -163,6 +216,7 @@ static void patch32(uint32_t loc, uint32_t value) {
 }
 
 static void constEmit(uint8_t v) {
+    checkConstBuf(constBuf.length + 1);
     constBuf.data[constBuf.length++] = v;
 }
 
@@ -197,6 +251,7 @@ static TokenType getTypeVar(void) {
 
 static void serializeValue(Value *v) {
     constEmit((uint8_t)v->flag);
+    checkConstBuf(constBuf.length + 1);
 
     switch (v->flag) {
         case VAL_INT: {
@@ -257,6 +312,7 @@ static uint16_t emitConst(void) {
             break;
     }
     serializeValue(&v);
+    checkConstBuff();
     b->consts[b->constAmt++] = v;
     return b->constAmt-1;
 }
@@ -280,28 +336,48 @@ static bool isKeyword(char *tc) {
 }
 
 static int define(char *name, TokenType type) {
+    //printf("in def\n");
     isKeyword(name);
+    //puts("isnt kword");
     for (int i = 0; i < b->globalCount; i++) {
+        //printf("global[%d]: name=%p\n", i, (void *)b->globals[i].name);
+        //printf("search: name=%p\n", (void *)name);
+
+        if (!b->globals[i].name || !name) {
+            //printf("NULL name detected\n");
+            continue;
+        }
+
         if (strcmp(b->globals[i].name, name) == 0) {
-            lraise(ERR_PARSER_VAR_PERVIOUSLY_DEFINED, current().line, current().collumn);
+            lraise(ERR_PARSER_VAR_PERVIOUSLY_DEFINED,
+                current().line,
+                current().collumn);
             return b->globals[i].slot;
         }
     }
+    //puts("isnt glob");
     for (int i = 0; i < b->funcAmt; i++) {
         if (strcmp(b->funcs[i].name, name) == 0) {
             lraise(ERR_PARSER_FUNC_PERVIOUSLY_DEFINED, current().line, current().collumn);
             return b->funcs[i].address;
         }
     }
+    //printf("made passed checks\n");
     
+    checkGlobalBuff();
 
+    //printf("checked buffer\n");
+    
+    //assert(b->globalCount >= 0);
+    //assert(b->globalCount < b->globalCap);
 
-    int slot = b->globalCount;
+    int slot = b->globalCount++;
 
-    b->globals[b->globalCount].name = strdup(name);
-    b->globals[b->globalCount].slot = slot;
-    b->globals[b->globalCount].type = type;
-    b->globalCount++;
+    b->globals[slot].name = strdup(name);
+    b->globals[slot].slot = slot;
+    b->globals[slot].type = type;
+
+    //printf("fini\n");
 
     return slot;
 }
@@ -568,7 +644,9 @@ static void parseVarDecl(void) {
     expect(IDENTIFIER);
 
     char *name = current().value;
+    //printf("Abt to def\n");
     uint16_t slot = define(name, aim);
+    //printf("done def\n");
 
     expectAndPass(EQUALS);
 
@@ -583,7 +661,7 @@ static void parseVarDecl(void) {
 static void parseNative(void) {
     logBuildParser("Parsing Native Call");
     advance(); //past @
-    NativeCommand nc;
+    NativeCommand nc = NAT_UNKOWN;
 
     if (inStd) {
         // if (strcmp(current().value, "_print") == 0) {nc = NAT_TRACE;} else
@@ -895,12 +973,15 @@ ByteCodeResult parse(TokenStream *ts, char *currentFileName) {
     b->byteCap = 64;
     b->bytebuff = malloc(sizeof(uint8_t) * b->byteCap);
     b->byteIndex = 0;
-    b->globalCount = 0;
     b->funcs = malloc(sizeof(Func) * 1024);
     b->funcAmt = 0;
     b->funcPrefix[0] = '\0';
     b->constAmt = 0;
-    b->consts = malloc(sizeof(Value) * 1024);
+    b->constCap = 1;
+    b->consts = malloc(sizeof(Value) * b->constCap);
+    b->globalCount = 0;
+    b->globalCap = 16;
+    b->globals = malloc(b->globalCap * sizeof(Global));
     b->moduleCap = 8;
     b->moduleAmt = 0;
     b->modulesLoaded = malloc(sizeof(char *) * b->moduleCap);
@@ -917,7 +998,8 @@ ByteCodeResult parse(TokenStream *ts, char *currentFileName) {
     }
 
     constBuf.length = 0;
-    constBuf.data = malloc(65535);
+    constBuf.capacity = 65535;
+    constBuf.data = malloc(constBuf.capacity);
 
     if (!constBuf.data) {
         lraise(ERR_PARSER_CANNOT_ALLOCATE, 0, 0);

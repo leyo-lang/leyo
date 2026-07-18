@@ -43,11 +43,13 @@ typedef struct {
     uint32_t byteIndex;
     uint32_t byteCap;
 
-    Global globals[65535];
+    Global *globals;
     int globalCount;
+    int globalCap;
 
     Value *consts;
     int constAmt;
+    int constCap;
 
     Func *funcs;
     int funcAmt;
@@ -64,6 +66,7 @@ typedef struct {
 typedef struct {
     uint8_t *data;
     int length;
+    int capacity;
 } ConstBuffer;
 
 typedef struct {
