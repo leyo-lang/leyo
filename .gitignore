@@ -56,6 +56,7 @@ dkms.conf
 # me
 a.lnk
 .vs
+*.lylog
 logs/*.lylog
 logs/archive/*.lylog
 build/*.stamp
