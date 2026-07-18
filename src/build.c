@@ -110,12 +110,14 @@ tokenising:
 
     printTokenStream(ts);
 
+    /*
     if (isErr) {
         logController("Errors detected after tokenisation");
         callAllErr();
     }
+    */
 
-    ByteCodeResult bcr = headThis(parse(&ts));
+    ByteCodeResult bcr = headThis(parse(&ts, filename));
 
     logController("Parsing to bytecode completed");
 
@@ -127,11 +129,13 @@ tokenising:
 
     printByteCode(&bcr);
 
+    /*
     if (isErr) {
         logController("Errors detected after parsing stage");
         callAllErr();
     }
-
+    */
+    
     logController("Program built successfully");
 
     FILE* filebcr = fopen(bcrfilename, "wb");
@@ -139,7 +143,6 @@ tokenising:
     if (!filebcr) {
         logController("Fail to open bcr file");
         lraise(ERR_FILE_OPEN_ERROR, 0,0);
-        callAllErr();
     }
 
     fwrite(bcr.data, 1, bcr.length, filebcr);

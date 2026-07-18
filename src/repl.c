@@ -9,7 +9,6 @@
 int repl(void) {
     logController("REPL requested");
     lraise(ERR_NOT_IMPLEMENTED_YET, 0,0);
-    callAllErr();
     return 1;
     TokenStream tokens;
     ByteCodeResult res;
@@ -21,7 +20,7 @@ int repl(void) {
         tokens = tokenise(buff);
         if (strcmp(tokens.stream[0].value, "exit") == 0) {return 0;};
 
-        res = parse(&tokens);
+        res = parse(&tokens, "REPL");
 
         runVM(res, false);
     }

@@ -64,4 +64,5 @@ bin/leyo.exe
 !bin/.gitkeep
 logs/latest.lylog
 $null
-*.lybc
+/*.lybc
+/a.lybc

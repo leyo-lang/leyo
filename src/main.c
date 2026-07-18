@@ -37,6 +37,10 @@ void openGithub(void) {
 }
 
 int main(int argc, char *argv[]) {
+    // set atexits's
+    atexit(callAllErr);
+    atexit(closeLog);
+
     ArgParser parser;
     argParseSetup(&parser, argv, argc);
 
@@ -59,7 +63,6 @@ int main(int argc, char *argv[]) {
 
     if (!lystLoad(".lyst")) {
         lraise(ERR_LYST_FAILED_LOAD, 0,0);
-        callAllErr();
         return -1;
     }
 
@@ -107,7 +110,6 @@ int main(int argc, char *argv[]) {
 
         logController("Unknown global flag");
         lraise(ERR_UNKOWN_GLOBAL_FLAG, 0, 0);
-        callAllErr();
     }
 
     
@@ -125,7 +127,6 @@ int main(int argc, char *argv[]) {
             } else {
                 logController("Missing source file");
                 lraise(ERR_MISSING_SOURCE_FILE, 0, 0);
-                callAllErr();
             }
         }
 
@@ -144,7 +145,6 @@ int main(int argc, char *argv[]) {
         if (!source) {
             logController("Missing source file");
             lraise(ERR_MISSING_SOURCE_FILE, 0, 0);
-            callAllErr();
         }
 
         return run(source, isFlag(&parser, "-V") || isFlag(&parser, "--verbose"));
@@ -164,7 +164,6 @@ int main(int argc, char *argv[]) {
         if (!file) {
             logController("Missing input file");
             lraise(ERR_MISSING_INPUT_FILE, 0, 0);
-            callAllErr();
         }
 
         bool hex = isFlag(&parser, "--hex");
@@ -211,15 +210,12 @@ int main(int argc, char *argv[]) {
             #endif
         } else {
             lraise(ERR_RM_COMMAND_UNKOWN, 0,0);
-            callAllErr();
             return -1;
         }
         return 0;
     } else {
-
         logController("Unknown command line argument");
         lraise(ERR_UNKNOWN_CLI_ARG, 0, 0);
-        callAllErr();
     }
 
     return -1;

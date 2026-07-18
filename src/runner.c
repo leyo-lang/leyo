@@ -7,6 +7,7 @@
 #include "../include/headerer.h"
 #include "../include/errors.h"
 #include "../include/codes.h"
+#include "../include/version.h"
 
 int run(char *filename, bool verbose) {
     {
@@ -18,7 +19,6 @@ int run(char *filename, bool verbose) {
     FILE *file = fopen(filename, "rb");
     if (!file) {
         lraise(ERR_FILE_OPEN_ERROR, 0, 0);
-        callAllErr();
         return -1;
     }
 
@@ -30,7 +30,6 @@ int run(char *filename, bool verbose) {
     LeyoHeader header;
     if (fread(&header, sizeof(LeyoHeader), 1, file) != 1) {
         lraise(ERR_INVALID_BYTECODE_HEADER, 0, 0);
-        callAllErr();
         fclose(file);
         return -1;
     }
@@ -38,7 +37,6 @@ int run(char *filename, bool verbose) {
     long payloadSize = fileSize - sizeof(LeyoHeader);
     if (payloadSize < 0 || payloadSize < (long)header.code_size) {
         lraise(ERR_INVALID_BYTECODE, 0, 0);
-        callAllErr();
         fclose(file);
         return -1;
     }
@@ -46,16 +44,18 @@ int run(char *filename, bool verbose) {
     // Validate magic
     if (memcmp(header.magic, "LYBC", 4) != 0) {
         lraise(ERR_INVALID_BYTECODE_HEADER, 0, 0);
-        callAllErr();
         fclose(file);
         return -1;
+    }
+
+    if (strcmp(header.version, LEYO_VERSION) != 0) {
+        lraise(ERR_WARN_DIFFERERENT_VERSIONS, 0,0);
     }
 
     // Allocate bytecode buffer
     uint8_t *code = malloc(header.code_size);
     if (!code) {
         lraise(ERR_VM_CANNOT_ALLOCATE, 0, 0);
-        callAllErr();
         fclose(file);
         return -1;
     }
@@ -63,7 +63,6 @@ int run(char *filename, bool verbose) {
     // Read bytecode
     if (fread(code, 1, header.code_size, file) != header.code_size) {
         lraise(ERR_CANNOT_READ_BYTECODE, 0, 0);
-        callAllErr();
         free(code);
         fclose(file);
         return -1;
@@ -75,7 +74,6 @@ int run(char *filename, bool verbose) {
         constData = malloc((size_t)constSize);
         if (!constData) {
             lraise(ERR_VM_CANNOT_ALLOCATE, 0, 0);
-            callAllErr();
             free(code);
             fclose(file);
             return -1;
@@ -83,7 +81,6 @@ int run(char *filename, bool verbose) {
 
         if (fread(constData, 1, (size_t)constSize, file) != (size_t)constSize) {
             lraise(ERR_VM_INVALID_CONST_POOL, 0, 0);
-            callAllErr();
             free(constData);
             free(code);
             fclose(file);

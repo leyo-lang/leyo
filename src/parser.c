@@ -52,7 +52,6 @@ static Token previous(void) {
     if (b->count-1==b->pos) {
         logBuildParser("Too far - previoused into eos");
         lraise(ERR_PARSER_INTO_STARTOFSTREAM, current().line, current().collumn);
-        callAllErr();
     }
     return b->tokens[b->pos-1];
 }
@@ -61,7 +60,6 @@ static Token peek(void) {
     if (b->count-1==b->pos) {
         logBuildParser("Too far - peeked into eos");
         lraise(ERR_PARSER_INTO_ENDOFSTREAM, current().line, current().collumn);
-        callAllErr();
     }
     return b->tokens[b->pos+1];
 }
@@ -70,7 +68,6 @@ static Token peek2(void) {
     if (b->count-2==b->pos) {
         logBuildParser("Too far - peeked into eos");
         lraise(ERR_PARSER_INTO_ENDOFSTREAM, current().line, current().collumn);
-        callAllErr();
     }
     return b->tokens[b->pos+2];
 }
@@ -79,7 +76,6 @@ static void advance(void) {
     if (b->count+1==b->pos) {
         logBuildParser("Too far - advanced into eos");
         lraise(ERR_PARSER_INTO_ENDOFSTREAM, current().line, current().collumn);
-        callAllErr();
     }
     b->pos++;
 }
@@ -340,7 +336,6 @@ static int resolve(char *name) {
     }
 
     lraise(ERR_PARSER_VAR_NOT_DEFINED, current().line, current().collumn);
-    callAllErr();
     return -1;
 }
 
@@ -353,12 +348,10 @@ static uint32_t resolvef(char *name) {
 
     if (strcmp(name, "main") == 0) {
         lraise(ERR_PARSER_NO_ENTRY_POINT, current().line, current().collumn);
-        callAllErr();
         return -1;
     }
 
     lraise(ERR_PARSER_FUNC_NOT_DEFINED, current().line, current().collumn);
-    callAllErr();
     return -1;
 }
 
@@ -370,8 +363,6 @@ static TokenType resolveType(char *name) {
     }
 
     lraise(ERR_PARSER_VAR_NOT_DEFINED, current().line, current().collumn);
-
-    callAllErr();
     return UNKNOWN;
 }
 
@@ -383,7 +374,6 @@ static TokenType resolveTypef(char *name) {
     }
 
     lraise(ERR_PARSER_FUNC_NOT_DEFINED, current().line, current().collumn);
-    callAllErr();
     return UNKNOWN;
 }
 
@@ -416,7 +406,6 @@ static void consumeStatementTerminator(const char *ctx) {
         snprintf(buffer, sizeof(buffer), "%s: expected ';'", ctx ? ctx : "Statement");
         logBuildParser(buffer);
         lraise(ERR_PARSER_NO_SEMICOLON, current().line, current().collumn);
-        callAllErr();
         return;
     }
 
@@ -480,7 +469,6 @@ static TokenType parseAtom(void) { // small singular unit of expression (number,
 
         default: {
             lraise(ERR_PARSER_ATOM_UNKOWN, current().line, current().collumn);
-            callAllErr();
             break;
         }
     }
@@ -594,7 +582,6 @@ static void parseNative(void) {
     if (strcmp(current().value, "trace") == 0) {nc = NAT_TRACE; goto emitNat;}
     
     lraise(ERR_PARSER_UNKOWN_NATIVE, current().line, current().collumn);
-    callAllErr();
     return;
 
 emitNat:
@@ -674,7 +661,6 @@ static void parseFunction(void) {
     if (strcmp(current().value, "<") != 0) {
         logBuildParser("[FN] ERROR: missing '<'");
         lraise(ERR_PARSER_NO_OPEN_TYPE_BRACKET, current().line, current().collumn);
-        callAllErr();
         return;
     }
 
@@ -689,7 +675,6 @@ static void parseFunction(void) {
     if (strcmp(current().value, ">") != 0) {
         logBuildParser("[FN] ERROR: missing '>'");
         lraise(ERR_PARSER_NO_CLOSE_TYPE_BRACKET, current().line, current().collumn);
-        callAllErr();
         return;
     }
 
@@ -772,7 +757,6 @@ static void parseModule(void) {
 module:
     if (isModuleLoaded(name) || isModuleLoaded(prefixName)) {
         lraise(ERR_PARSER_MODULE_PREVIOUSLY_LOADED, previous().line, previous().collumn);
-        callAllErr();
         // expectAndPass(SEMICOLON, "No Semicolon After Statement");
         return;
     }
@@ -785,7 +769,6 @@ module:
     FILE *fp = fopen(path, "rb");
     if (!fp) {
         lraise(ERR_PARSER_MODULE_CANNOT_OPEN, current().line, current().collumn);
-        callAllErr();
         return;
     }
 
@@ -849,7 +832,6 @@ static void parseStatement(void) {
                 break;
             }
             lraise(ERR_PARSER_LEXER_FAILURE_CAUGHT, current().line, current().collumn);
-            callAllErr();
             break;
 
         case IDENTIFIER: {
@@ -912,12 +894,10 @@ ByteCodeResult parse(TokenStream *ts, char *currentFileName) {
 
     if (!b->funcs) {
         lraise(ERR_PARSER_CANNOT_ALLOCATE, 0, 0);
-        callAllErr();
     }
 
     if (!b->consts) {
         lraise(ERR_PARSER_CANNOT_ALLOCATE, 0, 0);
-        callAllErr();
     }
 
     constBuf.length = 0;
@@ -925,7 +905,6 @@ ByteCodeResult parse(TokenStream *ts, char *currentFileName) {
 
     if (!constBuf.data) {
         lraise(ERR_PARSER_CANNOT_ALLOCATE, 0, 0);
-        callAllErr();
     }
 
     logBuildParser("State assigned");

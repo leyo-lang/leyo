@@ -108,7 +108,17 @@ void disassemble(const uint8_t* code, size_t size) {
                 for (int i = 0; i < size; i++)
                     operand |= (uint64_t)code[ip++] << (i * 8);
 
-                printf(" %llu", (unsigned long long)operand);
+                if (op == OP_CALL || op == OP_JUMP) {
+                    int64_t signed_operand = (int64_t)operand;
+
+                    /* Sign-extend if the operand is smaller than 64 bits. */
+                    if (size < 8 && (operand & (1ULL << (size * 8 - 1))))
+                        signed_operand |= -(1LL << (size * 8));
+
+                    printf(" %lld", (long long)signed_operand);
+                } else {
+                    printf(" %llu", (unsigned long long)operand);
+                }
             }
 
             printf("\n");

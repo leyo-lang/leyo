@@ -58,17 +58,17 @@ static inline void push(Value v) {
 }
 
 static inline Value pop(void) {
-    if (vm->sp <= 0) {lraise(ERR_VM_UNDERFLOW, vm->ip,0); callAllErr();};
+    if (vm->sp <= 0) {lraise(ERR_VM_UNDERFLOW, vm->ip,0);};
     return vm->stack[--vm->sp];
 }
 
 static inline Value peek(void) {
-    if (vm->sp <= 0) {lraise(ERR_VM_UNDERFLOW, vm->ip,0); callAllErr();};
+    if (vm->sp <= 0) {lraise(ERR_VM_UNDERFLOW, vm->ip,0);};
     return vm->stack[vm->sp - 1];
 }
 
 static inline Value prev(void) {
-    if (vm->sp <= 1) {lraise(ERR_VM_UNDERFLOW, vm->ip,0); callAllErr();};
+    if (vm->sp <= 1) {lraise(ERR_VM_UNDERFLOW, vm->ip,0);};
     return vm->stack[vm->sp - 2];
 }
 
@@ -289,12 +289,10 @@ static void addition(void) {
     switch (lhs.flag) {
         case VAL_CHAR:
             lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
-            callAllErr();
             return;
 
         case VAL_STR:
             lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
-            callAllErr();
             return;
 
         case VAL_INT:
@@ -315,7 +313,6 @@ static void addition(void) {
 
                 default:
                     lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
-                    callAllErr();
                     return;
             }
 
@@ -337,7 +334,6 @@ static void addition(void) {
 
                 default:
                     lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
-                    callAllErr();
                     return;
             }
 
@@ -353,12 +349,10 @@ static void subtraction(void) {
     switch (lhs.flag) {
         case VAL_CHAR:
             lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
-            callAllErr();
             return;
 
         case VAL_STR:
             lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
-            callAllErr();
             return;
 
         case VAL_INT:
@@ -379,7 +373,6 @@ static void subtraction(void) {
 
                 default:
                     lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
-                    callAllErr();
                     return;
             }
 
@@ -401,7 +394,6 @@ static void subtraction(void) {
 
                 default:
                     lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
-                    callAllErr();
                     return;
             }
 
@@ -417,12 +409,10 @@ static void multiplication(void) {
     switch (lhs.flag) {
         case VAL_CHAR:
             lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
-            callAllErr();
             return;
 
         case VAL_STR:
             lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
-            callAllErr();
             return;
 
         case VAL_INT:
@@ -443,7 +433,6 @@ static void multiplication(void) {
 
                 default:
                     lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
-                    callAllErr();
                     return;
             }
 
@@ -465,7 +454,6 @@ static void multiplication(void) {
 
                 default:
                     lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
-                    callAllErr();
                     return;
             }
 
@@ -481,12 +469,10 @@ static void division(void) {
     switch (lhs.flag) {
         case VAL_CHAR:
             lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
-            callAllErr();
             return;
 
         case VAL_STR:
             lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
-            callAllErr();
             return;
 
         case VAL_INT:
@@ -507,7 +493,6 @@ static void division(void) {
 
                 default:
                     lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
-                    callAllErr();
                     return;
             }
 
@@ -529,7 +514,6 @@ static void division(void) {
 
                 default:
                     lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
-                    callAllErr();
                     return;
             }
 
@@ -545,12 +529,10 @@ static void power(void) {
     switch (lhs.flag) {
         case VAL_CHAR:
             lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
-            callAllErr();
             return;
 
         case VAL_STR:
             lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
-            callAllErr();
             return;
 
         case VAL_INT:
@@ -571,7 +553,6 @@ static void power(void) {
 
                 default:
                     lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
-                    callAllErr();
                     return;
             }
 
@@ -593,7 +574,6 @@ static void power(void) {
 
                 default:
                     lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
-                    callAllErr();
                     return;
             }
 
@@ -622,12 +602,14 @@ int runVM(ByteCodeResult bc, bool verbose) {
         if (!vmStd.consts) {
             logRuntime("Failed to decode constant pool");
             lraise(ERR_VM_CANNOT_DECODE_CONST_POOL, vm->ip, 0);
-            callAllErr();
             return 1;
         }
 
         logRuntime("Constant pool loaded into VM");
     }
+
+    //void fcp() {freeConstPool()};
+    //atexit(freeConstPool);
 
     while (1) {
         uint8_t op = readByte();
@@ -656,7 +638,6 @@ int runVM(ByteCodeResult bc, bool verbose) {
             case OP_SWAP: {
                 if (vm->sp < 2) {
                     lraise(ERR_VM_UNDERFLOW, vm->ip, 0);
-                    callAllErr();
                 }
 
                 Value b = pop();
@@ -706,7 +687,6 @@ int runVM(ByteCodeResult bc, bool verbose) {
                 uint16_t slot = read16();
                 if (slot >= GLOBALS_MAX) {
                     lraise(ERR_VM_GLOBAL_SLOT_OUT_OF_RANGE, vm->ip, 0);
-                    callAllErr();
                     freeConstPool(vmStd.consts, vmStd.constCount);
                     return 1;
                 }
@@ -718,7 +698,6 @@ int runVM(ByteCodeResult bc, bool verbose) {
                 uint16_t slot = read16();
                 if (slot >= GLOBALS_MAX) {
                     lraise(ERR_VM_GLOBAL_SLOT_OUT_OF_RANGE, vm->ip, 0);
-                    callAllErr();
                     freeConstPool(vmStd.consts, vmStd.constCount);
                     return 1;
                 }
@@ -731,7 +710,6 @@ int runVM(ByteCodeResult bc, bool verbose) {
 
                 if (constIndex >= (uint16_t)vm->constCount) {
                     lraise(ERR_VM_CONST_OUT_OF_RANGE, vm->ip, 0);
-                    callAllErr();
                     freeConstPool(vmStd.consts, vmStd.constCount);
                     return 1;
                 }
@@ -752,7 +730,6 @@ int runVM(ByteCodeResult bc, bool verbose) {
                         break;
                     default:
                         lraise(ERR_VM_UNKOWN_NATIVE_COMMAND, vm->ip,0);
-                        callAllErr();
                         break;
                 }
                 break;
@@ -762,7 +739,6 @@ int runVM(ByteCodeResult bc, bool verbose) {
                 int32_t offset = (int32_t)read32();
                 if (offset < 0 && vm->ip < (uint32_t)(-offset)) {
                     lraise(ERR_VM_INVALID_JUMP, vm->ip,0);
-                    callAllErr();
                 }
                 if (verbose) {
                     char buf[64];
@@ -779,7 +755,6 @@ int runVM(ByteCodeResult bc, bool verbose) {
                 int32_t offset = (int32_t)read32();
                 if (offset < 0 && vm->ip < (uint32_t)(-offset)) {
                     lraise(ERR_VM_INVALID_JUMP, vm->ip,0);
-                    callAllErr();
                 }
                 if (verbose) {
                     char buf[64];
@@ -812,8 +787,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
     }
 
     logRuntime("VM exited unexpectedly");
-    lraise(ERR_VM_UNEXPECTED_EXIT, vm->ip, 0);
     freeConstPool(vmStd.consts, vmStd.constCount);
-    callAllErr();
+    lraise(ERR_VM_UNEXPECTED_EXIT, vm->ip, 0);
     return 1;
 }

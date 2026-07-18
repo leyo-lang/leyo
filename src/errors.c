@@ -495,16 +495,19 @@ void lraise(ErrorCode code, int line, int col) {
 
 static void printErr(RaisedError *err, const Error *related) {
     if (err->wf == WF_GENERAL) {
-        printf("[%s] %s\n",
+        fprintf(stderr,
+            "[%s] %s\n",
             related->name,
             related->msg);
     } else if (err->wf == WF_VM) {
-        printf("[%s] %s (%d)\n",
+        fprintf(stderr,
+            "[%s] %s (%d)\n",
             related->name,
             related->msg,
             err->line);
     } else if (err->wf == WF_PARSER) {
-        printf("[%s] %s (%s:%d:%d)\n",
+        fprintf(stderr,
+            "[%s] %s (%s:%d:%d)\n",
             related->name,
             related->msg,
             err->filename,
@@ -519,9 +522,6 @@ void callAllErr(void) {
 
         printErr(&errors[i], err);
     }
-
-    closeLog();
-    exit(1);
 }
 
 void initLog(const char *filename) {
