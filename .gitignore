@@ -54,11 +54,11 @@ dkms.conf
 *.dwo
 
 # me
-*.leyo
+/*.leyo
 *.lybc
 .vs
 .vscode
 logs/*.lylog
 logs/archive/*.lylog
-build
-bin
+build/
+bin/
