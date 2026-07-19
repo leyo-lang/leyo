@@ -97,6 +97,9 @@ endif
 run: all
 	$(TARGET)
 
+debug: clean all
+CFLAGS += -g -O0 -fsanitize=address -Wall -Wextra
+
 clean:
 ifeq ($(OS),Windows_NT)
 	-del /Q $(BUILD_DIR)\*.o 2>nul
