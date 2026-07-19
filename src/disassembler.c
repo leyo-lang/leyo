@@ -54,6 +54,8 @@ int opcode_has_operand(uint8_t op) {
     switch (op) {
         case OP_CONST_LOAD:
         case OP_PUSH:
+        case OP_STORE:
+        case OP_LOAD:
             return 2;
 
         case OP_CALL_NATIVE:
@@ -192,7 +194,7 @@ int dis(char *filename, bool flag_justHex, bool flag_head) {
 
     if ((size_t)size <= ENTRY_POINT) {
         logController("Disassembly target too small");
-        lraise(ERR_FILE_TOO_SMALL, 0,0);
+        lraise(WF_GENERAL, ERR_FILE_TOO_SMALL, 0,0, NULL);
         free(data);
         return 1;
     } 

@@ -18,7 +18,7 @@ int run(char *filename, bool verbose) {
 
     FILE *file = fopen(filename, "rb");
     if (!file) {
-        lraise(ERR_FILE_OPEN_ERROR, 0, 0);
+        lraise(WF_GENERAL, ERR_FILE_OPEN_ERROR, 0,0, NULL);
         return -1;
     }
 
@@ -29,40 +29,40 @@ int run(char *filename, bool verbose) {
     // Read header
     LeyoHeader header;
     if (fread(&header, sizeof(LeyoHeader), 1, file) != 1) {
-        lraise(ERR_INVALID_BYTECODE_HEADER, 0, 0);
+        lraise(WF_GENERAL, ERR_INVALID_BYTECODE_HEADER, 0,0, NULL);
         fclose(file);
         return -1;
     }
 
     long payloadSize = fileSize - sizeof(LeyoHeader);
     if (payloadSize < 0 || payloadSize < (long)header.code_size) {
-        lraise(ERR_INVALID_BYTECODE, 0, 0);
+        lraise(WF_GENERAL, ERR_INVALID_BYTECODE, 0,0, NULL);
         fclose(file);
         return -1;
     }
 
     // Validate magic
     if (memcmp(header.magic, "LYBC", 4) != 0) {
-        lraise(ERR_INVALID_BYTECODE_HEADER, 0, 0);
+        lraise(WF_GENERAL, ERR_INVALID_BYTECODE_HEADER, 0,0, NULL);
         fclose(file);
         return -1;
     }
 
     if (strcmp(header.version, LEYO_VERSION) != 0) {
-        lraise(ERR_WARN_DIFFERERENT_VERSIONS, 0,0);
+        lraise(WF_GENERAL, ERR_WARN_DIFFERERENT_VERSIONS, 0,0, NULL);
     }
 
     // Allocate bytecode buffer
     uint8_t *code = malloc(header.code_size);
     if (!code) {
-        lraise(ERR_VM_CANNOT_ALLOCATE, 0, 0);
+        lraise(WF_GENERAL, ERR_VM_CANNOT_ALLOCATE, 0,0, NULL);
         fclose(file);
         return -1;
     }
 
     // Read bytecode
     if (fread(code, 1, header.code_size, file) != header.code_size) {
-        lraise(ERR_CANNOT_READ_BYTECODE, 0, 0);
+        lraise(WF_GENERAL, ERR_CANNOT_READ_BYTECODE, 0,0, NULL);
         free(code);
         fclose(file);
         return -1;
@@ -73,14 +73,14 @@ int run(char *filename, bool verbose) {
     if (constSize > 0) {
         constData = malloc((size_t)constSize);
         if (!constData) {
-            lraise(ERR_VM_CANNOT_ALLOCATE, 0, 0);
+            lraise(WF_GENERAL, ERR_VM_CANNOT_ALLOCATE, 0,0, NULL);
             free(code);
             fclose(file);
             return -1;
         }
 
         if (fread(constData, 1, (size_t)constSize, file) != (size_t)constSize) {
-            lraise(ERR_VM_INVALID_CONST_POOL, 0, 0);
+            lraise(WF_GENERAL, ERR_VM_INVALID_CONST_POOL, 0,0, NULL);
             free(constData);
             free(code);
             fclose(file);
@@ -98,7 +98,7 @@ int run(char *filename, bool verbose) {
 
     logRuntime("VM START");
 
-    int result = runVM(bcr, verbose);
+    int result = runVM(bcr, verbose, filename);
 
     // IMPORTANT: only free original pointer
     free(code);

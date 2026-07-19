@@ -584,11 +584,13 @@ static void power(void) {
     }
 }
 
-int runVM(ByteCodeResult bc, bool verbose, char filename[512]) {
+int runVM(ByteCodeResult bc, bool verbose, const char filename[512]) {
     logRuntime("Starting VM execution");
     vmStd.code = bc.data;
     vmStd.ip = 0;
-    snprintf(vmStd.filename, 511, "%s", filename);
+    if (filename) {
+        snprintf(vmStd.filename, 511, "%s", filename);
+    }
     vmStd.consts = NULL;
     vmStd.constCount = 0;
     vmStd.callAmt = 0;

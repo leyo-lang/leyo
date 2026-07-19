@@ -482,6 +482,18 @@ void lraise(WhereFrom wf, ErrorCode code, int line, int col, char filename[512])
     if (error_count >= 100)
         return;
 
+    for (int i = 0; i < error_count; i++) {
+        if (errors[i].ec == code && errors[i].line == line && errors[i].column == col && errors[i].wf == wf) {
+            if (filename) {
+                if (strcmp(filename, errors[i].filename) == 0) {
+                    return;
+                }
+            } else {
+                return;
+            }
+        }
+    }
+
     errors[error_count].ec = code;
     errors[error_count].line = line;
     errors[error_count].column = col;
@@ -508,7 +520,7 @@ static void printErr(RaisedError *err, const Error *related) {
             related->name,
             related->msg,
             err->line);
-    } else if (err->wf == WF_PARSER) {
+    } else if (err->wf == WF_BUILD) {
         fprintf(stderr,
             "[%s] %s (%s:%d:%d)\n",
             related->name,

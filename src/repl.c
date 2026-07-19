@@ -8,7 +8,7 @@
 
 int repl(void) {
     logController("REPL requested");
-    lraise(ERR_NOT_IMPLEMENTED_YET, 0,0);
+    lraise(WF_GENERAL, ERR_NOT_IMPLEMENTED_YET, 0,0, NULL);
     return 1;
     TokenStream tokens;
     ByteCodeResult res;
@@ -22,6 +22,6 @@ int repl(void) {
 
         res = parse(&tokens, "REPL");
 
-        runVM(res, false);
+        runVM(res, false, "REPL");
     }
 }

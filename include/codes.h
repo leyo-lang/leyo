@@ -96,7 +96,7 @@ typedef struct {
 
 typedef enum {
     WF_VM,
-    WF_PARSER,
+    WF_BUILD,
     WF_GENERAL,
 } WhereFrom;
 

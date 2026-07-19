@@ -1,5 +1,4 @@
 fnc main() <int> {
-    int main = 'f';
-    // wrong assign type
-    main = 'x';
+    int x = 5;
+    rtn y;
 }
