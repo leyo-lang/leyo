@@ -188,6 +188,7 @@ static TokenType getTypeVar(void) {
     if (strcmp(current().value, "str") == 0) {return STRING;}
     if (strcmp(current().value, "flt") == 0) {return FLT;}
     if (strcmp(current().value, "chr") == 0) {return CHR;}
+//    if (strcmp(current().value, "nul") == 0) {return NUL;}
     return UNKNOWN;
 } 
 
@@ -573,10 +574,11 @@ static void parseNative(void) {
     logBuildParser("Parsing Native Call");
     advance(); //past @
     NativeCommand nc;
-
-    if (inStd) {
+    uint16_t temp;
+    if (strncmp(b->currentFileName, "pkg/std", 7) == 0) {
         // if (strcmp(current().value, "_print") == 0) {nc = NAT_TRACE;} else
-        if (strcmp(current().value, "_print") == 0) {nc = NAT_PRINT; advance(); emit(OP_CONST_LOAD); emit16(emitConst()); goto emitNat;}
+        if (strcmp(current().value, "_print") == 0) {nc = NAT_PRINT; advance(); emit(OP_CONST_LOAD); emit16(emitConst()); goto emitNat;} else
+        if (strcmp(current().value, "_quit") == 0) {nc = NAT_EXIT; advance(); sscanf(current().value, "%hu", &temp); emit(OP_PUSH); emit16(temp); goto emitNat;}
     }
     if (strcmp(current().value, "log") == 0) {nc = NAT_LOG; goto emitNat;} else
     if (strcmp(current().value, "dump") == 0) {nc = NAT_DUMP; goto emitNat;} else
@@ -593,6 +595,7 @@ emitNat:
 
 
 static void parseFuncBody(TokenType retType) {
+    bool has_ret = false;
     while (current().type != CLOSEBRACE &&
            current().type != ENDOFSTREAM) {
 
@@ -600,6 +603,7 @@ static void parseFuncBody(TokenType retType) {
 
         // RETURN HANDLING (no hacks, no eat)
         if (strcmp(current().value, "rtn") == 0) {
+            has_ret = true;
             advance();
             parseExpressionTC(retType);
 
@@ -617,6 +621,9 @@ static void parseFuncBody(TokenType retType) {
             lraise(WF_BUILD, ERR_PARSER_STALLED, current().line, current().collumn, b->currentFileName);
             break;
         }
+    }
+    if (!has_ret) {
+        lraise(WF_BUILD, ERR_PARSER_NO_RETURN, current().line, current().collumn, b->currentFileName);
     }
 }
 
@@ -727,6 +734,7 @@ static void parseModule(void) {
 
     if (strcmp(current().value, "std") == 0) {
         inStd = true;
+        logBuildParser("IN STD");
     }
 
     do {
@@ -757,7 +765,7 @@ static void parseModule(void) {
 
 module:
     if (isModuleLoaded(name) || isModuleLoaded(prefixName)) {
-        lraise(WF_BUILD, ERR_PARSER_MODULE_PREVIOUSLY_LOADED, previous().line, previous().collumn, b->currentFileName);
+        // lraise(WF_BUILD, ERR_PARSER_MODULE_PREVIOUSLY_LOADED, previous().line, previous().collumn, b->currentFileName);
         // expectAndPass(SEMICOLON, "No Semicolon After Statement");
         return;
     }
@@ -814,6 +822,7 @@ module:
     snprintf(b->funcPrefix, sizeof(b->funcPrefix), "%s", oldFuncPrefix);
 
     inStd = false;
+    logBuildParser("OUT STD");
 
     expectCurrent(SEMICOLON);
 }

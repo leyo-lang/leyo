@@ -733,6 +733,9 @@ int runVM(ByteCodeResult bc, bool verbose, const char filename[512]) {
                     case NAT_PRINT:
                         printValue(pop());  
                         break;
+                    case NAT_EXIT:
+                        return pop().as.i;
+                        break;
                     default:
                         lraise(WF_VM, ERR_VM_UNKOWN_NATIVE_COMMAND, vm->ip,0, vm->filename);
                         break;
@@ -779,7 +782,7 @@ int runVM(ByteCodeResult bc, bool verbose, const char filename[512]) {
 
             case OP_FINISH: {
                 freeConstPool(vmStd.consts, vmStd.constCount);
-                return 0;
+                return pop().as.i;
             }
 
             default: {

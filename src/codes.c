@@ -56,6 +56,7 @@ const Error errorTable[] = {
     {ERR_PARSER_NO_ENTRY_POINT,          "P025", "No entry point found", .fatal=true},
 
     {ERR_PARSER_NO_SEMICOLON,            "P026", "Expected semicolon ';'", .fatal=true},
+    {ERR_PARSER_NO_RETURN,               "P026", "Expected return statement in function", .fatal=false},
 
     // Bytecode
     {ERR_INVALID_BYTECODE_HEADER,        "B001", "Invalid bytecode header", .fatal=true},
