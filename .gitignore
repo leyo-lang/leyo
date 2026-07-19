@@ -67,3 +67,5 @@ logs/latest.lylog
 $null
 /*.lybc
 /a.lybc
+.vscode/
+.DS_Store

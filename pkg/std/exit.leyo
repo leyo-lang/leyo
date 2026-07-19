@@ -1,0 +1,9 @@
+fnc success() <int> {
+    @_quit 0;
+    rtn 0;
+}
+
+fnc failure() <int> {
+    @_quit 1;
+    rtn 0;
+}
