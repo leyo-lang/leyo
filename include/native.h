@@ -7,6 +7,7 @@ typedef enum {
     NAT_TRACE,
     NAT_PRINT,
     NAT_UNKOWN,
+    NAT_EXIT,
 } NativeCommand;
 
 #endif

@@ -1,0 +1,4 @@
+fnc main() <int> {
+    int x = 5;
+    rtn y;
+}

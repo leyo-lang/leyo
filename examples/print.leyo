@@ -1,0 +1,9 @@
+use std/io as io;
+use std/nul;
+use std/exit;
+
+fnc main() <int> {
+    io::print();
+    exit::success();
+    rtn 0;
+}

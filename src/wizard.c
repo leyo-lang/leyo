@@ -5,6 +5,7 @@
 #include <ctype.h>
 #include "../include/lyst.h"
 #include "../include/errors.h"
+#include "../include/codes.h"
 
 static void trimInput(char *text) {
     size_t len = strlen(text);
@@ -186,7 +187,7 @@ bool runInitWizard(void) {
             archivePath,
             buildIn,
             buildOut)) {
-        fprintf(stderr, "Failed to write .lyst\n");
+        lraise(WF_GENERAL, ERR_FILE_WRITE_ERROR, 0,0, NULL);
         return false;
     }
 

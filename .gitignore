@@ -58,7 +58,13 @@ dkms.conf
 *.lybc
 .vs
 .vscode
-logs/*.lylog
-logs/archive/*.lylog
 build/
 bin/
+*.lylog
+logs/latest.lylog
+$null
+/*.lybc
+/*.leyo
+/a.lybc
+.vscode/
+.DS_Store

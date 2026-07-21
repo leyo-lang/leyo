@@ -1,0 +1,3 @@
+fnc nul() <int> {
+   rtn 0;
+}

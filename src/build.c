@@ -4,6 +4,7 @@
 #include "../include/parser.h"
 #include "../include/headerer.h"
 #include "../include/errors.h"
+#include "../include/codes.h"
 
 static const char *tokenTypeName(TokenType t) {
     switch (t) {
@@ -78,7 +79,7 @@ int build(char *filename, char *bcrfilename, bool isFlnameScript) {
     FILE *file = fopen(filename, "rb");
     if (!file) {
         logController("Failed to open input file");
-        lraise("File open error", 0, 0);
+        lraise(WF_GENERAL, ERR_FILE_OPEN_ERROR, 0, 0, NULL);
         return 1;
     }
 
@@ -109,12 +110,14 @@ tokenising:
 
     printTokenStream(ts);
 
+    /*
     if (isErr) {
         logController("Errors detected after tokenisation");
         callAllErr();
     }
+    */
 
-    ByteCodeResult bcr = headThis(parse(&ts));
+    ByteCodeResult bcr = headThis(parse(&ts, filename));
 
     logController("Parsing to bytecode completed");
 
@@ -128,17 +131,16 @@ tokenising:
 
     if (isErr) {
         logController("Errors detected after parsing stage");
-        callAllErr();
+        return 1;
     }
-
+    
     logController("Program built successfully");
 
     FILE* filebcr = fopen(bcrfilename, "wb");
 
     if (!filebcr) {
         logController("Fail to open bcr file");
-        lraise("Failed to open file", 0,0);
-        callAllErr();
+        lraise(WF_GENERAL, ERR_FILE_OPEN_ERROR, 0,0, NULL);
     }
 
     fwrite(bcr.data, 1, bcr.length, filebcr);

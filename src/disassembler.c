@@ -4,6 +4,7 @@
 
 #include "../include/bytecode.h"
 #include "../include/errors.h"
+#include "../include/codes.h"
 
 /*
 static uint16_t read16(const uint8_t *code, size_t *ip) {
@@ -53,6 +54,8 @@ int opcode_has_operand(uint8_t op) {
     switch (op) {
         case OP_CONST_LOAD:
         case OP_PUSH:
+        case OP_STORE:
+        case OP_LOAD:
             return 2;
 
         case OP_CALL_NATIVE:
@@ -107,7 +110,17 @@ void disassemble(const uint8_t* code, size_t size) {
                 for (int i = 0; i < size; i++)
                     operand |= (uint64_t)code[ip++] << (i * 8);
 
-                printf(" %llu", (unsigned long long)operand);
+                if (op == OP_CALL || op == OP_JUMP) {
+                    int64_t signed_operand = (int64_t)operand;
+
+                    /* Sign-extend if the operand is smaller than 64 bits. */
+                    if (size < 8 && (operand & (1ULL << (size * 8 - 1))))
+                        signed_operand |= -(1LL << (size * 8));
+
+                    printf(" %lld", (long long)signed_operand);
+                } else {
+                    printf(" %llu", (unsigned long long)operand);
+                }
             }
 
             printf("\n");
@@ -181,7 +194,7 @@ int dis(char *filename, bool flag_justHex, bool flag_head) {
 
     if ((size_t)size <= ENTRY_POINT) {
         logController("Disassembly target too small");
-        fprintf(stderr, "File too small\n");
+        lraise(WF_GENERAL, ERR_FILE_TOO_SMALL, 0,0, NULL);
         free(data);
         return 1;
     } 

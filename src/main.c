@@ -5,6 +5,7 @@
 #include "../include/build.h"
 #include "../include/runner.h"
 #include "../include/errors.h"
+#include "../include/codes.h"
 #include "../include/vm.h"
 #include "../include/version.h"
 #include "../include/headerer.h"
@@ -27,6 +28,10 @@
 #endif
 
 int main(int argc, char *argv[]) {
+    // set atexits's
+    atexit(callAllErr);
+    atexit(closeLog);
+
     ArgParser parser;
     argParseSetup(&parser, argv, argc);
 
@@ -48,9 +53,7 @@ int main(int argc, char *argv[]) {
     }
 
     if (!lystLoad(".lyst")) {
-        fprintf(stderr, "Failed to load .lyst configuration\n");
-        lraise("Initialisation Failed", 0,0);
-        callAllErr();
+        lraise(WF_GENERAL, ERR_LYST_FAILED_LOAD, 0,0, NULL);
         return -1;
     }
 
@@ -97,8 +100,7 @@ int main(int argc, char *argv[]) {
         }
 
         logController("Unknown global flag");
-        lraise("Unknown global flag", 0, 0);
-        callAllErr();
+        lraise(WF_GENERAL, ERR_UNKOWN_GLOBAL_FLAG, 0, 0, NULL);
     }
 
     
@@ -115,8 +117,7 @@ int main(int argc, char *argv[]) {
                 source = script;
             } else {
                 logController("Missing source file");
-                lraise("Missing source file", 0, 0);
-                callAllErr();
+                lraise(WF_GENERAL, ERR_MISSING_SOURCE_FILE, 0, 0, NULL);
             }
         }
 
@@ -126,7 +127,7 @@ int main(int argc, char *argv[]) {
             dest = "a.lybc";
         }
 
-        return build(source, dest, isScript);
+        return build(source, dest, isScript, isFlag(&parser, "-d"));
 
     } else if (isCommand(&parser, "run")) {
 
@@ -134,8 +135,7 @@ int main(int argc, char *argv[]) {
 
         if (!source) {
             logController("Missing source file");
-            lraise("Missing source file", 0, 0);
-            callAllErr();
+            lraise(WF_GENERAL, ERR_MISSING_SOURCE_FILE, 0, 0, NULL);
         }
 
         return run(source, isFlag(&parser, "-V") || isFlag(&parser, "--verbose"));
@@ -154,8 +154,7 @@ int main(int argc, char *argv[]) {
 
         if (!file) {
             logController("Missing input file");
-            lraise("Missing input file", 0, 0);
-            callAllErr();
+            lraise(WF_GENERAL, ERR_MISSING_INPUT_FILE, 0, 0, NULL);
         }
 
         bool hex = isFlag(&parser, "--hex");
@@ -168,7 +167,7 @@ int main(int argc, char *argv[]) {
 
         char *in = (char*)lystGet("build/in");
         char *out = (char*)lystGet("build/out");
-        return build(in, out, false);
+        return build(in, out, false, false); // TODO fix up and add lyst setting
 
     } else if (isCommand(&parser, "github")) {
         logController("Opening Github");
@@ -201,16 +200,13 @@ int main(int argc, char *argv[]) {
                 system("rm -f logs/archive/*");
             #endif
         } else {
-            lraise("Unkown RM command", 0,0);
-            callAllErr();
+            lraise(WF_GENERAL, ERR_RM_COMMAND_UNKOWN, 0,0, NULL);
             return -1;
         }
         return 0;
     } else {
-
         logController("Unknown command line argument");
-        lraise("Unknown command line argument", 0, 0);
-        callAllErr();
+        lraise(WF_GENERAL, ERR_UNKNOWN_CLI_ARG, 0, 0, NULL);
     }
 
     return -1;

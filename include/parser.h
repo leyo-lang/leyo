@@ -57,6 +57,8 @@ typedef struct {
     char **modulesLoaded;
     int moduleAmt;
     int moduleCap;
+
+    char currentFileName[512];
 } ByteCoder;
 
 typedef struct {
@@ -70,6 +72,6 @@ typedef struct {
     ConstBuffer cb;
 } ByteCodeResult;
 
-ByteCodeResult parse(TokenStream *ts);
+ByteCodeResult parse(TokenStream *ts, char *currentFileName);
 
 #endif

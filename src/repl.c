@@ -1,14 +1,14 @@
 #include "../include/lexer.h"
 #include "../include/parser.h"
 #include "../include/errors.h"
+#include "../include/codes.h"
 #include "../include/vm.h"
 #include <stdio.h>
 #include <string.h>
 
 int repl(void) {
     logController("REPL requested");
-    lraise("Repl Not Built", 0,0);
-    callAllErr();
+    lraise(WF_GENERAL, ERR_NOT_IMPLEMENTED_YET, 0,0, NULL);
     return 1;
     TokenStream tokens;
     ByteCodeResult res;
@@ -20,8 +20,8 @@ int repl(void) {
         tokens = tokenise(buff);
         if (strcmp(tokens.stream[0].value, "exit") == 0) {return 0;};
 
-        res = parse(&tokens);
+        res = parse(&tokens, "REPL");
 
-        runVM(res, false);
+        runVM(res, false, "REPL");
     }
 }

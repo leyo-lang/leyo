@@ -14,10 +14,12 @@
 #endif
 
 #include "../include/errors.h"
+#include "../include/codes.h"
+#include "../include/codes.h"
 
-#define STRICT_MODE 1
+#define STRICT_MODE 0
 
-static Error errors[100];
+static RaisedError errors[100];
 static int error_count = 0;
 
 bool isErr = false;
@@ -169,10 +171,7 @@ static const char *getBaseName(const char *path) {
     return slash > backslash ? slash + 1 : backslash + 1;
 }
 
-static void buildArchiveTarget(const char *archiveDir,
-                              const char *sourceName,
-                              char *out,
-                              size_t outSize) {
+static void buildArchiveTarget(const char *archiveDir, const char *sourceName, char *out, size_t outSize) {
     copyPath(out, outSize, archiveDir);
     appendPath(out, outSize, sourceName);
 
@@ -203,9 +202,7 @@ static void buildArchiveTarget(const char *archiveDir,
     }
 }
 
-static void moveOrDeleteOldLog(const char *fullPath,
-                               const char *archiveDir,
-                               RetentionStats *stats) {
+static void moveOrDeleteOldLog(const char *fullPath, const char *archiveDir, RetentionStats *stats) {
     if (logConfig.retentionAction == 0) {
         if (remove(fullPath) == 0) {
             stats->deleted++;
@@ -222,10 +219,7 @@ static void moveOrDeleteOldLog(const char *fullPath,
     }
 }
 
-static void sweepCandidate(const char *fullPath,
-                          const char *archiveDir,
-                          time_t now,
-                          RetentionStats *stats) {
+static void sweepCandidate(const char *fullPath, const char *archiveDir, time_t now, RetentionStats *stats) {
     struct stat st;
 
     if (stat(fullPath, &st) != 0) {
@@ -246,10 +240,7 @@ static void sweepCandidate(const char *fullPath,
     moveOrDeleteOldLog(fullPath, archiveDir, stats);
 }
 
-static void sweepLogsInDirectory(const char *logDir,
-                                 const char *archiveDir,
-                                 const char *activeBase,
-                                 RetentionStats *stats) {
+static void sweepLogsInDirectory(const char *logDir, const char *archiveDir, const char *activeBase, RetentionStats *stats) {
     time_t now = time(NULL);
 
 #ifdef _WIN32
@@ -387,9 +378,7 @@ static void rotateLogIfNeeded(const char *path) {
     }
 
     if (rename(path, candidate) != 0) {
-        fprintf(stderr,
-                "Warning: could not archive existing log '%s'\n",
-                path);
+        lraise(WF_GENERAL, ERR_FILE_CANNOT_DEL, 0,0, NULL);
     }
 }
 
@@ -469,39 +458,85 @@ void _logError(const char *msg, int line, int collumn) {
     writeTagged("[ERROR]", buffer);
 }
 
-void lraise(const char *msg, int line, int col) {
-    _logError(msg, line, col);
+const Error *lookupError(ErrorCode code) {
+    for (unsigned int i = 0; i < errorTableAmt; i++) {
+        if (errorTable[i].ec == code) {
+            return &errorTable[i];
+        }
+    }
+
+    return NULL;
+}
+
+void lraise(WhereFrom wf, ErrorCode code, int line, int col, char filename[512]) {
+    const Error *err = lookupError(code);
+
+    if (err == NULL) {
+        _logError("Unknown error", line, col);
+        return;
+    }
+
+    _logError(err->msg, line, col);
     isErr = true;
 
-    if (error_count >= 100) return;
+    if (error_count >= 100)
+        return;
 
-    strncpy(errors[error_count].message,
-            msg,
-            sizeof(errors[error_count].message) - 1);
+    for (int i = 0; i < error_count; i++) {
+        if (errors[i].ec == code && errors[i].line == line && errors[i].column == col && errors[i].wf == wf) {
+            if (filename) {
+                if (strcmp(filename, errors[i].filename) == 0) {
+                    return;
+                }
+            } else {
+                return;
+            }
+        }
+    }
 
-    errors[error_count].message[sizeof(errors[error_count].message) - 1] = '\0';
-
+    errors[error_count].ec = code;
     errors[error_count].line = line;
     errors[error_count].column = col;
-
+    errors[error_count].wf = wf;
+    if (filename) {
+        snprintf(errors[error_count].filename, 511, "%s", filename);
+    }
     error_count++;
 
-    if (STRICT_MODE) {
-        callAllErr();
+    if (err->fatal || STRICT_MODE) {
+        exit(1);
+    }
+}
+
+static void printErr(RaisedError *err, const Error *related) {
+    if (err->wf == WF_GENERAL) {
+        fprintf(stderr,
+            "[%s] %s\n",
+            related->name,
+            related->msg);
+    } else if (err->wf == WF_VM) {
+        fprintf(stderr,
+            "[%s] %s (ip: %d)\n",
+            related->name,
+            related->msg,
+            err->line);
+    } else if (err->wf == WF_BUILD) {
+        fprintf(stderr,
+            "[%s] %s (%s:%d:%d)\n",
+            related->name,
+            related->msg,
+            err->filename,
+            err->line,
+            err->column);
     }
 }
 
 void callAllErr(void) {
     for (int i = 0; i < error_count; i++) {
-        Error currErr = errors[i];
-        printf("Error at position %d:%d: %s\n\n",
-               currErr.line,
-               currErr.column,
-               currErr.message);
-    }
+        const Error *err = lookupError(errors[i].ec);
 
-    closeLog();
-    exit(1);
+        printErr(&errors[i], err);
+    }
 }
 
 void initLog(const char *filename) {
@@ -527,7 +562,7 @@ void initLog(const char *filename) {
     logFile = fopen(logConfig.path, "w");
 
     if (!logFile) {
-        fprintf(stderr, "Warning: failed to open log file '%s'\n", logConfig.path);
+        lraise(WF_GENERAL, ERR_FILE_OPEN_WARN, 0,0, NULL),
         logConfig.enabled = false;
         return;
     }
