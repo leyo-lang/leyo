@@ -36,67 +36,6 @@ typedef enum {
 
 static void parseStatement(void);
 
-static void checkByteBuff(void) {
-    logBuildParser("Checking ByteBuff Size");
-    if (b->byteIndex >= b->byteCap - 1) {
-        logBuildParser("Doubling ByteBuff Capacity");
-        b->byteCap = b->byteCap * 2;
-        b->bytebuff = realloc(b->bytebuff, b->byteCap * sizeof(uint8_t));
-    }
-}
-
-static bool checkConstBuf(size_t needed) {
-    if (needed <= constBuf.capacity)
-        return true;
-
-    size_t newCap = constBuf.capacity * 2;
-
-    while (newCap < needed)
-        newCap *= 2;
-
-    uint8_t *newData = realloc(constBuf.data, newCap);
-
-    if (!newData) {
-        lraise(WF_BUILD, ERR_PARSER_CANNOT_ALLOCATE, current().line, current().collumn, b->currentFileName);
-        return false;
-    }
-
-    constBuf.data = newData;
-    constBuf.capacity = newCap;
-
-    return true;
-}
-
-static void checkConstBuff(void) {
-    if (b->constAmt >= b->constCap) {
-        size_t newCap = b->constCap * 2;
-
-        Value *newConsts = realloc(b->consts, newCap * sizeof(Value));
-        if (newConsts == NULL) {
-            lraise(WF_BUILD, ERR_PARSER_CANNOT_ALLOCATE, current().line, current().collumn, b->currentFileName);
-            return;
-        }
-
-        b->consts = newConsts;
-        b->constCap = newCap;
-    }
-}
-
-static void checkGlobalBuff(void) {
-    if (b->globalCount >= b->globalCap-1) {
-        size_t newCap = b->globalCap * 2;
-
-        Global *newGlobals = realloc(b->globals, newCap * sizeof(Global));
-        if (newGlobals == NULL) {
-            lraise(WF_BUILD, ERR_PARSER_CANNOT_ALLOCATE, current().line, current().collumn, b->currentFileName);
-            return;
-        }
-
-        b->globals = newGlobals;
-        b->globalCap = newCap;
-    }
-}
-
 static Token current(void) {
     return b->tokens[b->pos];
 }
@@ -169,6 +108,53 @@ static void expectAndPass(TokenType type) {
     }
     advance();
 }
+
+static void checkByteBuff(void) {
+    logBuildParser("Checking ByteBuff Size");
+    if (b->byteIndex >= b->byteCap - 1) {
+        logBuildParser("Doubling ByteBuff Capacity");
+        b->byteCap = b->byteCap * 2;
+        b->bytebuff = realloc(b->bytebuff, b->byteCap * sizeof(uint8_t));
+    }
+}
+
+static void checkConstBuff(void) {
+    if (b->constAmt >= b->constCap) {
+        size_t newCap = b->constCap * 2;
+
+        Value *newConsts = realloc(b->consts, newCap * sizeof(Value));
+        if (newConsts == NULL) {
+            lraise(WF_BUILD, ERR_PARSER_CANNOT_ALLOCATE, current().line, current().collumn, b->currentFileName);
+            return;
+        }
+
+        b->consts = newConsts;
+        b->constCap = newCap;
+    }
+}
+
+static bool checkConstBuf(size_t needed) {
+    if (needed <= constBuf.capacity)
+        return true;
+
+    size_t newCap = constBuf.capacity * 2;
+
+    while (newCap < needed)
+        newCap *= 2;
+
+    uint8_t *newData = realloc(constBuf.data, newCap);
+
+    if (!newData) {
+        lraise(WF_BUILD, ERR_PARSER_CANNOT_ALLOCATE, current().line, current().collumn, b->currentFileName);
+        return false;
+    }
+
+    constBuf.data = newData;
+    constBuf.capacity = newCap;
+
+    return true;
+}
+
 
 static void emit(uint8_t value) {
     checkByteBuff();
@@ -245,6 +231,21 @@ static TokenType getTypeVar(void) {
 //    if (strcmp(current().value, "nul") == 0) {return NUL;}
     return UNKNOWN;
 } 
+
+static void checkGlobalBuff(void) {
+    if (b->globalCount >= b->globalCap-1) {
+        size_t newCap = b->globalCap * 2;
+
+        Global *newGlobals = realloc(b->globals, newCap * sizeof(Global));
+        if (newGlobals == NULL) {
+            lraise(WF_BUILD, ERR_PARSER_CANNOT_ALLOCATE, current().line, current().collumn, b->currentFileName);
+            return;
+        }
+
+        b->globals = newGlobals;
+        b->globalCap = newCap;
+    }
+}
 
 static void serializeValue(Value *v) {
     constEmit((uint8_t)v->flag);
