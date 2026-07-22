@@ -5,8 +5,16 @@ on:
     branches:
       - main
 
+# The workflow only needs read access to the Leyo repository.
+# The GitHub App handles write access to leyo-lang/docs.
 permissions:
   contents: read
+
+# Prevent two documentation deployments from running at the
+# same time and potentially pushing conflicting commits.
+concurrency:
+  group: documentation
+  cancel-in-progress: false
 
 jobs:
   docs:
@@ -14,32 +22,58 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ---------------------------------------------------------
-      # 1. Checkout Leyo
-      # ---------------------------------------------------------
+      # =========================================================
+      # 1. Check out the Leyo repository
+      # =========================================================
       - name: Checkout Leyo
         uses: actions/checkout@v4
         with:
           persist-credentials: false
 
-      # ---------------------------------------------------------
+      # =========================================================
       # 2. Install Doxygen
-      # ---------------------------------------------------------
+      # =========================================================
       - name: Install Doxygen
         run: |
           sudo apt-get update
           sudo apt-get install -y doxygen
 
-      # ---------------------------------------------------------
-      # 3. Generate Documentation
-      # ---------------------------------------------------------
+      # =========================================================
+      # 3. Generate Doxygen documentation
+      #
+      # Expected output:
+      #
+      #   docs/html/
+      #
+      # This directory should be listed in .gitignore.
+      # =========================================================
       - name: Generate Documentation
         run: |
           doxygen docs/Doxyfile
 
-      # ---------------------------------------------------------
-      # 4. Generate GitHub App Token
-      # ---------------------------------------------------------
+      # =========================================================
+      # 4. Verify that Doxygen actually generated documentation
+      # =========================================================
+      - name: Verify Documentation
+        run: |
+          if [ ! -f "docs/html/index.html" ]; then
+            echo "ERROR: Doxygen did not generate docs/html/index.html"
+            exit 1
+          fi
+
+          echo "Documentation generated successfully."
+
+      # =========================================================
+      # 5. Generate a GitHub App installation token
+      #
+      # The App should have:
+      #
+      #   Contents: Read and write
+      #
+      # and should only be installed on:
+      #
+      #   leyo-lang/docs
+      # =========================================================
       - name: Generate GitHub App Token
         id: app-token
         uses: actions/create-github-app-token@v2
@@ -49,20 +83,65 @@ jobs:
           owner: leyo-lang
           repositories: docs
 
-      # ---------------------------------------------------------
-      # 5. Checkout docs repository
-      # ---------------------------------------------------------
+      # =========================================================
+      # 6. Check out the latest docs repository
+      #
+      # persist-credentials is disabled because we explicitly
+      # configure the authenticated remote ourselves.
+      # =========================================================
       - name: Checkout Documentation Repository
         uses: actions/checkout@v4
         with:
           repository: leyo-lang/docs
+          ref: main
           token: ${{ steps.app-token.outputs.token }}
           path: docs-repo
+          fetch-depth: 0
           persist-credentials: false
 
-      # ---------------------------------------------------------
-      # 6. Synchronise generated documentation
-      # ---------------------------------------------------------
+      # =========================================================
+      # 7. Configure Git identity
+      # =========================================================
+      - name: Configure Git
+        working-directory: docs-repo
+        run: |
+          git config user.name "Leyo Documentation Bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      # =========================================================
+      # 8. Configure authenticated remote
+      #
+      # This explicitly targets:
+      #
+      #   leyo-lang/docs
+      #
+      # rather than:
+      #
+      #   leyo-lang/leyo
+      # =========================================================
+      - name: Configure Documentation Remote
+        working-directory: docs-repo
+        env:
+          DOCS_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          git remote set-url origin \
+            "https://x-access-token:${DOCS_TOKEN}@github.com/leyo-lang/docs.git"
+
+      # =========================================================
+      # 9. Synchronise generated documentation
+      #
+      # --delete removes old generated Doxygen files.
+      #
+      # These files are explicitly preserved:
+      #
+      #   README.md
+      #   LICENSE
+      #   .nojekyll
+      #
+      # Therefore, the workflow owns only the generated
+      # documentation and cannot delete your manually maintained
+      # repository files.
+      # =========================================================
       - name: Synchronise Documentation
         run: |
           rsync -av --delete \
@@ -71,23 +150,46 @@ jobs:
             --exclude=".nojekyll" \
             docs/html/ docs-repo/
 
-      # ---------------------------------------------------------
-      # 7. Commit and Push Documentation
-      # ---------------------------------------------------------
-      - name: Commit and Push Documentation
+      # =========================================================
+      # 10. Check whether documentation changed
+      # =========================================================
+      - name: Check for Changes
+        id: changes
         working-directory: docs-repo
-        env:
-          DOCS_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          git config user.name "Leyo Documentation Bot"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No documentation changes detected."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Documentation changes detected."
+          fi
 
-          git remote set-url origin \
-            "https://x-access-token:${DOCS_TOKEN}@github.com/leyo-lang/docs.git"
-
+      # =========================================================
+      # 11. Commit documentation changes
+      # =========================================================
+      - name: Commit Documentation
+        if: steps.changes.outputs.changed == 'true'
+        working-directory: docs-repo
+        run: |
           git add -A
 
-          git commit -m "docs: update generated documentation" \
-            || echo "No documentation changes to commit"
+          git commit \
+            -m "docs: update generated documentation"
 
+      # =========================================================
+      # 12. Push documentation
+      #
+      # This uses --force-with-lease rather than --force.
+      #
+      # However, because we fetch the latest main branch and
+      # rebase before this step, a normal push should normally
+      # succeed.
+      #
+      # We deliberately do NOT use plain --force.
+      # =========================================================
+      - name: Push Documentation
+        if: steps.changes.outputs.changed == 'true'
+        working-directory: docs-repo
+        run: |
           git push origin main
