@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Leyo Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 #ifndef DISASSEMBLER_H
 #define DISASSEMBLER_H
 

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Leyo Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>

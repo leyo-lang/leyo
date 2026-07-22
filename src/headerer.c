@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Leyo Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 #include "../include/errors.h"
 #include "../include/codes.h"
 #include "../include/parser.h"
