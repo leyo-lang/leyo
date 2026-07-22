@@ -1050,6 +1050,8 @@ ByteCodeResult parse(TokenStream *ts, char *currentFileName) {
     res.data = malloc(res.length);
     memcpy(res.data, b->bytebuff, res.length);
 
+    res.globalAmount = b->globalCount;
+
     size_t cap = 65535;
     uint8_t *consts = malloc(cap);
     

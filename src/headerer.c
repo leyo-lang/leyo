@@ -18,7 +18,8 @@ ByteCodeResult headThis(ByteCodeResult bcr) {
     LeyoHeader header = {
         .magic = {'L', 'Y', 'B', 'C'},
         .flags = 0,
-        .code_size = bcr.length
+        .code_size = bcr.length,
+        .globalAmount = bcr.globalAmount,
     };
 
     snprintf(header.version, sizeof(header.version), "%s", LEYO_VERSION);

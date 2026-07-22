@@ -9,6 +9,7 @@ typedef struct {
     char version[64];
     uint16_t flags;
     uint32_t code_size;
+    uint64_t globalAmount;
 } LeyoHeader;
 
 

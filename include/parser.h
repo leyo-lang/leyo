@@ -2,6 +2,7 @@
 #define PARSER_H
 
 #include <stdint.h>
+#include <stdlib.h>
 #include "../include/type.h"
 
 typedef struct {
@@ -66,13 +67,14 @@ typedef struct {
 typedef struct {
     uint8_t *data;
     int length;
-    int capacity;
+    size_t capacity;
 } ConstBuffer;
 
 typedef struct {
     uint8_t *data;
     int length;
     ConstBuffer cb;
+    uint64_t globalAmount;
 } ByteCodeResult;
 
 ByteCodeResult parse(TokenStream *ts, char *currentFileName);
