@@ -14,18 +14,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # ---------------------------------------------------------
+      # 1. Checkout the Leyo repository
+      # ---------------------------------------------------------
       - name: Checkout Leyo
         uses: actions/checkout@v4
 
+      # ---------------------------------------------------------
+      # 2. Install Doxygen
+      # ---------------------------------------------------------
       - name: Install Doxygen
         run: |
           sudo apt-get update
           sudo apt-get install -y doxygen
 
+      # ---------------------------------------------------------
+      # 3. Generate Doxygen documentation
+      # ---------------------------------------------------------
       - name: Generate Documentation
         run: |
           doxygen docs/Doxyfile
 
+      # ---------------------------------------------------------
+      # 4. Generate a GitHub App installation token
+      # ---------------------------------------------------------
       - name: Generate GitHub App Token
         id: app-token
         uses: actions/create-github-app-token@v2
@@ -35,6 +47,9 @@ jobs:
           owner: leyo-lang
           repositories: docs
 
+      # ---------------------------------------------------------
+      # 5. Checkout the documentation repository
+      # ---------------------------------------------------------
       - name: Checkout Documentation Repository
         uses: actions/checkout@v4
         with:
@@ -42,6 +57,11 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           path: docs-repo
 
+      # ---------------------------------------------------------
+      # 6. Synchronise generated documentation
+      #
+      # README.md, LICENSE and .nojekyll are preserved.
+      # ---------------------------------------------------------
       - name: Synchronise Documentation
         run: |
           rsync -av --delete \
@@ -50,15 +70,24 @@ jobs:
             --exclude=".nojekyll" \
             docs/html/ docs-repo/
 
+      # ---------------------------------------------------------
+      # 7. Commit and push generated documentation
+      # ---------------------------------------------------------
       - name: Commit and Push Documentation
         working-directory: docs-repo
+        env:
+          DOCS_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           git config user.name "Leyo Documentation Bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Explicitly set the remote to the docs repository
+          # using the GitHub App token.
+          git remote set-url origin "https://x-access-token:${DOCS_TOKEN}@github.com/leyo-lang/docs.git"
 
           git add -A
 
           git commit -m "docs: update generated documentation" \
             || echo "No documentation changes to commit"
 
-          git push
+          git push origin main
