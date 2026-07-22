@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Leyo Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 #ifndef TYPE_H
 #define TYPE_H
 #define MAX_TOKENS_PER_LINE 256
