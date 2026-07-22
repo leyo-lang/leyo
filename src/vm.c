@@ -25,6 +25,8 @@ typedef struct {
     uint8_t *code;
     uint32_t ip;
 
+    char filename[512];
+
     Value *stack;
     uint32_t sp;
     uint32_t stackCap;
@@ -59,17 +61,17 @@ static inline void push(Value v) {
 }
 
 static inline Value pop(void) {
-    if (vm->sp <= 0) {lraise(ERR_VM_UNDERFLOW, vm->ip,0); callAllErr();};
+    if (vm->sp <= 0) {lraise(WF_VM, ERR_VM_UNDERFLOW, vm->ip,0, vm->filename);};
     return vm->stack[--vm->sp];
 }
 
 static inline Value peek(void) {
-    if (vm->sp <= 0) {lraise(ERR_VM_UNDERFLOW, vm->ip,0); callAllErr();};
+    if (vm->sp <= 0) {lraise(WF_VM, ERR_VM_UNDERFLOW, vm->ip,0, vm->filename);};
     return vm->stack[vm->sp - 1];
 }
 
 static inline Value prev(void) {
-    if (vm->sp <= 1) {lraise(ERR_VM_UNDERFLOW, vm->ip,0); callAllErr();};
+    if (vm->sp <= 1) {lraise(WF_VM, ERR_VM_UNDERFLOW, vm->ip,0, vm->filename);};
     return vm->stack[vm->sp - 2];
 }
 
@@ -289,13 +291,11 @@ static void addition(void) {
 
     switch (lhs.flag) {
         case VAL_CHAR:
-            lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
-            callAllErr();
+            lraise(WF_VM, ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip,0, vm->filename);
             return;
 
         case VAL_STR:
-            lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
-            callAllErr();
+            lraise(WF_VM, ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip,0, vm->filename);
             return;
 
         case VAL_INT:
@@ -315,8 +315,7 @@ static void addition(void) {
                     return;
 
                 default:
-                    lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
-                    callAllErr();
+                    lraise(WF_VM, ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip,0, vm->filename);
                     return;
             }
 
@@ -337,8 +336,7 @@ static void addition(void) {
                     return;
 
                 default:
-                    lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
-                    callAllErr();
+                    lraise(WF_VM, ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip,0, vm->filename);
                     return;
             }
 
@@ -353,13 +351,11 @@ static void subtraction(void) {
 
     switch (lhs.flag) {
         case VAL_CHAR:
-            lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
-            callAllErr();
+            lraise(WF_VM, ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip,0, vm->filename);
             return;
 
         case VAL_STR:
-            lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
-            callAllErr();
+            lraise(WF_VM, ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip,0, vm->filename);
             return;
 
         case VAL_INT:
@@ -379,8 +375,7 @@ static void subtraction(void) {
                     return;
 
                 default:
-                    lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
-                    callAllErr();
+                    lraise(WF_VM, ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip,0, vm->filename);
                     return;
             }
 
@@ -401,8 +396,7 @@ static void subtraction(void) {
                     return;
 
                 default:
-                    lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
-                    callAllErr();
+                    lraise(WF_VM, ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip,0, vm->filename);
                     return;
             }
 
@@ -417,13 +411,11 @@ static void multiplication(void) {
 
     switch (lhs.flag) {
         case VAL_CHAR:
-            lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
-            callAllErr();
+            lraise(WF_VM, ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip,0, vm->filename);
             return;
 
         case VAL_STR:
-            lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
-            callAllErr();
+            lraise(WF_VM, ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip,0, vm->filename);
             return;
 
         case VAL_INT:
@@ -443,8 +435,7 @@ static void multiplication(void) {
                     return;
 
                 default:
-                    lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
-                    callAllErr();
+                    lraise(WF_VM, ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip,0, vm->filename);
                     return;
             }
 
@@ -465,8 +456,7 @@ static void multiplication(void) {
                     return;
 
                 default:
-                    lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
-                    callAllErr();
+                    lraise(WF_VM, ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip,0, vm->filename);
                     return;
             }
 
@@ -481,13 +471,11 @@ static void division(void) {
 
     switch (lhs.flag) {
         case VAL_CHAR:
-            lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
-            callAllErr();
+            lraise(WF_VM, ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip,0, vm->filename);
             return;
 
         case VAL_STR:
-            lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
-            callAllErr();
+            lraise(WF_VM, ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip,0, vm->filename);
             return;
 
         case VAL_INT:
@@ -507,8 +495,7 @@ static void division(void) {
                     return;
 
                 default:
-                    lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
-                    callAllErr();
+                    lraise(WF_VM, ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip,0, vm->filename);
                     return;
             }
 
@@ -529,8 +516,7 @@ static void division(void) {
                     return;
 
                 default:
-                    lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
-                    callAllErr();
+                    lraise(WF_VM, ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip,0, vm->filename);
                     return;
             }
 
@@ -545,13 +531,11 @@ static void power(void) {
 
     switch (lhs.flag) {
         case VAL_CHAR:
-            lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
-            callAllErr();
+            lraise(WF_VM, ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip,0, vm->filename);
             return;
 
         case VAL_STR:
-            lraise(ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip, 0);
-            callAllErr();
+            lraise(WF_VM, ERR_VM_TEXT_CALC_UNSUPPORTED, vm->ip,0, vm->filename);
             return;
 
         case VAL_INT:
@@ -571,8 +555,7 @@ static void power(void) {
                     return;
 
                 default:
-                    lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
-                    callAllErr();
+                    lraise(WF_VM, ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip,0, vm->filename);
                     return;
             }
 
@@ -593,8 +576,7 @@ static void power(void) {
                     return;
 
                 default:
-                    lraise(ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip, 0);
-                    callAllErr();
+                    lraise(WF_VM, ERR_VM_TEXT_NUM_TYPE_CALC, vm->ip,0, vm->filename);
                     return;
             }
 
@@ -610,10 +592,13 @@ static void freeAll(void) {
     return;
 }
 
-int runVM(ByteCodeResult bc, bool verbose) {
+int runVM(ByteCodeResult bc, bool verbose, const char filename[512]) {
     logRuntime("Starting VM execution");
     vmStd.code = bc.data;
     vmStd.ip = 0;
+    if (filename) {
+        snprintf(vmStd.filename, 511, "%s", filename);
+    }
     vmStd.consts = NULL;
     vmStd.constCount = 0;
     vmStd.callAmt = 0;
@@ -632,13 +617,15 @@ int runVM(ByteCodeResult bc, bool verbose) {
         if (!vmStd.consts) {
             logRuntime("Failed to decode constant pool");
             freeAll();
-            lraise(ERR_VM_CANNOT_DECODE_CONST_POOL, vm->ip, 0);
-            callAllErr();
+            lraise(WF_VM, ERR_VM_CANNOT_DECODE_CONST_POOL, vm->ip,0, vm->filename);
             return 1;
         }
 
         logRuntime("Constant pool loaded into VM");
     }
+
+    //void fcp() {freeConstPool()};
+    //atexit(freeConstPool);
 
     while (1) {
         uint8_t op = readByte();
@@ -666,8 +653,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
 
             case OP_SWAP: {
                 if (vm->sp < 2) {
-                    lraise(ERR_VM_UNDERFLOW, vm->ip, 0);
-                    callAllErr();
+                    lraise(WF_VM, ERR_VM_UNDERFLOW, vm->ip,0, vm->filename);
                 }
 
                 Value b = pop();
@@ -716,8 +702,8 @@ int runVM(ByteCodeResult bc, bool verbose) {
             case OP_STORE: {
                 uint16_t slot = read16();
                 if (slot >= vm->globalAmount) {
-                    lraise(ERR_VM_GLOBAL_SLOT_OUT_OF_RANGE, vm->ip, 0);
                     freeAll();
+                    lraise(WF_VM, ERR_VM_GLOBAL_SLOT_OUT_OF_RANGE, vm->ip,0, vm->filename);
                     return 1;
                 }
                 vm->globals[slot] = pop();
@@ -727,8 +713,8 @@ int runVM(ByteCodeResult bc, bool verbose) {
             case OP_LOAD: {
                 uint16_t slot = read16();
                 if (slot >= vm->globalAmount) {
-                    lraise(ERR_VM_GLOBAL_SLOT_OUT_OF_RANGE, vm->ip, 0);
                     freeAll();
+                    lraise(WF_VM, ERR_VM_GLOBAL_SLOT_OUT_OF_RANGE, vm->ip,0, vm->filename);
                     return 1;
                 }
                 push(vm->globals[slot]);
@@ -739,8 +725,8 @@ int runVM(ByteCodeResult bc, bool verbose) {
                 uint16_t constIndex = read16();
 
                 if (constIndex >= (uint16_t)vm->constCount) {
-                    lraise(ERR_VM_CONST_OUT_OF_RANGE, vm->ip, 0);
                     freeAll();
+                    lraise(WF_VM, ERR_VM_CONST_OUT_OF_RANGE, vm->ip,0, vm->filename);
                     return 1;
                 }
 
@@ -758,9 +744,11 @@ int runVM(ByteCodeResult bc, bool verbose) {
                     case NAT_PRINT:
                         printValue(pop());  
                         break;
+                    case NAT_EXIT:
+                        return pop().as.i;
+                        break;
                     default:
-                        lraise(ERR_VM_UNKOWN_NATIVE_COMMAND, vm->ip,0);
-                        callAllErr();
+                        lraise(WF_VM, ERR_VM_UNKOWN_NATIVE_COMMAND, vm->ip,0, vm->filename);
                         break;
                 }
                 break;
@@ -769,8 +757,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
             case OP_JUMP: {
                 int32_t offset = (int32_t)read32();
                 if (offset < 0 && vm->ip < (uint32_t)(-offset)) {
-                    lraise(ERR_VM_INVALID_JUMP, vm->ip,0);
-                    callAllErr();
+                    lraise(WF_VM, ERR_VM_INVALID_JUMP, vm->ip,0, vm->filename);
                 }
                 if (verbose) {
                     char buf[64];
@@ -786,8 +773,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
                 vm->callStack[vm->callAmt++] = (Call){.rtnAdr = vm->ip+4};
                 int32_t offset = (int32_t)read32();
                 if (offset < 0 && vm->ip < (uint32_t)(-offset)) {
-                    lraise(ERR_VM_INVALID_JUMP, vm->ip,0);
-                    callAllErr();
+                    lraise(WF_VM, ERR_VM_INVALID_JUMP, vm->ip,0, vm->filename);
                 }
                 if (verbose) {
                     char buf[64];
@@ -807,7 +793,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
 
             case OP_FINISH: {
                 freeAll();
-                return 0;
+                return pop().as.i;
             }
 
             default: {
@@ -820,8 +806,7 @@ int runVM(ByteCodeResult bc, bool verbose) {
     }
 
     logRuntime("VM exited unexpectedly");
-    lraise(ERR_VM_UNEXPECTED_EXIT, vm->ip, 0);
     freeAll();
-    callAllErr();
+    lraise(WF_VM, ERR_VM_UNEXPECTED_EXIT, vm->ip,0, vm->filename);
     return 1;
 }

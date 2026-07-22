@@ -79,7 +79,7 @@ int build(char *filename, char *bcrfilename, bool isFlnameScript, bool dump) {
     FILE *file = fopen(filename, "rb");
     if (!file) {
         logController("Failed to open input file");
-        lraise(ERR_FILE_OPEN_ERROR, 0, 0);
+        lraise(WF_GENERAL, ERR_FILE_OPEN_ERROR, 0, 0, NULL);
         return 1;
     }
 
@@ -133,17 +133,16 @@ tokenising:
 
     if (isErr) {
         logController("Errors detected after parsing stage");
-        callAllErr();
+        return 1;
     }
-
+    
     logController("Program built successfully");
 
     FILE* filebcr = fopen(bcrfilename, "wb");
 
     if (!filebcr) {
         logController("Fail to open bcr file");
-        lraise(ERR_FILE_OPEN_ERROR, 0,0);
-        callAllErr();
+        lraise(WF_GENERAL, ERR_FILE_OPEN_ERROR, 0,0, NULL);
     }
 
     fwrite(bcr.data, 1, bcr.length, filebcr);

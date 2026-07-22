@@ -54,15 +54,17 @@ dkms.conf
 *.dwo
 
 # me
-a.lnk
+/*.leyo
+*.lybc
 .vs
-logs/*.lylog
-logs/archive/*.lylog
-build/*.stamp
-bin/leyo
-bin/leyo.exe
-!bin/.gitkeep
+.vscode
+build/
+bin/
+*.lylog
 logs/latest.lylog
 $null
 *.lybc
+/*.leyo
+/a.lybc
+.vscode/
 .DS_Store

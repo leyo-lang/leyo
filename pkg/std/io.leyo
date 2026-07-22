@@ -1,0 +1,6 @@
+use std/nul;
+
+fnc print(str to_print) <int> {
+    //@_print to_print;
+    rtn nul::nul();
+}

@@ -57,7 +57,7 @@ static bool checkConstBuf(size_t needed) {
     uint8_t *newData = realloc(constBuf.data, newCap);
 
     if (!newData) {
-        lraise(ERR_PARSER_CANNOT_ALLOCATE, 0, 0);
+        lraise(WF_BUILD, ERR_PARSER_CANNOT_ALLOCATE, current().line, current().collumn, b->currentFileName);
         return false;
     }
 
@@ -73,7 +73,7 @@ static void checkConstBuff(void) {
 
         Value *newConsts = realloc(b->consts, newCap * sizeof(Value));
         if (newConsts == NULL) {
-            lraise(ERR_PARSER_CANNOT_ALLOCATE, 0, 0);
+            lraise(WF_BUILD, ERR_PARSER_CANNOT_ALLOCATE, current().line, current().collumn, b->currentFileName);
             return;
         }
 
@@ -88,7 +88,7 @@ static void checkGlobalBuff(void) {
 
         Global *newGlobals = realloc(b->globals, newCap * sizeof(Global));
         if (newGlobals == NULL) {
-            lraise(ERR_PARSER_CANNOT_ALLOCATE, 0, 0);
+            lraise(WF_BUILD, ERR_PARSER_CANNOT_ALLOCATE, current().line, current().collumn, b->currentFileName);
             return;
         }
 
@@ -104,8 +104,7 @@ static Token current(void) {
 static Token previous(void) {
     if (b->count-1==b->pos) {
         logBuildParser("Too far - previoused into eos");
-        lraise(ERR_PARSER_INTO_STARTOFSTREAM, current().line, current().collumn);
-        callAllErr();
+        lraise(WF_BUILD, ERR_PARSER_INTO_STARTOFSTREAM, current().line, current().collumn, b->currentFileName);
     }
     return b->tokens[b->pos-1];
 }
@@ -113,8 +112,7 @@ static Token previous(void) {
 static Token peek(void) {
     if (b->count-1==b->pos) {
         logBuildParser("Too far - peeked into eos");
-        lraise(ERR_PARSER_INTO_ENDOFSTREAM, current().line, current().collumn);
-        callAllErr();
+        lraise(WF_BUILD, ERR_PARSER_INTO_ENDOFSTREAM, current().line, current().collumn, b->currentFileName);
     }
     return b->tokens[b->pos+1];
 }
@@ -122,8 +120,7 @@ static Token peek(void) {
 static Token peek2(void) {
     if (b->count-2==b->pos) {
         logBuildParser("Too far - peeked into eos");
-        lraise(ERR_PARSER_INTO_ENDOFSTREAM, current().line, current().collumn);
-        callAllErr();
+        lraise(WF_BUILD, ERR_PARSER_INTO_ENDOFSTREAM, current().line, current().collumn, b->currentFileName);
     }
     return b->tokens[b->pos+2];
 }
@@ -131,8 +128,7 @@ static Token peek2(void) {
 static void advance(void) {
     if (b->count+1==b->pos) {
         logBuildParser("Too far - advanced into eos");
-        lraise(ERR_PARSER_INTO_ENDOFSTREAM, current().line, current().collumn);
-        callAllErr();
+        lraise(WF_BUILD, ERR_PARSER_INTO_ENDOFSTREAM, current().line, current().collumn, b->currentFileName);
     }
     b->pos++;
 }
@@ -141,9 +137,9 @@ static void expectCurrent(TokenType type) {
     if (type != current().type) {
         logBuildParser("Expect failed (current mismatch)");
         if (type == SEMICOLON) {
-            lraise(ERR_PARSER_NO_SEMICOLON, current().line, current().collumn);
+            lraise(WF_BUILD, ERR_PARSER_NO_SEMICOLON, current().line, current().collumn, b->currentFileName);
         } else {
-            lraise(ERR_PARSER_EXPECTED_TOKEN, current().line, current().collumn);
+            lraise(WF_BUILD, ERR_PARSER_EXPECTED_TOKEN, current().line, current().collumn, b->currentFileName);
         }
     }
     advance();
@@ -153,9 +149,9 @@ static void expect(TokenType type) {
     if (type != peek().type) {
         logBuildParser("Expect failed (peek mismatch)");
         if (type == SEMICOLON) {
-            lraise(ERR_PARSER_NO_SEMICOLON, current().line, current().collumn);
+            lraise(WF_BUILD, ERR_PARSER_NO_SEMICOLON, current().line, current().collumn, b->currentFileName);
         } else {
-            lraise(ERR_PARSER_EXPECTED_TOKEN, current().line, current().collumn);
+            lraise(WF_BUILD, ERR_PARSER_EXPECTED_TOKEN, current().line, current().collumn, b->currentFileName);
         }
     }
     advance();
@@ -166,9 +162,9 @@ static void expectAndPass(TokenType type) {
     if (type != current().type) {
         logBuildParser("ExpectAndPass failed");
         if (type == SEMICOLON) {
-            lraise(ERR_PARSER_NO_SEMICOLON, current().line, current().collumn);
+            lraise(WF_BUILD, ERR_PARSER_NO_SEMICOLON, current().line, current().collumn, b->currentFileName);
         } else {
-            lraise(ERR_PARSER_EXPECTED_TOKEN, current().line, current().collumn);
+            lraise(WF_BUILD, ERR_PARSER_EXPECTED_TOKEN, current().line, current().collumn, b->currentFileName);
         }
     }
     advance();
@@ -178,7 +174,7 @@ static void emit(uint8_t value) {
     checkByteBuff();
     if (b->byteIndex >= b->byteCap) {
         logBuildParser("Byte buffer overflow detected");
-        lraise(ERR_PARSER_BYTE_OVERFLOW, current().line, current().collumn);
+        lraise(WF_BUILD, ERR_PARSER_BYTE_OVERFLOW, current().line, current().collumn, b->currentFileName);
     }
 
     b->bytebuff[b->byteIndex++] = value;
@@ -205,7 +201,7 @@ static uint32_t reserve32(void) {
 static void patch32(uint32_t loc, uint32_t value) {
     if (loc + 3 >= b->byteIndex) {
         logBuildParser("Invalid patch location");
-        lraise(ERR_PARSER_OUT_OF_BOUNDS, current().line, current().collumn);
+        lraise(WF_BUILD, ERR_PARSER_OUT_OF_BOUNDS, current().line, current().collumn, b->currentFileName);
         return;
     }
 
@@ -246,6 +242,7 @@ static TokenType getTypeVar(void) {
     if (strcmp(current().value, "str") == 0) {return STRING;}
     if (strcmp(current().value, "flt") == 0) {return FLT;}
     if (strcmp(current().value, "chr") == 0) {return CHR;}
+//    if (strcmp(current().value, "nul") == 0) {return NUL;}
     return UNKNOWN;
 } 
 
@@ -327,7 +324,7 @@ static bool isKeyword(char *tc) {
 
     for (int i = 0; i < keywordAmt; i++) {
         if (strcmp(keywords[i], tc) == 0) {
-            lraise(ERR_PARSER_CANNOT_SHADOW_KW, current().line, current().collumn);
+            lraise(WF_BUILD, ERR_PARSER_CANNOT_SHADOW_KW, current().line, current().collumn, b->currentFileName);
             return true;
         }
     }
@@ -336,29 +333,23 @@ static bool isKeyword(char *tc) {
 }
 
 static int define(char *name, TokenType type) {
-    //printf("in def\n");
     isKeyword(name);
-    //puts("isnt kword");
-    for (int i = 0; i < b->globalCount; i++) {
-        //printf("global[%d]: name=%p\n", i, (void *)b->globals[i].name);
-        //printf("search: name=%p\n", (void *)name);
 
+    for (int i = 0; i < b->globalCount; i++) {
         if (!b->globals[i].name || !name) {
             //printf("NULL name detected\n");
             continue;
         }
 
         if (strcmp(b->globals[i].name, name) == 0) {
-            lraise(ERR_PARSER_VAR_PERVIOUSLY_DEFINED,
-                current().line,
-                current().collumn);
+            lraise(WF_BUILD, ERR_PARSER_VAR_PERVIOUSLY_DEFINED, current().line, current().collumn, b->currentFileName);
             return b->globals[i].slot;
         }
     }
     //puts("isnt glob");
     for (int i = 0; i < b->funcAmt; i++) {
         if (strcmp(b->funcs[i].name, name) == 0) {
-            lraise(ERR_PARSER_FUNC_PERVIOUSLY_DEFINED, current().line, current().collumn);
+            lraise(WF_BUILD, ERR_PARSER_FUNC_PERVIOUSLY_DEFINED, current().line, current().collumn, b->currentFileName);
             return b->funcs[i].address;
         }
     }
@@ -386,13 +377,13 @@ static uint32_t definef(char *name, TokenType ret) {
     isKeyword(name);
     for (int i = 0; i < b->globalCount; i++) {
         if (strcmp(b->globals[i].name, name) == 0) {
-            lraise(ERR_PARSER_VAR_PERVIOUSLY_DEFINED, current().line, current().collumn);
+            lraise(WF_BUILD, ERR_PARSER_VAR_PERVIOUSLY_DEFINED, current().line, current().collumn, b->currentFileName);
             return b->globals[i].slot;
         }
     }
     for (int i = 0; i < b->funcAmt; i++) {
         if (strcmp(b->funcs[i].name, name) == 0) {
-            lraise(ERR_PARSER_FUNC_PERVIOUSLY_DEFINED, current().line, current().collumn);
+            lraise(WF_BUILD, ERR_PARSER_FUNC_PERVIOUSLY_DEFINED, current().line, current().collumn, b->currentFileName);
             return b->funcs[i].address;
         }
     }
@@ -415,9 +406,8 @@ static int resolve(char *name) {
         }
     }
 
-    lraise(ERR_PARSER_VAR_NOT_DEFINED, current().line, current().collumn);
-    callAllErr();
-    return -1;
+    lraise(WF_BUILD, ERR_PARSER_VAR_NOT_DEFINED, current().line, current().collumn, b->currentFileName);
+    return 0;
 }
 
 static uint32_t resolvef(char *name) {
@@ -428,13 +418,11 @@ static uint32_t resolvef(char *name) {
     }
 
     if (strcmp(name, "main") == 0) {
-        lraise(ERR_PARSER_NO_ENTRY_POINT, current().line, current().collumn);
-        callAllErr();
+        lraise(WF_BUILD, ERR_PARSER_NO_ENTRY_POINT, current().line, current().collumn, b->currentFileName);
         return -1;
     }
 
-    lraise(ERR_PARSER_FUNC_NOT_DEFINED, current().line, current().collumn);
-    callAllErr();
+    lraise(WF_BUILD, ERR_PARSER_FUNC_NOT_DEFINED, current().line, current().collumn, b->currentFileName);
     return -1;
 }
 
@@ -445,9 +433,7 @@ static TokenType resolveType(char *name) {
         }
     }
 
-    lraise(ERR_PARSER_VAR_NOT_DEFINED, current().line, current().collumn);
-
-    callAllErr();
+    lraise(WF_BUILD, ERR_PARSER_VAR_NOT_DEFINED, current().line, current().collumn, b->currentFileName);
     return UNKNOWN;
 }
 
@@ -458,8 +444,7 @@ static TokenType resolveTypef(char *name) {
         }
     }
 
-    lraise(ERR_PARSER_FUNC_NOT_DEFINED, current().line, current().collumn);
-    callAllErr();
+    lraise(WF_BUILD, ERR_PARSER_FUNC_NOT_DEFINED, current().line, current().collumn, b->currentFileName);
     return UNKNOWN;
 }
 
@@ -491,8 +476,7 @@ static void consumeStatementTerminator(const char *ctx) {
         char buffer[256];
         snprintf(buffer, sizeof(buffer), "%s: expected ';'", ctx ? ctx : "Statement");
         logBuildParser(buffer);
-        lraise(ERR_PARSER_NO_SEMICOLON, current().line, current().collumn);
-        callAllErr();
+        lraise(WF_BUILD, ERR_PARSER_NO_SEMICOLON, current().line, current().collumn, b->currentFileName);
         return;
     }
 
@@ -555,8 +539,7 @@ static TokenType parseAtom(void) { // small singular unit of expression (number,
         }
 
         default: {
-            lraise(ERR_PARSER_ATOM_UNKOWN, current().line, current().collumn);
-            callAllErr();
+            lraise(WF_BUILD, ERR_PARSER_ATOM_UNKOWN, current().line, current().collumn, b->currentFileName);
             break;
         }
     }
@@ -576,7 +559,7 @@ static TokenType parseExpression(void) {
         TokenType rtype = parseAtom(); // right operand -> top | left -> 2nd
 
         if (ltype != rtype) {
-            lraise(ERR_PARSER_TYPE_CONFLICT_EXPR, current().line, current().collumn);
+            lraise(WF_BUILD, ERR_PARSER_TYPE_CONFLICT_EXPR, current().line, current().collumn, b->currentFileName);
             
             return UNKNOWN;
         }
@@ -589,9 +572,10 @@ static TokenType parseExpression(void) {
             case '^': emit(OP_OPERATE_EXP); break;
 
             default:
-                lraise(ERR_PARSER_UNKOWN_OPERATOR,
+                lraise(WF_BUILD, ERR_PARSER_UNKOWN_OPERATOR,
                       current().line,
-                      current().collumn);
+                      current().collumn,
+                    b->currentFileName);
                 return UNKNOWN;
         }
     }
@@ -602,7 +586,7 @@ static TokenType parseExpression(void) {
 static void parseExpressionTC(TokenType aim) {
     TokenType type = parseExpression();
     if (aim != type) {
-        lraise(ERR_PARSER_TYPE_CONFLICT_EXPR, current().line, current().collumn);
+        lraise(WF_BUILD, ERR_PARSER_TYPE_CONFLICT_EXPR, current().line, current().collumn, b->currentFileName);
         return;
     }
     return;
@@ -628,7 +612,7 @@ static void parseVarDecl(void) {
     logBuildParser("Parsing variable declaration");
 
     if (current().type != IDENTIFIER) {
-        lraise(ERR_PARSER_EXPECTED_IDENT, current().line, current().collumn);
+        lraise(WF_BUILD, ERR_PARSER_EXPECTED_IDENT, current().line, current().collumn, b->currentFileName);
     };
 
     char *type = current().value;
@@ -638,15 +622,13 @@ static void parseVarDecl(void) {
           strcmp(type, "str") == 0 ||
           strcmp(type, "flt") == 0 ||
           strcmp(type, "chr") == 0)) {
-        lraise(ERR_PARSER_UNEXPECTED_STATE, current().line, current().collumn);
+        lraise(WF_BUILD, ERR_PARSER_UNEXPECTED_STATE, current().line, current().collumn, b->currentFileName);
     }
 
     expect(IDENTIFIER);
 
     char *name = current().value;
-    //printf("Abt to def\n");
     uint16_t slot = define(name, aim);
-    //printf("done def\n");
 
     expectAndPass(EQUALS);
 
@@ -662,16 +644,20 @@ static void parseNative(void) {
     logBuildParser("Parsing Native Call");
     advance(); //past @
     NativeCommand nc = NAT_UNKOWN;
-
-    if (inStd) {
+    uint16_t temp;
+    if (strncmp(b->currentFileName, "pkg/std", 7) == 0) {
         // if (strcmp(current().value, "_print") == 0) {nc = NAT_TRACE;} else
-        if (strcmp(current().value, "_print") == 0) {nc = NAT_PRINT; advance(); emit(OP_CONST_LOAD); emit16(emitConst());}
-    } else
-    if (strcmp(current().value, "log") == 0) {nc = NAT_LOG;} else
-    if (strcmp(current().value, "dump") == 0) {nc = NAT_DUMP;} else
-    if (strcmp(current().value, "trace") == 0) {nc = NAT_TRACE;} else
-    {lraise(ERR_PARSER_UNKOWN_NATIVE, current().line, current().collumn); callAllErr(); return;}
+        if (strcmp(current().value, "_print") == 0) {nc = NAT_PRINT; advance(); emit(OP_CONST_LOAD); emit16(emitConst()); goto emitNat;} else
+        if (strcmp(current().value, "_quit") == 0) {nc = NAT_EXIT; advance(); sscanf(current().value, "%hu", &temp); emit(OP_PUSH); emit16(temp); goto emitNat;}
+    }
+    if (strcmp(current().value, "log") == 0) {nc = NAT_LOG; goto emitNat;} else
+    if (strcmp(current().value, "dump") == 0) {nc = NAT_DUMP; goto emitNat;} else
+    if (strcmp(current().value, "trace") == 0) {nc = NAT_TRACE; goto emitNat;}
+    
+    lraise(WF_BUILD, ERR_PARSER_UNKOWN_NATIVE, current().line, current().collumn, b->currentFileName);
+    return;
 
+emitNat:
     emit(OP_CALL_NATIVE);
     emit((uint8_t)nc);
     expectAndPass(SEMICOLON);    
@@ -679,6 +665,7 @@ static void parseNative(void) {
 
 
 static void parseFuncBody(TokenType retType) {
+    bool has_ret = false;
     while (current().type != CLOSEBRACE &&
            current().type != ENDOFSTREAM) {
 
@@ -686,6 +673,7 @@ static void parseFuncBody(TokenType retType) {
 
         // RETURN HANDLING (no hacks, no eat)
         if (strcmp(current().value, "rtn") == 0) {
+            has_ret = true;
             advance();
             parseExpressionTC(retType);
 
@@ -700,9 +688,12 @@ static void parseFuncBody(TokenType retType) {
         parseStatement();
 
         if (b->pos == before) {
-            lraise(ERR_PARSER_STALLED, current().line, current().collumn);
+            lraise(WF_BUILD, ERR_PARSER_STALLED, current().line, current().collumn, b->currentFileName);
             break;
         }
+    }
+    if (!has_ret) {
+        lraise(WF_BUILD, ERR_PARSER_NO_RETURN, current().line, current().collumn, b->currentFileName);
     }
 }
 
@@ -747,8 +738,7 @@ static void parseFunction(void) {
 
     if (strcmp(current().value, "<") != 0) {
         logBuildParser("[FN] ERROR: missing '<'");
-        lraise(ERR_PARSER_NO_OPEN_TYPE_BRACKET, current().line, current().collumn);
-        callAllErr();
+        lraise(WF_BUILD, ERR_PARSER_NO_OPEN_TYPE_BRACKET, current().line, current().collumn, b->currentFileName);
         return;
     }
 
@@ -762,8 +752,7 @@ static void parseFunction(void) {
 
     if (strcmp(current().value, ">") != 0) {
         logBuildParser("[FN] ERROR: missing '>'");
-        lraise(ERR_PARSER_NO_CLOSE_TYPE_BRACKET, current().line, current().collumn);
-        callAllErr();
+        lraise(WF_BUILD, ERR_PARSER_NO_CLOSE_TYPE_BRACKET, current().line, current().collumn, b->currentFileName);
         return;
     }
 
@@ -815,6 +804,7 @@ static void parseModule(void) {
 
     if (strcmp(current().value, "std") == 0) {
         inStd = true;
+        logBuildParser("IN STD");
     }
 
     do {
@@ -834,19 +824,18 @@ static void parseModule(void) {
         if (current().type == IDENTIFIER && strcmp(current().value, "as") == 0) {
             advance();
             prefixName = malloc((strlen(current().value)+1) * sizeof(char));
-            sprintf(prefixName, "%s", current().value);
+            snprintf(prefixName, (strlen(current().value)+1), "%s", current().value);
             advance(); // onto semicolon
             goto module;
         }
     } while (current().type != SEMICOLON);
 
     prefixName = malloc((strlen(previous().value)+1) * sizeof(char));
-    sprintf(prefixName, "%s", previous().value);
+    snprintf(prefixName, strlen(previous().value)+1, "%s", previous().value);
 
 module:
     if (isModuleLoaded(name) || isModuleLoaded(prefixName)) {
-        lraise(ERR_PARSER_MODULE_PREVIOUSLY_LOADED, previous().line, previous().collumn);
-        callAllErr();
+        // lraise(WF_BUILD, ERR_PARSER_MODULE_PREVIOUSLY_LOADED, previous().line, previous().collumn, b->currentFileName);
         // expectAndPass(SEMICOLON, "No Semicolon After Statement");
         return;
     }
@@ -858,8 +847,7 @@ module:
     snprintf(path, sizeof(path), "pkg/%s.leyo", name);
     FILE *fp = fopen(path, "rb");
     if (!fp) {
-        lraise(ERR_PARSER_MODULE_CANNOT_OPEN, current().line, current().collumn);
-        callAllErr();
+        lraise(WF_BUILD, ERR_PARSER_MODULE_CANNOT_OPEN, current().line, current().collumn, b->currentFileName);
         return;
     }
 
@@ -884,7 +872,7 @@ module:
     b->tokens = ts.stream;
     b->count = ts.count;
     b->pos = 0;
-    b->currentFileName = path;
+    snprintf(b->currentFileName, 511, "%s", path);
     snprintf(b->funcPrefix, sizeof(b->funcPrefix), "%s::", prefixName);
 
     while (current().type != ENDOFSTREAM) {
@@ -900,10 +888,11 @@ module:
     b->tokens = oldTokens;
     b->count = oldCount;
     b->pos = oldPos;
-    b->currentFileName = oldCurrentFileName;
+    snprintf(b->currentFileName, 511, "%s", oldCurrentFileName);
     snprintf(b->funcPrefix, sizeof(b->funcPrefix), "%s", oldFuncPrefix);
 
     inStd = false;
+    logBuildParser("OUT STD");
 
     expectCurrent(SEMICOLON);
 }
@@ -922,8 +911,7 @@ static void parseStatement(void) {
                 parseNative();
                 break;
             }
-            lraise(ERR_PARSER_LEXER_FAILURE_CAUGHT, current().line, current().collumn);
-            callAllErr();
+            lraise(WF_BUILD, ERR_PARSER_LEXER_FAILURE_CAUGHT, current().line, current().collumn, b->currentFileName);
             break;
 
         case IDENTIFIER: {
@@ -949,13 +937,13 @@ static void parseStatement(void) {
                 functionCall(true);
                 consumeStatementTerminator("Function call: from module");
             } else {
-                lraise(ERR_PARSER_UNKOWN_IDENT_STMT, current().line, current().collumn);
+                lraise(WF_BUILD, ERR_PARSER_UNKOWN_IDENT_STMT, current().line, current().collumn, b->currentFileName);
             }
             break;
         }
 
         default:
-            lraise(ERR_PARSER_UNKOWN_STMT, current().line, current().collumn);
+            lraise(WF_BUILD, ERR_PARSER_UNKOWN_STMT, current().line, current().collumn, b->currentFileName);
             break;
     }
 }
@@ -985,16 +973,14 @@ ByteCodeResult parse(TokenStream *ts, char *currentFileName) {
     b->moduleCap = 8;
     b->moduleAmt = 0;
     b->modulesLoaded = malloc(sizeof(char *) * b->moduleCap);
-    b->currentFileName = currentFileName;
+    snprintf(b->currentFileName, 511, "%s", currentFileName);
 
     if (!b->funcs) {
-        lraise(ERR_PARSER_CANNOT_ALLOCATE, 0, 0);
-        callAllErr();
+        lraise(WF_GENERAL, ERR_PARSER_CANNOT_ALLOCATE, 0, 0, NULL);
     }
 
     if (!b->consts) {
-        lraise(ERR_PARSER_CANNOT_ALLOCATE, 0, 0);
-        callAllErr();
+        lraise(WF_GENERAL, ERR_PARSER_CANNOT_ALLOCATE, 0, 0, NULL);
     }
 
     constBuf.length = 0;
@@ -1002,32 +988,10 @@ ByteCodeResult parse(TokenStream *ts, char *currentFileName) {
     constBuf.data = malloc(constBuf.capacity);
 
     if (!constBuf.data) {
-        lraise(ERR_PARSER_CANNOT_ALLOCATE, 0, 0);
-        callAllErr();
+        lraise(WF_GENERAL, ERR_PARSER_CANNOT_ALLOCATE, 0, 0, NULL);
     }
 
     logBuildParser("State assigned");
-
-    char buf[256];
-
-    sprintf(buf, "tokens=%p", (void*)b->tokens);
-    logBuildParser(buf);
-
-    sprintf(buf, "count=%d", b->count);
-    logBuildParser(buf);
-
-    sprintf(buf, "pos=%d", b->pos);
-    logBuildParser(buf);
-
-    sprintf(buf, "count=%d", b->count);
-    logBuildParser(buf);
-
-    if (b->count > 0) {
-        sprintf(buf, "token0.type=%d", b->tokens[0].type);
-        logBuildParser(buf);
-        sprintf(buf, "token0.value=%s", b->tokens[0].value);
-        logBuildParser(buf);
-    }
 
     logBuildParser("About to enter while loop");
 

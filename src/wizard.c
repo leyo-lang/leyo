@@ -187,7 +187,7 @@ bool runInitWizard(void) {
             archivePath,
             buildIn,
             buildOut)) {
-        lraise(ERR_FILE_WRITE_ERROR, 0,0);
+        lraise(WF_GENERAL, ERR_FILE_WRITE_ERROR, 0,0, NULL);
         return false;
     }
 

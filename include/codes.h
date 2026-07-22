@@ -28,6 +28,7 @@ typedef enum {
     ERR_PARSER_EXPECTED_IDENT,
     ERR_PARSER_EXPECTED_TOKEN,
     ERR_PARSER_NO_SEMICOLON,
+    ERR_PARSER_NO_RETURN,
 
     ERR_PARSER_VAR_NOT_DEFINED,
     ERR_PARSER_VAR_PERVIOUSLY_DEFINED,
@@ -62,6 +63,7 @@ typedef enum {
     ERR_INVALID_BYTECODE_HEADER,
     ERR_INVALID_BYTECODE,
     ERR_CANNOT_READ_BYTECODE,
+    ERR_WARN_DIFFERERENT_VERSIONS,
 
     // Virtual Machine
     ERR_VM_UNDERFLOW,
@@ -93,10 +95,18 @@ typedef struct {
     bool fatal; // if fatal or recoverable
 } Error;
 
+typedef enum {
+    WF_VM,
+    WF_BUILD,
+    WF_GENERAL,
+} WhereFrom;
+
 typedef struct {
     ErrorCode ec; // like ERR_ZERO_DIV
     int line;
     int column;
+    char filename[512];
+    WhereFrom wf;
 } RaisedError;
 
 extern const Error errorTable[];

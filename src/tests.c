@@ -36,19 +36,19 @@ static int createTmpFolder(void) {
         char uniquePath[MAX_PATH];
 
         if (!GetTempPathA(MAX_PATH, tempPath)) {
-            lraise(ERR_FILE_TEMP_NOT_AVAILABLE, 0,0);
+            lraise(WF_GENERAL, ERR_FILE_TEMP_NOT_AVAILABLE, 0,0);
             return 1;
         }
 
         if (!GetTempFileNameA(tempPath, "LYO", 0, uniquePath)) {
-            lraise(ERR_FILE_TEMP_NOT_AVAILABLE, 0,0);
+            lraise(WF_GENERAL, ERR_FILE_TEMP_NOT_AVAILABLE, 0,0);
             return 1;
         }
 
         DeleteFileA(uniquePath);
 
         if (!CreateDirectoryA(uniquePath, NULL)) {
-            lraise(ERR_FILE_TEMP_NOT_AVAILABLE, 0,0);
+            lraise(WF_GENERAL, ERR_FILE_TEMP_NOT_AVAILABLE, 0,0);
             return 1;
         }
 
@@ -61,7 +61,7 @@ static int createTmpFolder(void) {
 
         char *dir = mkdtemp(template);
         if (!dir) {
-            lraise(ERR_FILE_TEMP_NOT_AVAILABLE, 0,0);
+            lraise(WF_GENERAL, ERR_FILE_TEMP_NOT_AVAILABLE, 0,0, NULL);
             return 1;
         }
 
@@ -146,7 +146,7 @@ int testLeyo(const char *leyoBin) {
 
     f = fopen(sourceFile, "w");
     if (!f) {
-        lraise(ERR_FILE_WRITE_ERROR, 0,0);
+        lraise(WF_GENERAL, ERR_FILE_WRITE_ERROR, 0,0, NULL);
         goto cleanup;
     }
 
