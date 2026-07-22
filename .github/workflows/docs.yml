@@ -1,0 +1,64 @@
+name: Generate Documentation
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  docs:
+    name: Build and Deploy Documentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Leyo
+        uses: actions/checkout@v4
+
+      - name: Install Doxygen
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen
+
+      - name: Generate Documentation
+        run: |
+          doxygen docs/Doxyfile
+
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.DOCS_APP_ID }}
+          private-key: ${{ secrets.DOCS_APP_PRIVATE_KEY }}
+          owner: leyo-lang
+          repositories: docs
+
+      - name: Checkout Documentation Repository
+        uses: actions/checkout@v4
+        with:
+          repository: leyo-lang/docs
+          token: ${{ steps.app-token.outputs.token }}
+          path: docs-repo
+
+      - name: Synchronise Documentation
+        run: |
+          rsync -av --delete \
+            --exclude="README.md" \
+            --exclude="LICENSE" \
+            --exclude=".nojekyll" \
+            docs/html/ docs-repo/
+
+      - name: Commit and Push Documentation
+        working-directory: docs-repo
+        run: |
+          git config user.name "Leyo Documentation Bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -A
+
+          git commit -m "docs: update generated documentation" \
+            || echo "No documentation changes to commit"
+
+          git push

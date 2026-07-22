@@ -53,6 +53,9 @@ dkms.conf
 # debug information files
 *.dwo
 
+# Generated Doxygen documentation
+docs/html/
+
 # me
 /*.leyo
 *.lybc
