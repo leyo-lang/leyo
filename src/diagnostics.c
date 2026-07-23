@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include "../include/parser.h"
 
+/// @brief A helper to fetch the current platform.
+/// @return The platform name as a string.
 static const char *platformName(void) {
 #ifdef _WIN32
     return "Windows";
@@ -18,6 +20,8 @@ static const char *platformName(void) {
 #endif
 }
 
+/// @brief A helper to fetch the current arch.
+/// @return The arch name as a string.
 static const char *archName(void) {
 #if defined(__x86_64__) || defined(_M_X64)
     return "x86_64";

@@ -8,6 +8,7 @@
 
 #include <stdbool.h>
 
+/// @brief A enum containing all errors in the leyo language.
 typedef enum {
     // File
     ERR_FILE_OPEN_ERROR,
@@ -93,6 +94,7 @@ typedef enum {
     ERR_AMOUNT
 } ErrorCode;
 
+/// @brief Describes an error.
 typedef struct {
     ErrorCode ec; // like ERR_ZERO_DIV
     char *name; // like V001
@@ -100,12 +102,14 @@ typedef struct {
     bool fatal; // if fatal or recoverable
 } Error;
 
+/// @brief Defines how an error shall be printed and/or displayed 
 typedef enum {
     WF_VM,
     WF_BUILD,
     WF_GENERAL,
 } WhereFrom;
 
+/// @brief Describes an error in storage before being printed.
 typedef struct {
     ErrorCode ec; // like ERR_ZERO_DIV
     int line;
@@ -114,7 +118,9 @@ typedef struct {
     WhereFrom wf;
 } RaisedError;
 
+/// @brief A table that matches an error to a message, id, and fatal flag.
 extern const Error errorTable[];
+
 extern const unsigned int errorTableAmt;
 
 #endif

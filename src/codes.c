@@ -6,7 +6,6 @@
 #include <stdbool.h>
 #include "../include/codes.h"
 
-
 const Error errorTable[] = {
     // File
     {ERR_FILE_OPEN_ERROR,                "F001", "Failed to open file", .fatal=true},
