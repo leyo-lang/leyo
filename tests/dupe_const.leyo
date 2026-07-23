@@ -1,0 +1,5 @@
+fnc main() <int> {
+    int a = 64;
+    int b = 65;
+    rtn 0;
+}
