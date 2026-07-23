@@ -32,6 +32,12 @@
 #define GIT_DIRTY "unknown"
 #endif
 
+/// @brief The main entry point of the Leyo compiler.
+/// @param argc The number of command-line arguments.
+/// @param argv The command-line arguments.
+/// @retval -1 A controller error occurred.
+/// @retval 0 The program completed successfully.
+/// @retval 1 A sub-program returned an error.
 int main(int argc, char *argv[]) {
     // set atexits's
     atexit(callAllErr);
