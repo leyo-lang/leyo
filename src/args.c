@@ -12,10 +12,6 @@
 
 #define AP_MAX_ARGS 256
 
-/// @brief Custom ArgParser setup script.
-/// @param parser The argparser struct. Owned by user.
-/// @param argc The number of command-line arguments.
-/// @param argv The command-line arguments.
 void argParseSetup(ArgParser *parser, char *argv[], int argc) {
     static char *flags[AP_MAX_ARGS];
     static char *positionals[AP_MAX_ARGS];
@@ -92,10 +88,6 @@ void argParseSetup(ArgParser *parser, char *argv[], int argc) {
     }
 }
 
-/// @brief Checks whether specified flag is present.
-/// @param parser The argparser struct. Owned by user.
-/// @param flag The flag to check.
-/// @return true if flag is existent, else false
 bool isFlag(ArgParser *parser, const char *flag) {
     for (int i = 0; i < parser->flagAmount; i++) {
         if (strcmp(parser->flags[i], flag) == 0) {
@@ -106,10 +98,6 @@ bool isFlag(ArgParser *parser, const char *flag) {
     return false;
 }
 
-/// @brief Checks whether specified command is present.
-/// @param parser The argparser struct. Owned by user.
-/// @param cmd The command to check.
-/// @return true if command is existent, else false
 bool isCommand(ArgParser *parser, const char *cmd) {
     if (parser->noCommand || parser->command == NULL) {
         return false;
@@ -118,10 +106,6 @@ bool isCommand(ArgParser *parser, const char *cmd) {
     return strcmp(parser->command, cmd) == 0;
 }
 
-/// @brief Get the option provided.
-/// @param parser The argparser struct. Owned by user.
-/// @param option The option flag to get (eg. "-o").
-/// @return The option, or NULL if none.
 char *getOption(ArgParser *parser, const char *option) {
     for (int i = 0; i < parser->optionAmount; i++) {
         if (strcmp(parser->optionKeys[i], option) == 0) {
@@ -132,10 +116,6 @@ char *getOption(ArgParser *parser, const char *option) {
     return NULL;
 }
 
-/// @brief Get the positional argument at specified position.
-/// @param parser The argparser struct. Owned by user.
-/// @param index The index on which positional to fetch.
-/// @return The positional, or NULL if none.
 char *getPositional(ArgParser *parser, int index) {
     if (index < 0 || index >= parser->positionalAmount) {
         return NULL;
@@ -144,9 +124,6 @@ char *getPositional(ArgParser *parser, int index) {
     return parser->positionals[index];
 }
 
-/// @brief Gets name of binary that run leyo.
-/// @param parser The argparser struct. Owned by user.
-/// @return The parser binary name, or NULL if none.
 char *getBin(ArgParser *parser) {
     if (parser->bin) {
         return parser->bin;
