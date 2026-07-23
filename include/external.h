@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2026 Leyo Contributors
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 #ifndef EXTERNAL_H
