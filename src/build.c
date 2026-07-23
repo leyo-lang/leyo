@@ -11,6 +11,9 @@
 #include "../include/errors.h"
 #include "../include/codes.h"
 
+/// @brief Gets the string representation of a token type.
+/// @param type The token type.
+/// @return The name of the specified token type, or NULL if the token type is unknown.
 static const char *tokenTypeName(TokenType t) {
     switch (t) {
         case STRING: return "STRING";
@@ -37,6 +40,8 @@ static const char *tokenTypeName(TokenType t) {
     }
 }
 
+/// @brief Prints the provided token stream.
+/// @param ts The token stream object.
 static void printTokenStream(TokenStream ts) {
     logController("Printing token stream");
 
@@ -54,6 +59,8 @@ static void printTokenStream(TokenStream ts) {
     logController("Finished printing token stream");
 }
 
+/// @brief Prints the provided bytecode.
+/// @param bc The byte code result object.
 static void printByteCode(ByteCodeResult* bc) {
     logController("Printing bytecode output");
 
@@ -65,7 +72,7 @@ static void printByteCode(ByteCodeResult* bc) {
     logController("Finished printing bytecode output");
 }
 
-int build(char *filename, char *bcrfilename, bool isFlnameScript) {
+int build(char *filename, char *bcrfilename, bool isFlnameScript, bool dump) {
     logController("Build started");
     char *buffer = NULL;
 
@@ -113,7 +120,9 @@ tokenising:
     TokenStream ts = tokenise(buffer);
     logController("Tokenisation completed");
 
-    printTokenStream(ts);
+    if (dump) {
+       printTokenStream(ts); 
+    }
 
     /*
     if (isErr) {
@@ -132,10 +141,12 @@ tokenising:
         logController("Bytecode generation failed or empty");
     }
 
-    printByteCode(&bcr);
+    if (dump) {
+        printByteCode(&bcr);
+    }
 
     if (isErr) {
-        logController("Errors detected after parsing stage");
+        logController("Errors detected after building. Exiting.");
         return 1;
     }
     
