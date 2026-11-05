@@ -1,2 +1,3 @@
 # leyo
-A programming language written in Rust.
+
+A staticly-typed scripting language designed to maximise developer efficiency. 
