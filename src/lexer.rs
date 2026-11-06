@@ -1,3 +1,5 @@
+use crate::{error, warn, info, fatal, fatalns};
+
 #[derive(Debug)]
 pub enum TokenType {
     Unknown,
@@ -72,6 +74,7 @@ struct Lexer {
     stream_out: Vec<Token>,
     mode: LexerMode,
     last_was_semicolon: bool,
+    source_id: usize,
 }
 
 macro_rules! token {
@@ -81,13 +84,14 @@ macro_rules! token {
 }
 
 impl Lexer {
-    fn new(stream: String) -> Self {
+    fn new(id: usize, stream: String) -> Self {
         Self {
             stream_in: stream,
             index: 0,
             stream_out: Vec::new(),
             mode: LexerMode::Normal,
             last_was_semicolon: false,
+            source_id: id,
         }
     }
 
@@ -123,20 +127,6 @@ impl Lexer {
         self.stream_out.push(tok);
     }
 
-    fn read_string(&mut self) -> String {
-        let mut res = String::new();
-
-        while let Some(c) = self.current_unicode() {
-            if c == '"' { break; }
-            res.push(c);
-            self.advance_unicode();
-        }
-
-        self.advance();
-
-        res
-    }
-
     fn handle_comment(&mut self, line: bool) {
         if line {
             while self.current_unicode() != Some('\n') {
@@ -149,6 +139,92 @@ impl Lexer {
             self.advance(); // onto /
             self.advance(); // onto \n
         }
+    }
+
+    fn handle_number(&mut self) {
+        let start_pos = self.index;
+        let dot_seen = false;
+        let mut num_so_far = String::new();
+        
+        loop {
+            let c = self.current();
+
+            if !c.is_ascii_digit() && c != '.' {
+                if dot_seen {
+                    self.push(token!(TokenType::Float, num_so_far));
+                    self.mode = LexerMode::Normal;
+                    return;
+                } else {
+                    self.push(token!(TokenType::Integer, num_so_far));
+                    self.mode = LexerMode::Normal;
+                    return;
+                }
+            }
+
+            if c == '.' {
+                if dot_seen {
+                    error!("Invalid Number", self.source_id, start_pos, self.index, "Check there is only one decimal point.");
+                }
+            }
+
+            num_so_far.push(c);
+        }
+    }
+
+    fn handle_string(&mut self) {
+        let start_pos = self.index;
+        self.advance();
+
+        let mut res = String::new();
+
+        loop {
+            match self.current_unicode() {
+                Some('"') => {
+                    self.advance();
+                    break;
+                }
+
+                Some('\\') => {
+                    self.advance_unicode();
+
+                    match self.current_unicode() {
+                        Some('\\') => res.push('\\'),
+                        Some('"')  => res.push('"'),
+                        Some('n')  => res.push('\n'),
+                        Some('r')  => res.push('\r'),
+                        Some('t')  => res.push('\t'),
+                        Some('0')  => res.push('\0'),
+                        Some('b')  => res.push('\x08'),
+                        Some('f')  => res.push('\x0C'),
+                        Some(_) => {
+                            error!("Invalid Escape", self.source_id,
+                                self.index - 1, self.index);
+                        }
+                        None => {
+                            error!("Unterminated String", self.source_id,
+                                start_pos, self.index,
+                                "Make sure to place an ending \"");
+                        }
+                    }
+
+                    self.advance_unicode();
+                }
+
+                Some(c) => {
+                    res.push(c);
+                    self.advance_unicode();
+                }
+
+                None => {
+                    error!("Unterminated String", self.source_id,
+                        start_pos, self.index,
+                        "Make sure to place an ending \"");
+                }
+            }
+        }
+
+        self.mode = LexerMode::Normal;
+        self.push(token!(TokenType::String, res));
     }
 
     fn handle_normal(&mut self) {
@@ -189,8 +265,8 @@ pub fn print_lexer_result(result: &LexerResult) {
     }
 }
 
-pub fn lex(stream: String) -> LexerResult {
-    let lexer = Lexer::new(stream);
+pub fn lex(stream: String, id: usize) -> LexerResult {
+    let lexer = Lexer::new(id, stream);
 
     while lexer.index >= lexer.stream_in.len() {
         match lexer.mode {

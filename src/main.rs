@@ -6,11 +6,12 @@ fn lex(filepath: &str) -> lexer::LexerResult {
     if contents.is_err() {
         fatalns!(format!("Could Not Open File {filepath}").as_str(), "Check there is not a typo in the name and that the file exists.");
     }
+
     let contents = contents.unwrap();
 
-    errors::add_source(filepath.to_string(), Some(filepath.to_string()), contents.clone());
+    let id = errors::add_source(filepath.to_string(), Some(filepath.to_string()), contents.clone());
     
-    lexer::lex(contents)
+    lexer::lex(contents, id)
 }
 
 fn main() {
