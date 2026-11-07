@@ -1,0 +1,77 @@
+
+fn main() {
+    // Basic strings
+    let a = "Hello";
+    let b = "";
+    let c = "Hello, world!";
+    let d = "A string with spaces";
+
+    // Unicode strings
+    let emoji = "🌍 😀 😎 🚀";
+    let chinese = "你好世界";
+    let japanese = "こんにちは世界";
+    let russian = "Привет мир";
+    let arabic = "مرحبا بالعالم";
+    let korean = "안녕하세요 세계";
+    let hindi = "नमस्ते दुनिया";
+
+    // Accented characters
+    let french = "Café résumé";
+    let german = "Grüße schön";
+    let spanish = "¡Hola señor!";
+    let portuguese = "São Paulo";
+
+    // Mixed Unicode
+    let mixed = "🌍 Hello 世界! Café résumé こんにちは Привет 😀";
+
+    // Escape sequences
+    let newline = "Hello\nWorld";
+    let tab = "Hello\tWorld";
+    let carriage = "Hello\rWorld";
+    let null = "Hello\0World";
+    let backspace = "Hello\bWorld";
+    let formfeed = "Hello\fWorld";
+
+    // Escaped quotes
+    let quote = "Hello \"World\"";
+    let slash = "C:\\Users\\Test";
+    let both = "Quote: \" Backslash: \\";
+
+    // Multiple escapes
+    let escapes = "\n\r\t\0\b\f";
+
+    // Strings containing numbers and symbols
+    let symbols = "!@#$%^&*()_+-=[]{};:',.<>/?";
+    let numbers = "1234567890";
+    let operators = "+ - * / % == != <= >=";
+
+    // String concatenation (if supported)
+    let greeting = "Hello " + "World";
+    let international = "你好 " + "🌍";
+
+    // Strings in conditions
+    if a == "Hello" {
+        let result = "Matched!";
+    } else {
+        let result = "Not matched!";
+    }
+
+    // Strings as function arguments
+    print("Hello");
+    print("你好世界");
+    print("🌍🚀");
+
+    // Strings returned from functions
+    return;
+}
+
+fn get_greeting() {
+    let greeting = "Hello 世界 🌍";
+    return;
+}
+
+let combining = "é";
+let wide = "界界界";
+let symbols = "© ™ € £";
+let zero_width = "👨‍👩‍👧‍👦";
+let variation = "❤️;

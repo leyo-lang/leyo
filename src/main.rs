@@ -11,10 +11,20 @@ fn lex(filepath: &str) -> lexer::LexerResult {
 
     let id = errors::add_source(filepath.to_string(), Some(filepath.to_string()), contents.clone());
     
-    lexer::lex(contents, id)
+    let res = lexer::lex(contents, id);
+
+    if errors::has_errors() {
+        fatalns!("Errors Found After Lexing");
+    }
+
+    res
 }
 
 fn main() {
     let result = lex("example.leyo");
     lexer::print_lexer_result(&result);
+
+    if errors::has_any() {
+        errors::print_all();
+    }
 }
