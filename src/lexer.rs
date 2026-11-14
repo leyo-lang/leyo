@@ -1,6 +1,6 @@
 use crate::{error, fatal, warn };
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum TokenType {
     Unknown,
     Eof,
@@ -18,14 +18,14 @@ pub enum TokenType {
     Minus,
     Multiply,
     Divide,
-    Expodent,
+    Exponent,
     Modulous,
 
     PlusEquals,
     MinusEquals,
     MultiplyEquals,
     DivideEquals,
-    ExpodentEquals,
+    ExponentEquals,
     ModulousEquals,
 
     GreaterThan,
@@ -56,9 +56,12 @@ pub enum TokenType {
     Excalmation,
 }
 
+#[derive(Clone, PartialEq)]
 pub struct Token {
-    t: TokenType,
-    v: String,
+    pub t: TokenType,
+    pub v: String,
+    pub s: usize,
+    pub e: usize,
 }
 
 enum LexerMode {
@@ -81,11 +84,36 @@ struct Lexer {
     source_id: usize,
 }
 
+
 macro_rules! token {
-    ($t:expr, $v:expr) => {
-        Token { t: $t, v: $v.into() }
+    ($self:expr, $t:expr, $v:expr) => {
+        Token {
+            t: $t,
+            v: $v.into(),
+            s: ($self).index,
+            e: ($self).index,
+        }
+    };
+
+    ($self:expr, $t:expr, $v:expr, $start:expr) => {
+        Token {
+            t: $t,
+            v: $v.into(),
+            s: $start,
+            e: ($self).index,
+        }
+    };
+
+    ($self:expr, $t:expr, $v:expr, $start:expr, $end:expr) => {
+        Token {
+            t: $t,
+            v: $v.into(),
+            s: $start,
+            e: $end,
+        }
     };
 }
+
 
 impl Lexer {
     fn new(id: usize, stream: String) -> Self {
@@ -190,7 +218,7 @@ impl Lexer {
                     "xor" => TokenType::Xor,
                     _ => TokenType::Identifier,
                 };
-                self.push(token!(token_type, res));
+                self.push(token!(self, token_type, res, start_pos));
                 self.mode = LexerMode::Normal;
                 return;
             }
@@ -221,11 +249,11 @@ impl Lexer {
 
             if c.is_none_or(|x| !x.is_ascii_digit() && x != '.') {
                 if dot_seen {
-                    self.push(token!(TokenType::Float, num_so_far));
+                    self.push(token!(self, TokenType::Float, num_so_far, start_pos));
                     self.mode = LexerMode::Normal;
                     return;
                 } else {
-                    self.push(token!(TokenType::Integer, num_so_far));
+                    self.push(token!(self, TokenType::Integer, num_so_far, start_pos));
                     self.mode = LexerMode::Normal;
                     return;
                 }
@@ -254,7 +282,7 @@ impl Lexer {
                 Some('"') => {
                     self.advance();
                     self.mode = LexerMode::Normal;
-                    self.push(token!(TokenType::String, res));
+                    self.push(token!(self, TokenType::String, res, start_pos));
                     return;
                 }
 
@@ -285,10 +313,11 @@ impl Lexer {
     }
 
     fn handle_normal(&mut self) {
+        let s = self.index;
         match self.current().expect("Internal FATAL - Main Lexer Loop not defensive") { // can asume safe due to main lex loop checking for us
             '\n' => {
                 if !self.last_was_semicolon {
-                    self.push(token!(TokenType::Semicolon, ';'));
+                    self.push(token!(self, TokenType::Semicolon, ';'));
                 }
 
                 self.advance();
@@ -306,9 +335,9 @@ impl Lexer {
                     if c.is_none() {
                         fatal!("Unterminated Character", self.source_id, self.index-4, self.index-2, "Make sure to place an ending '");
                     }
-                    self.push(token!(TokenType::Character, c.unwrap()));
+                    self.push(token!(self, TokenType::Character, c.unwrap(), s));
                 } else {
-                    self.push(token!(TokenType::Character, self.current().unwrap()));
+                    self.push(token!(self, TokenType::Character, self.current().unwrap(), s));
                 }
                 self.advance();
                 if self.current() != Some('\'') {
@@ -318,47 +347,47 @@ impl Lexer {
             }
 
             ';' => {
-                self.push(token!(TokenType::Semicolon, ';'));
+                self.push(token!(self, TokenType::Semicolon, ';'));
                 self.advance();
             }
 
             ',' => {
-                self.push(token!(TokenType::Comma, ','));
+                self.push(token!(self, TokenType::Comma, ','));
                 self.advance();
             }
 
             ':' => {
-                self.push(token!(TokenType::Colon, ':'));
+                self.push(token!(self, TokenType::Colon, ':'));
                 self.advance();
             }
 
             '{' => {
-                self.push(token!(TokenType::OpenBrace, '{'));
+                self.push(token!(self, TokenType::OpenBrace, '{'));
                 self.advance();
             }
 
             '}' => {
-                self.push(token!(TokenType::CloseBrace, '}'));
+                self.push(token!(self, TokenType::CloseBrace, '}'));
                 self.advance();
             }
 
             '(' => {
-                self.push(token!(TokenType::OpenBracket, '('));
+                self.push(token!(self, TokenType::OpenBracket, '('));
                 self.advance();
             }
 
             ')' => {
-                self.push(token!(TokenType::CloseBracket, ')'));
+                self.push(token!(self, TokenType::CloseBracket, ')'));
                 self.advance();
             }
 
             '[' => {
-                self.push(token!(TokenType::OpenSquareBracket, '['));
+                self.push(token!(self, TokenType::OpenSquareBracket, '['));
                 self.advance();
             }
 
             ']' => {
-                self.push(token!(TokenType::CloseSquareBracket, ']'));
+                self.push(token!(self, TokenType::CloseSquareBracket, ']'));
                 self.advance();
             }
 
@@ -368,13 +397,13 @@ impl Lexer {
                         self.advance();
                         self.advance();
                         if self.current() == Some('=') {
-                            self.push(token!(TokenType::ExpodentEquals, "**="));
+                            self.push(token!(self, TokenType::ExponentEquals, "**=", s));
                         } else {
-                            self.push(token!(TokenType::Expodent, "**"));
+                            self.push(token!(self, TokenType::Exponent, "**", s));
                         }
                     }
-                    Some('=') => {self.push(token!(TokenType::MultiplyEquals, "*=")); self.advance()},
-                    _   => self.push(token!(TokenType::Multiply, '*')),
+                    Some('=') => {self.push(token!(self, TokenType::MultiplyEquals, "*=", s)); self.advance()},
+                    _   => self.push(token!(self, TokenType::Multiply, '*')),
                 }
                 self.advance();
             }
@@ -383,66 +412,66 @@ impl Lexer {
                 match self.peek() {
                     Some('/') => self.mode = LexerMode::LineComment,
                     Some('*') => self.mode = LexerMode::Comment,
-                    Some('=') => {self.push(token!(TokenType::DivideEquals, "/=")); self.advance()},
-                    _   => self.push(token!(TokenType::Divide, '/')),
+                    Some('=') => {self.push(token!(self, TokenType::DivideEquals, "/=", s)); self.advance()},
+                    _   => self.push(token!(self, TokenType::Divide, '/')),
                 }
                 self.advance();
             }
 
             '+' => {
                 match self.peek() {
-                    Some('+') => {self.push(token!(TokenType::Increment, "++")); self.advance()},
-                    Some('=') => {self.push(token!(TokenType::PlusEquals, "+=")); self.advance()},
-                    _   => self.push(token!(TokenType::Plus, '+')),
+                    Some('+') => {self.push(token!(self, TokenType::Increment, "++", s)); self.advance()},
+                    Some('=') => {self.push(token!(self, TokenType::PlusEquals, "+=", s)); self.advance()},
+                    _   => self.push(token!(self, TokenType::Plus, '+')),
                 }
                 self.advance();
             }
 
             '-' => {
                 match self.peek() {
-                    Some('-') => {self.push(token!(TokenType::Decrement, "--")); self.advance()},
-                    Some('=') => {self.push(token!(TokenType::MinusEquals, "-=")); self.advance()},
-                    _   => self.push(token!(TokenType::Minus, '-')),
+                    Some('-') => {self.push(token!(self, TokenType::Decrement, "--", s)); self.advance()},
+                    Some('=') => {self.push(token!(self, TokenType::MinusEquals, "-=", s)); self.advance()},
+                    _   => self.push(token!(self, TokenType::Minus, '-')),
                 }
                 self.advance();
             }
 
             '%' => {
                 match self.peek() {
-                    Some('=') => {self.push(token!(TokenType::ModulousEquals, "%=")); self.advance()},
-                    _   => self.push(token!(TokenType::Modulous, '%')),
+                    Some('=') => {self.push(token!(self, TokenType::ModulousEquals, "%=", s)); self.advance()},
+                    _   => self.push(token!(self, TokenType::Modulous, '%')),
                 }
                 self.advance();
             }
 
             '>' => {
                 match self.peek() {
-                    Some('=') => {self.push(token!(TokenType::GreaterThanEqual, ">=")); self.advance()},
-                    _   => self.push(token!(TokenType::GreaterThan, '>')),
+                    Some('=') => {self.push(token!(self, TokenType::GreaterThanEqual, ">=", s)); self.advance()},
+                    _   => self.push(token!(self, TokenType::GreaterThan, '>')),
                 }
                 self.advance();
             }
 
             '<' => {
                 match self.peek() {
-                    Some('=') => {self.push(token!(TokenType::LessThanEqual, "<=")); self.advance()},
-                    _   => self.push(token!(TokenType::LessThan, '<')),
+                    Some('=') => {self.push(token!(self, TokenType::LessThanEqual, "<=", s)); self.advance()},
+                    _   => self.push(token!(self, TokenType::LessThan, '<')),
                 }
                 self.advance();
             }
 
             '!' => {
                 match self.peek() {
-                    Some('=') => {self.push(token!(TokenType::NotEqualTo, "!=")); self.advance()},
-                    _   => self.push(token!(TokenType::Excalmation, '!')),
+                    Some('=') => {self.push(token!(self, TokenType::NotEqualTo, "!=", s)); self.advance()},
+                    _   => self.push(token!(self, TokenType::Excalmation, '!')),
                 }
                 self.advance();
             }
 
             '=' => {
                 match self.peek() {
-                    Some('=') => {self.push(token!(TokenType::EqualTo, "==")); self.advance()},
-                    _   => self.push(token!(TokenType::Equals, '=')),
+                    Some('=') => {self.push(token!(self, TokenType::EqualTo, "==", s)); self.advance()},
+                    _   => self.push(token!(self, TokenType::Equals, '=')),
                 }
                 self.advance();
             }
@@ -458,7 +487,7 @@ impl Lexer {
                     self.mode = LexerMode::Number;
                 } else {
                     error!("Invalid Character", self.source_id, self.index, self.index);
-                    self.push(token!(TokenType::Unknown, c)); 
+                    self.push(token!(self, TokenType::Unknown, c)); 
                     self.advance(); 
                 }
 
@@ -467,7 +496,7 @@ impl Lexer {
     }
 
     fn finish(mut self) -> LexerResult {
-        self.push(token!(TokenType::Eof, "EOF"));
+        self.push(token!(self, TokenType::Eof, "EOF"));
         self.stream_out
     }
 }
