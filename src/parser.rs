@@ -5,7 +5,7 @@ pub enum Target {
     Error,
     Object(String),
     Property(Box<Target>, String),
-    Index(Box<Target>, Expression)
+    Index(Box<Target>, Expression),
 }
 
 #[derive(PartialEq, Clone, Debug)]
@@ -128,21 +128,19 @@ impl Parser {
     }
 
     fn parse_target(&mut self) -> Target {
-        use crate::lexer::TokenType as tt; 
+        use crate::lexer::TokenType as tt;
         let token = self.get();
         if token.is_none() {
-            error!("Could Not Find Target", self.source_id, self.last_token.s, self.last_token.e);
+            error!(
+                "Could Not Find Target",
+                self.source_id, self.last_token.s, self.last_token.e
+            );
             return Target::Error;
         }
         let token = token.unwrap();
 
         if token.t != tt::Identifier {
-            fatal!(
-                "Expected identifier",
-                self.source_id,
-                token.s,
-                token.e
-            );
+            fatal!("Expected identifier", self.source_id, token.s, token.e);
         }
 
         let mut target = Target::Object(token.v);
@@ -167,10 +165,7 @@ impl Parser {
                     );
                 }
 
-                target = Target::Property(
-                    Box::new(target),
-                    property.v,
-                );
+                target = Target::Property(Box::new(target), property.v);
             } else if next.t == tt::OpenSquareBracket {
                 self.get();
 
@@ -207,15 +202,12 @@ impl Parser {
                     return Expression::Atom(item);
                 };
 
-
                 loop {
                     match p.t {
-                        
                         _ => return Expression::Atom(item),
-                    }  
+                    }
                 }
-                
-            },
+            }
             OpenBracket => {
                 let expr = self.parse_expression(BindingPower::default());
 
@@ -315,21 +307,11 @@ impl Parser {
                     match self.get() {
                         Some(t) if t.t == CloseBracket => {}
                         Some(t) => {
-                            error!(
-                                "Expected Closing Bracket",
-                                self.source_id,
-                                t.s,
-                                t.e
-                            );
+                            error!("Expected Closing Bracket", self.source_id, t.s, t.e);
                             return Expression::Error;
                         }
                         None => {
-                            error!(
-                                "Unclosed Function Call",
-                                self.source_id,
-                                next.s,
-                                next.e
-                            );
+                            error!("Unclosed Function Call", self.source_id, next.s, next.e);
                             return Expression::Error;
                         }
                     }
@@ -453,7 +435,9 @@ impl Parser {
                     if should_be_equals.t != Equals {
                         error!(
                             "Constant Not Defined",
-                            self.source_id, c.e+1, should_be_equals.e
+                            self.source_id,
+                            c.e + 1,
+                            should_be_equals.e
                         );
                         return Statement::Error;
                     }
@@ -557,7 +541,9 @@ impl Parser {
             }
 
             let p = self.peek();
-            if p.as_ref().is_some_and(|x| x.t != crate::lexer::TokenType::Semicolon) {
+            if p.as_ref()
+                .is_some_and(|x| x.t != crate::lexer::TokenType::Semicolon)
+            {
                 let p = p.unwrap();
                 error!("Expected Semicolon", self.source_id, p.s, p.e);
             }

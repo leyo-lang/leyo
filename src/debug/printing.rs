@@ -21,11 +21,7 @@ fn ast_pretty_target(
     let branch = if is_last { "└── " } else { "├── " };
     let _ = writeln!(output, "{}{}{}", prefix, branch, label);
 
-    let child_prefix = format!(
-        "{}{}",
-        prefix,
-        if is_last { "    " } else { "│   " }
-    );
+    let child_prefix = format!("{}{}", prefix, if is_last { "    " } else { "│   " });
 
     match target {
         crate::parser::Target::Error => {
@@ -39,31 +35,13 @@ fn ast_pretty_target(
         crate::parser::Target::Property(parent, property) => {
             let _ = writeln!(output, "{}├── Property: {}", child_prefix, property);
 
-            ast_pretty_target(
-                parent,
-                &child_prefix,
-                true,
-                "Parent",
-                output,
-            );
+            ast_pretty_target(parent, &child_prefix, true, "Parent", output);
         }
 
         crate::parser::Target::Index(parent, index) => {
-            ast_pretty_target(
-                parent,
-                &child_prefix,
-                false,
-                "Target",
-                output,
-            );
+            ast_pretty_target(parent, &child_prefix, false, "Target", output);
 
-            ast_pretty_expression(
-                index,
-                &child_prefix,
-                true,
-                "Index",
-                output,
-            );
+            ast_pretty_expression(index, &child_prefix, true, "Index", output);
         }
     }
 }
@@ -122,7 +100,13 @@ fn ast_pretty_expression(
         }
 
         crate::parser::Expression::Call(target, params) => {
-            ast_pretty_expression(target, &child_prefix, if params.is_empty() {true} else {false}, "Callee", output);
+            ast_pretty_expression(
+                target,
+                &child_prefix,
+                if params.is_empty() { true } else { false },
+                "Callee",
+                output,
+            );
 
             for (i, param) in params.iter().enumerate() {
                 ast_pretty_expression(
