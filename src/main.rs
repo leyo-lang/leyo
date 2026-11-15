@@ -23,9 +23,13 @@ fn register_file(filepath: &str) -> FileData {
     FileData{contents, id}
 }
 
-fn lex(filedata: FileData) -> lexer::LexerResult {
+fn lex(is_debug: bool, filedata: FileData) -> lexer::LexerResult {
     let res = lexer::lex(filedata.contents, filedata.id);
+
     let res = newlines::newlines(res, filedata.id);
+    if is_debug {
+        std::fs::write("debug_output.leyo", debug::reconstruct::token_stream(res.clone())).expect("Failed to write debug output");
+    }
 
     if errors::has_errors() {
         fatalns!("Errors Found After Lexing");
@@ -52,7 +56,7 @@ fn main() {
 
     for filepath in filepaths {
         let filedata = register_file(filepath); 
-        let result = lex(filedata.clone());
+        let result = lex(is_debug, filedata.clone());
         if is_debug {debug::printing::print_lexer_result(&result);}
 
         let result = parse(result, filedata.clone());

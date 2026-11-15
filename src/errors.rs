@@ -265,8 +265,6 @@ pub fn print_all() {
             diagnostic.message
         );
 
-        println!(" --> {}", source.name);
-
         let start = diagnostic.start;
         let end = diagnostic.end;
 
@@ -302,6 +300,11 @@ pub fn print_all() {
             .matches('\n')
             .count() + 1;
 
+        let row = source.source[line_start..start_byte]
+            .chars()
+            .count() + 1;
+        
+        println!(" --> {}:{}:{}", source.name, line_number, row);
         println!("{:4} | {}", line_number, line);
 
         let prefix = &source.source[line_start..start_byte];
