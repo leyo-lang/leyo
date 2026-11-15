@@ -5,16 +5,14 @@ pub fn token_stream(tokens: LexerResult) -> String {
     use crate::lexer::TokenType as tt;
 
     for token in tokens {
-
         match token.t {
-
             tt::Semicolon => {
                 output.push(';');
                 output.push('\n');
             }
 
             _ => {
-                output.push_str(&token.v); 
+                output.push_str(&token.v);
                 output.push(' ');
             }
         }

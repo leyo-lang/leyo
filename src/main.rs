@@ -1,8 +1,8 @@
+mod debug;
+mod errors;
 mod lexer;
 mod newlines;
 mod parser;
-mod errors;
-mod debug;
 
 #[derive(Clone)]
 struct FileData {
@@ -13,14 +13,21 @@ struct FileData {
 fn register_file(filepath: &str) -> FileData {
     let contents = std::fs::read_to_string(filepath);
     if contents.is_err() {
-        fatalns!(format!("Could Not Open File {filepath}").as_str(), "Check there is not a typo in the name and that the file exists.");
+        fatalns!(
+            format!("Could Not Open File {filepath}").as_str(),
+            "Check there is not a typo in the name and that the file exists."
+        );
     }
 
     let contents = contents.unwrap();
 
-    let id = errors::add_source(filepath.to_string(), Some(filepath.to_string()), contents.clone());
+    let id = errors::add_source(
+        filepath.to_string(),
+        Some(filepath.to_string()),
+        contents.clone(),
+    );
 
-    FileData{contents, id}
+    FileData { contents, id }
 }
 
 fn lex(is_debug: bool, filedata: FileData) -> lexer::LexerResult {
@@ -28,7 +35,11 @@ fn lex(is_debug: bool, filedata: FileData) -> lexer::LexerResult {
 
     let res = newlines::newlines(res, filedata.id);
     if is_debug {
-        std::fs::write("debug_output.leyo", debug::reconstruct::token_stream(res.clone())).expect("Failed to write debug output");
+        std::fs::write(
+            "debug_output.leyo",
+            debug::reconstruct::token_stream(res.clone()),
+        )
+        .expect("Failed to write debug output");
     }
 
     if errors::has_errors() {
@@ -46,7 +57,7 @@ fn parse(tokens: lexer::LexerResult, filedata: FileData) -> parser::Program {
     }
 
     res
-} 
+}
 
 fn main() {
     let mut flags = std::env::args();
@@ -55,15 +66,19 @@ fn main() {
     let filepaths = vec!["example.leyo"];
 
     for filepath in filepaths {
-        let filedata = register_file(filepath); 
+        let filedata = register_file(filepath);
         let result = lex(is_debug, filedata.clone());
-        if is_debug {debug::printing::print_lexer_result(&result);}
+        if is_debug {
+            debug::printing::print_lexer_result(&result);
+        }
 
         let result = parse(result, filedata.clone());
-        if is_debug {println!("{}", debug::printing::ast_pretty_print(&result));}
+        if is_debug {
+            println!("{}", debug::printing::ast_pretty_print(&result));
+        }
 
         if errors::has_any() {
             errors::print_all();
-        }        
+        }
     }
 }
