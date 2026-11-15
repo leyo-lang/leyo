@@ -131,6 +131,8 @@ pub fn fatal(message: &str, file_id: usize, start: usize, end: usize, help: Opti
 }
 
 pub fn fatal_no_source(message: &str, help: Option<&str>,) -> ! {
+    print_all();
+    
     println!(
         "{}: {}",
         Severity::Fatal,
@@ -141,7 +143,6 @@ pub fn fatal_no_source(message: &str, help: Option<&str>,) -> ! {
         println!("  Help: {}", help);
     }
 
-    print_all();
     exit(1);
 }
 
@@ -242,7 +243,18 @@ fn display_width(s: &str) -> usize {
 }
 
 pub fn print_all() {
-    for diagnostic in get() {
+    let mut diagnostics = get();
+
+    diagnostics.sort_by_key(|d| {
+        match d.severity {
+        Severity::Fatal => 0,
+        Severity::Error => 1,
+        Severity::Warning => 2,
+        Severity::Info => 3,
+        }
+    });
+
+    for diagnostic in diagnostics {
         let Some(source) = get_source(diagnostic.file_id) else {
             continue;
         };

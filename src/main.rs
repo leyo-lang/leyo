@@ -1,6 +1,8 @@
 mod lexer;
+mod newlines;
 mod parser;
 mod errors;
+mod debug;
 
 #[derive(Clone)]
 struct FileData {
@@ -23,6 +25,7 @@ fn register_file(filepath: &str) -> FileData {
 
 fn lex(filedata: FileData) -> lexer::LexerResult {
     let res = lexer::lex(filedata.contents, filedata.id);
+    let res = newlines::newlines(res, filedata.id);
 
     if errors::has_errors() {
         fatalns!("Errors Found After Lexing");
@@ -42,14 +45,18 @@ fn parse(tokens: lexer::LexerResult, filedata: FileData) -> parser::Program {
 } 
 
 fn main() {
+    let mut flags = std::env::args();
+    let is_debug = flags.any(|arg| arg == "--debug");
+
     let filepaths = vec!["example.leyo"];
 
     for filepath in filepaths {
         let filedata = register_file(filepath); 
         let result = lex(filedata.clone());
-        lexer::print_lexer_result(&result);
+        if is_debug {debug::printing::print_lexer_result(&result);}
 
         let result = parse(result, filedata.clone());
+        if is_debug {println!("{}", debug::printing::ast_pretty_print(&result));}
 
         if errors::has_any() {
             errors::print_all();

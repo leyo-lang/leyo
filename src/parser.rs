@@ -5,6 +5,7 @@ pub enum Expression {
     Error,
     Atom(crate::lexer::Token),
     Binary(Box<Expression>, crate::lexer::Token, Box<Expression>),
+    Unary(crate::lexer::Token, Box<Expression>)
 }
 
 #[derive(PartialEq, Clone)]
@@ -38,13 +39,7 @@ fn get_binding_power(token: &crate::lexer::Token) -> Option<BindingPower> {
     use crate::lexer::TokenType::*;
 
     let bp = match token.t {
-        Equals
-        | PlusEquals
-        | MinusEquals
-        | MultiplyEquals
-        | DivideEquals
-        | ExponentEquals
-        | ModulousEquals => BindingPower::new(1, 2),
+
 
         Or => BindingPower::new(3, 4),
         Xor => BindingPower::new(5, 6),
@@ -55,11 +50,12 @@ fn get_binding_power(token: &crate::lexer::Token) -> Option<BindingPower> {
         GreaterThan | LessThan
         | GreaterThanEqual | LessThanEqual => BindingPower::new(12, 11),
 
-        Plus | Minus => BindingPower::new(14, 13),
-        Multiply | Divide | Modulous => BindingPower::new(16, 15),
+        Plus | Minus => BindingPower::new(14, 15),
+        Multiply | Divide | Modulous => BindingPower::new(16, 17),
 
-        Exponent => BindingPower::new(17, 18),
+        Exponent => BindingPower::new(18, 17),
 
+        Not => BindingPower::new(0, 19),
         _ => return None,
     };
 
@@ -109,11 +105,40 @@ impl Parser {
         self.tokens.last().cloned()
     }
 
-    fn parse_no_sides(&self, item: crate::lexer::Token) -> Expression {
+    fn parse_no_sides(&mut self, item: crate::lexer::Token) -> Expression {
         use crate::lexer::TokenType::*;
         match item.t {
             Identifier | Integer | Float | Character | String => Expression::Atom(item),
-            _ => fatal!("Token Unimplemented", self.source_id, item.s, item.e),
+            OpenBracket => {
+                let expr = self.parse_expression(BindingPower::default());
+
+                match self.get() {
+                    Some(token) if token.t == CloseBracket => expr,
+
+                    Some(token) => {
+                        error!(
+                            "Expected Closing Parenthesis",
+                            self.source_id,
+                            token.s,
+                            token.e
+                        );
+                        return Expression::Error
+                    }
+
+                    None => {
+                        error!(
+                            "Unclosed Parenthesis",
+                            self.source_id,
+                            item.s,
+                            item.e
+                        );
+                        return Expression::Error
+                    }
+                }
+            },
+            Minus => Expression::Unary(item, Box::new(self.parse_expression(BindingPower::new(0, 20)))),
+            Not => Expression::Unary(item, Box::new(self.parse_expression(BindingPower::new(0, 19)))),
+            _ => {error!("Token Unimplemented", self.source_id, item.s, item.e); return Expression::Error},
         }
     }
 
@@ -132,17 +157,27 @@ impl Parser {
         let lhs = self.get();
         if lhs.is_none() {
             error!(format!("Expected Token After This \"{}\"", self.last_token.v).as_str(), self.source_id, self.last_token.s, self.last_token.e);
+            return Expression::Error;
         }
         let mut lhs = self.parse_no_sides(lhs.unwrap());
 
 
         loop {
-            let op = self.get();
-            if op.is_none() { break; };
-            let op = op.unwrap();
-            let op_bp = get_binding_power(&op);
-            if op_bp.is_none_or(|o| o.l <= bp.r) {break};
-            
+            let op = match self.peek() {
+                Some(op) => op,
+                None => break,
+            };
+
+            let op_bp = match get_binding_power(&op) {
+                Some(bp) => bp,
+                None => break,
+            };
+
+            if op_bp.l <= bp.r {
+                break;
+            }
+
+            self.get();
             lhs = self.parse_left_side(lhs, op);
         }
 
@@ -167,20 +202,26 @@ impl Parser {
                 if c.is_none() {fatal!("Keyword Followed By EOF", self.source_id, t.s, t.e, "Consider Removing This Keyword")}
                 let c = c.unwrap();
 
-                let name = self.get();
-                if name.is_none() {fatal!("Keyword Followed By EOF", self.source_id, c.s, c.e, "Consider Removing This Keyword")}
-                let name = name.unwrap();
-                let should_be_equals = self.get();
-                if should_be_equals.is_none() {fatal!("Constant Declaration Followed By EOF", self.source_id, name.s, name.e)}
-                let should_be_equals = should_be_equals.unwrap();
-
                 if c.v == "const" {
+                    let name = self.get();
+                    if name.is_none() {fatal!("Keyword Followed By EOF", self.source_id, c.s, c.e, "Consider Removing This Keyword")}
+                    let name = name.unwrap();
+                    let should_be_equals = self.get();
+                    if should_be_equals.is_none() {fatal!("Constant Declaration Followed By EOF", self.source_id, name.s, name.e)}
+                    let should_be_equals = should_be_equals.unwrap();
+
+                    
                     if should_be_equals.t != Equals {
                         error!("Constant Not Defined", self.source_id, name.s, should_be_equals.e);
                         return Statement::Error;
                     }
                     return Statement::ConstantDeclaration(name.v, self.parse_expression(BindingPower::default()))
                 } else {
+                    let name = c;
+                    let should_be_equals = self.get();
+                    if should_be_equals.is_none() {fatal!("Constant Declaration Followed By EOF", self.source_id, name.s, name.e)}
+                    let should_be_equals = should_be_equals.unwrap();
+
                     if should_be_equals.t != Equals {
                         error!("Variable Not Defined", self.source_id, name.s, should_be_equals.e);
                         return Statement::Error;
@@ -240,6 +281,6 @@ impl Parser {
 
 pub fn parse(tokens: crate::lexer::LexerResult, id: usize) -> Program {
     let mut parser = Parser::new(tokens, id);
-    parser.parse_block();
+    parser.result = parser.parse_block();
     parser.finish()
 }

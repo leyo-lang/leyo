@@ -4,6 +4,7 @@ use crate::{error, fatal, warn };
 pub enum TokenType {
     Unknown,
     Eof,
+    Newline, // removed before parsing
 
     Integer,
     Float,
@@ -316,9 +317,7 @@ impl Lexer {
         let s = self.index;
         match self.current().expect("Internal FATAL - Main Lexer Loop not defensive") { // can asume safe due to main lex loop checking for us
             '\n' => {
-                if !self.last_was_semicolon {
-                    self.push(token!(self, TokenType::Semicolon, ';'));
-                }
+                self.push(token!(self, TokenType::Newline, "\n"));
 
                 self.advance();
             }
@@ -498,17 +497,6 @@ impl Lexer {
     fn finish(mut self) -> LexerResult {
         self.push(token!(self, TokenType::Eof, "EOF"));
         self.stream_out
-    }
-}
-
-pub fn print_lexer_result(result: &LexerResult) {
-    for (i, token) in result.iter().enumerate() {
-        println!(
-            "{:<10} {:<20} {:<20?}",
-            i,
-            format!("{:?}", token.t),
-            token.v
-        );
     }
 }
 
