@@ -30,6 +30,11 @@ pub enum Statement {
     Assignment(Target, Expression),
     Evaluation(Expression),
     Loop(Expression, Box<Statement>),
+    If(Expression, Box<Statement>, Option<Box<Statement>>),
+    Repeat(Expression, Option<Target>, Box<Statement>),
+    Break,
+    Continue,
+    Return(Option<Expression>),
 }
 
 pub type Program = Vec<Statement>;
@@ -408,7 +413,7 @@ impl Parser {
             return Statement::None;
         };
 
-        match t.v.as_str() {
+        match if t.t != String { t.v.as_str() } else { "_" } {
             "new" => {
                 let c = self.peek();
                 if c.is_none() {
@@ -503,28 +508,123 @@ impl Parser {
 
             "while" => {
                 let expr = self.parse_expression(BindingPower::default());
-                let closing = self.peek();
-                if closing.is_none() {
+                let opening = self.peek();
+                if opening.is_none() {
                     fatal!(
-                        "While Loop Unclosed",
+                        "While Loop Unopened",
                         self.source_id,
                         self.last_token.e - 1,
                         self.last_token.e
                     )
                 }
-                let closing = closing.unwrap();
-                if !matches!(closing.t, OpenBrace | Colon | Semicolon) {
+                let opening = opening.unwrap();
+                if !matches!(opening.t, OpenBrace | Colon | Semicolon) {
                     error!(
                         "Expected While Loop Body",
-                        self.source_id, closing.s, closing.e
+                        self.source_id, opening.s, opening.e
                     );
                     return Statement::Error;
                 }
-                if closing.t == Colon {
+                if opening.t == Colon {
                     self.get();
                 }
                 let stmt = self.parse_statement();
                 return Statement::Loop(expr, Box::new(stmt));
+            }
+
+            "if" => {
+                let expr = self.parse_expression(BindingPower::default());
+                let opening = self.peek();
+                if opening.is_none() {
+                    fatal!(
+                        "If Statement Unopened",
+                        self.source_id,
+                        self.last_token.e - 1,
+                        self.last_token.e
+                    )
+                }
+                let opening = opening.unwrap();
+
+                if opening.t == Colon {
+                    self.get();
+                } else if opening.t != OpenBrace {
+                    error!(
+                        "Expected If Statement Body",
+                        self.source_id, opening.s, opening.e
+                    );
+                    return Statement::Error;
+                }
+
+                let stmt = self.parse_statement();
+
+                let else_clause = if self
+                    .peek()
+                    .is_some_and(|x| x.t == Identifier && x.v == "else")
+                {
+                    self.get();
+                    Some(Box::new(self.parse_statement()))
+                } else {
+                    None
+                };
+
+                return Statement::If(expr, Box::new(stmt), else_clause);
+            }
+
+            "repeat" => {
+                let count = self.parse_expression(BindingPower::default());
+
+                let target = if self
+                    .peek()
+                    .is_some_and(|x| x.t == Identifier && x.v == "as")
+                {
+                    self.get();
+                    Some(self.parse_target())
+                } else {
+                    None
+                };
+
+                let opening = self.peek();
+                if opening.is_none() {
+                    fatal!(
+                        "Repeat Statement Unopened",
+                        self.source_id,
+                        self.last_token.e - 1,
+                        self.last_token.e
+                    )
+                }
+                let opening = opening.unwrap();
+
+                if opening.t == Colon {
+                    self.get();
+                } else if opening.t != OpenBrace {
+                    error!(
+                        "Expected Repeat Statement Body",
+                        self.source_id, opening.s, opening.e
+                    );
+                    return Statement::Error;
+                }
+
+                let stmt = self.parse_statement();
+
+                return Statement::Repeat(count, target, Box::new(stmt));
+            }
+
+            "break" => {
+                return Statement::Break;
+            }
+
+            "continue" => {
+                return Statement::Continue;
+            }
+
+            "return" => {
+                let value = if self.peek().is_some_and(|x| x.t != Semicolon) {
+                    Some(self.parse_expression(BindingPower::default()))
+                } else {
+                    None
+                };
+
+                return Statement::Return(value);
             }
 
             _ => {

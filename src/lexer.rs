@@ -1,4 +1,4 @@
-use crate::{error, fatal, warn};
+use crate::{error, fatal};
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum TokenType {
@@ -117,16 +117,6 @@ macro_rules! token {
 
 impl Lexer {
     fn new(id: usize, stream: String) -> Self {
-        if !stream.ends_with('\n') {
-            warn!(
-                "Stream Should End In Newline",
-                id,
-                stream.len() - 1,
-                stream.len() - 1,
-                "Add a newline to the end of the input."
-            );
-        }
-
         Self {
             stream_in: stream.chars().collect(),
             index: 0,

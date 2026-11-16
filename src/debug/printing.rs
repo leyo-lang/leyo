@@ -141,10 +141,15 @@ fn ast_pretty_statement(
         crate::parser::Statement::Error => "Error".to_string(),
         crate::parser::Statement::Block(_) => "Block".to_string(),
         crate::parser::Statement::Loop(_, _) => "Loop".to_string(),
+        crate::parser::Statement::If(_, _, _) => "If".to_string(),
+        crate::parser::Statement::Repeat(_, _, _) => "Repeat".to_string(),
         crate::parser::Statement::VariableDeclaration(_, _) => "VariableDeclaration".to_string(),
         crate::parser::Statement::ConstantDeclaration(_, _) => "ConstantDeclaration".to_string(),
         crate::parser::Statement::Assignment(_, _) => "Assignment".to_string(),
         crate::parser::Statement::Evaluation(_) => "Expression".to_string(),
+        crate::parser::Statement::Break => "Break".to_string(),
+        crate::parser::Statement::Continue => "Continue".to_string(),
+        crate::parser::Statement::Return(_) => "Return".to_string(),
     };
 
     let _ = writeln!(output, "{}{}{}", prefix, branch, label);
@@ -172,6 +177,40 @@ fn ast_pretty_statement(
         crate::parser::Statement::Loop(cond, stmt) => {
             ast_pretty_expression(cond, &child_prefix, false, "Condition", output);
             ast_pretty_statement(stmt, &child_prefix, true, output);
+        }
+
+        crate::parser::Statement::If(cond, stmt, els) => {
+            ast_pretty_expression(cond, &child_prefix, false, "Condition", output);
+            ast_pretty_statement(stmt, &child_prefix, els.is_none(), output);
+            if els.is_some() {
+                ast_pretty_statement(&els.as_ref().unwrap(), &child_prefix, true, output);
+            }
+        }
+
+        crate::parser::Statement::Repeat(cond, target, stmt) => {
+            ast_pretty_expression(cond, &child_prefix, false, "Count", output);
+            if target.is_some() {
+                ast_pretty_target(
+                    &target.as_ref().unwrap(),
+                    &child_prefix,
+                    false,
+                    "Target",
+                    output,
+                )
+            };
+            ast_pretty_statement(stmt, &child_prefix, true, output);
+        }
+
+        crate::parser::Statement::Return(value) => {
+            if value.is_some() {
+                ast_pretty_expression(
+                    value.as_ref().unwrap(),
+                    &child_prefix,
+                    true,
+                    "Value",
+                    output,
+                );
+            }
         }
 
         _ => {}

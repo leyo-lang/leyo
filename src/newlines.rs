@@ -1,7 +1,8 @@
-use crate::lexer::TokenType as tt;
+use crate::lexer::TokenType::{self as tt, Semicolon};
 use crate::{
     fatal,
     lexer::{LexerResult, Token},
+    warn,
 };
 
 fn can_end_statement(token: &tt) -> bool {
@@ -14,6 +15,7 @@ fn can_end_statement(token: &tt) -> bool {
             | tt::CloseBracket
             | tt::CloseSquareBracket
             | tt::CloseBrace
+            | tt::Character
     )
 }
 
@@ -27,7 +29,9 @@ pub fn newlines(tokens: LexerResult, source_id: usize) -> LexerResult {
         e: 0,
     };
 
-    for token in tokens {
+    let mut iter = tokens.into_iter().peekable();
+
+    while let Some(token) = iter.next() {
         if token.t != tt::Newline {
             match token.t {
                 tt::OpenBracket | tt::OpenSquareBracket => {
@@ -39,6 +43,26 @@ pub fn newlines(tokens: LexerResult, source_id: usize) -> LexerResult {
                 }
                 tt::CloseBracket | tt::CloseSquareBracket => {
                     in_brackets = in_brackets.saturating_sub(1);
+                }
+                tt::Eof => {
+                    if last.t != Semicolon && can_end_statement(&last.t) {
+                        result.push(Token {
+                            t: Semicolon,
+                            v: "\n".to_string(),
+                            s: token.s,
+                            e: token.e,
+                        });
+                    }
+
+                    if last.v != "\n" {
+                        warn!(
+                            "Stream Should End In Newline",
+                            source_id,
+                            token.e - 1,
+                            token.e,
+                            "Add a newline to the end of the input."
+                        );
+                    }
                 }
                 _ => {}
             }
@@ -58,6 +82,9 @@ pub fn newlines(tokens: LexerResult, source_id: usize) -> LexerResult {
             continue;
         }
         if !can_end_statement(&last.t) {
+            continue;
+        }
+        if iter.peek().is_some_and(|x| x.v == "else") {
             continue;
         }
 
