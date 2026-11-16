@@ -28,7 +28,8 @@ pub enum Statement {
     VariableDeclaration(Target, Expression),
     ConstantDeclaration(Target, Expression),
     Assignment(Target, Expression),
-    Expression(Expression),
+    Evaluation(Expression),
+    Loop(Expression, Box<Statement>),
 }
 
 pub type Program = Vec<Statement>;
@@ -125,6 +126,10 @@ impl Parser {
 
     fn peek(&mut self) -> Option<crate::lexer::Token> {
         self.tokens.last().cloned()
+    }
+
+    fn reverse(&mut self, t: crate::lexer::Token) {
+        self.tokens.push(t);
     }
 
     fn parse_target(&mut self) -> Target {
@@ -496,6 +501,32 @@ impl Parser {
                 return Statement::End;
             }
 
+            "while" => {
+                let expr = self.parse_expression(BindingPower::default());
+                let closing = self.peek();
+                if closing.is_none() {
+                    fatal!(
+                        "While Loop Unclosed",
+                        self.source_id,
+                        self.last_token.e - 1,
+                        self.last_token.e
+                    )
+                }
+                let closing = closing.unwrap();
+                if !matches!(closing.t, OpenBrace | Colon | Semicolon) {
+                    error!(
+                        "Expected While Loop Body",
+                        self.source_id, closing.s, closing.e
+                    );
+                    return Statement::Error;
+                }
+                if closing.t == Colon {
+                    self.get();
+                }
+                let stmt = self.parse_statement();
+                return Statement::Loop(expr, Box::new(stmt));
+            }
+
             _ => {
                 let p = self.peek();
                 if p.is_some() {
@@ -510,7 +541,8 @@ impl Parser {
                             );
                         }
                         _ => {
-                            return Statement::Expression(
+                            self.reverse(t);
+                            return Statement::Evaluation(
                                 self.parse_expression(BindingPower::default()),
                             );
                         }

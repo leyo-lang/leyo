@@ -140,10 +140,11 @@ fn ast_pretty_statement(
         crate::parser::Statement::End => "End".to_string(),
         crate::parser::Statement::Error => "Error".to_string(),
         crate::parser::Statement::Block(_) => "Block".to_string(),
+        crate::parser::Statement::Loop(_, _) => "Loop".to_string(),
         crate::parser::Statement::VariableDeclaration(_, _) => "VariableDeclaration".to_string(),
         crate::parser::Statement::ConstantDeclaration(_, _) => "ConstantDeclaration".to_string(),
         crate::parser::Statement::Assignment(_, _) => "Assignment".to_string(),
-        crate::parser::Statement::Expression(_) => "Expression".to_string(),
+        crate::parser::Statement::Evaluation(_) => "Expression".to_string(),
     };
 
     let _ = writeln!(output, "{}{}{}", prefix, branch, label);
@@ -151,7 +152,7 @@ fn ast_pretty_statement(
     let child_prefix = format!("{}{}", prefix, if is_last { "    " } else { "│   " });
 
     match stmt {
-        crate::parser::Statement::Expression(expr) => {
+        crate::parser::Statement::Evaluation(expr) => {
             ast_pretty_expression(expr, &child_prefix, true, "Value", output);
         }
 
@@ -166,6 +167,11 @@ fn ast_pretty_statement(
             for (i, stmt) in statements.iter().enumerate() {
                 ast_pretty_statement(stmt, &child_prefix, i == statements.len() - 1, output);
             }
+        }
+
+        crate::parser::Statement::Loop(cond, stmt) => {
+            ast_pretty_expression(cond, &child_prefix, false, "Condition", output);
+            ast_pretty_statement(stmt, &child_prefix, true, output);
         }
 
         _ => {}
