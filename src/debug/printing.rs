@@ -120,21 +120,9 @@ fn ast_pretty_expression(
         }
 
         crate::parser::Expression::Property(object, property) => {
-            ast_pretty_expression(
-                object,
-                &child_prefix,
-                false,
-                "Object",
-                output,
-            );
+            ast_pretty_expression(object, &child_prefix, false, "Object", output);
 
-            ast_pretty_expression(
-                property,
-                &child_prefix,
-                true,
-                "Property",
-                output,
-            );
+            ast_pretty_expression(property, &child_prefix, true, "Property", output);
         }
 
         crate::parser::Expression::Index(target, index) => {

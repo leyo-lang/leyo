@@ -209,9 +209,7 @@ impl Parser {
     fn parse_no_sides(&mut self, item: crate::lexer::Token) -> Expression {
         use crate::lexer::TokenType::*;
         match item.t {
-            Identifier | Integer | Float | Character | String => {
-                Expression::Atom(item)
-            }
+            Identifier | Integer | Float | Character | String => Expression::Atom(item),
             OpenBracket => {
                 let expr = self.parse_expression(BindingPower::default());
 
@@ -348,15 +346,23 @@ impl Parser {
                     self.get();
                     let post = self.get();
                     if post.is_none() {
-                        fatal!("FullStop Followed By EOF", self.source_id, next.s, next.e+1);
-                    } 
+                        fatal!(
+                            "FullStop Followed By EOF",
+                            self.source_id,
+                            next.s,
+                            next.e + 1
+                        );
+                    }
 
                     let post = post.unwrap();
                     if post.t != Identifier {
-                        error!("Unexpected Token After FullStop", self.source_id, post.s, post.e)
+                        error!(
+                            "Unexpected Token After FullStop",
+                            self.source_id, post.s, post.e
+                        )
                     }
 
-                    lhs = Expression::Property(Box::new(lhs), Box::new(Expression::Atom(post)),)
+                    lhs = Expression::Property(Box::new(lhs), Box::new(Expression::Atom(post)))
                 }
 
                 _ => break,
@@ -640,16 +646,14 @@ impl Parser {
                 let name = self.peek();
                 let name = match name {
                     None => None,
-                    Some(c) if c.t == OpenBrace => {
-                        None
-                    }
+                    Some(c) if c.t == OpenBrace => None,
                     Some(c) if c.t == Identifier => {
                         self.get();
                         Some(c.v)
                     }
                     Some(c) => {
                         error!("Expected Identifier or \"{\"", self.source_id, c.s, c.e);
-                        return Statement::Error
+                        return Statement::Error;
                     }
                 };
 
