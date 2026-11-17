@@ -119,6 +119,24 @@ fn ast_pretty_expression(
             }
         }
 
+        crate::parser::Expression::Property(object, property) => {
+            ast_pretty_expression(
+                object,
+                &child_prefix,
+                false,
+                "Object",
+                output,
+            );
+
+            ast_pretty_expression(
+                property,
+                &child_prefix,
+                true,
+                "Property",
+                output,
+            );
+        }
+
         crate::parser::Expression::Index(target, index) => {
             ast_pretty_expression(target, &child_prefix, false, "Item", output);
 
@@ -139,7 +157,8 @@ fn ast_pretty_statement(
         crate::parser::Statement::None => "None".to_string(),
         crate::parser::Statement::End => "End".to_string(),
         crate::parser::Statement::Error => "Error".to_string(),
-        crate::parser::Statement::Block(_) => "Block".to_string(),
+        crate::parser::Statement::Block(n, _) if n.is_none() => "Block".to_string(),
+        crate::parser::Statement::Block(n, _) => format!("Namespace: {}", n.as_ref().unwrap()),
         crate::parser::Statement::Loop(_, _) => "Loop".to_string(),
         crate::parser::Statement::If(_, _, _) => "If".to_string(),
         crate::parser::Statement::Repeat(_, _, _) => "Repeat".to_string(),
@@ -149,6 +168,7 @@ fn ast_pretty_statement(
         crate::parser::Statement::Evaluation(_) => "Expression".to_string(),
         crate::parser::Statement::Break => "Break".to_string(),
         crate::parser::Statement::Continue => "Continue".to_string(),
+        crate::parser::Statement::Function(name, _, _) => format!("Function: {name}"),
         crate::parser::Statement::Return(_) => "Return".to_string(),
     };
 
@@ -168,7 +188,7 @@ fn ast_pretty_statement(
             ast_pretty_expression(expr, &child_prefix, true, "Value", output);
         }
 
-        crate::parser::Statement::Block(statements) => {
+        crate::parser::Statement::Block(_, statements) => {
             for (i, stmt) in statements.iter().enumerate() {
                 ast_pretty_statement(stmt, &child_prefix, i == statements.len() - 1, output);
             }
@@ -199,6 +219,19 @@ fn ast_pretty_statement(
                 )
             };
             ast_pretty_statement(stmt, &child_prefix, true, output);
+        }
+
+        crate::parser::Statement::Function(_, params, body) => {
+            for (i, param) in params.iter().enumerate() {
+                ast_pretty_expression(
+                    param,
+                    &child_prefix,
+                    false,
+                    &format!("Param {i}").to_string(),
+                    output,
+                );
+            }
+            ast_pretty_statement(body, &child_prefix, true, output);
         }
 
         crate::parser::Statement::Return(value) => {

@@ -17,6 +17,7 @@ pub enum Expression {
     Array(Vec<Expression>),
     Call(Box<Expression>, Vec<Expression>),
     Index(Box<Expression>, Box<Expression>),
+    Property(Box<Expression>, Box<Expression>),
 }
 
 #[derive(PartialEq, Clone)]
@@ -24,7 +25,7 @@ pub enum Statement {
     None,
     End,
     Error,
-    Block(Vec<Statement>),
+    Block(Option<String>, Vec<Statement>),
     VariableDeclaration(Target, Expression),
     ConstantDeclaration(Target, Expression),
     Assignment(Target, Expression),
@@ -34,6 +35,7 @@ pub enum Statement {
     Repeat(Expression, Option<Target>, Box<Statement>),
     Break,
     Continue,
+    Function(String, Vec<Expression>, Box<Statement>),
     Return(Option<Expression>),
 }
 
@@ -150,7 +152,7 @@ impl Parser {
         let token = token.unwrap();
 
         if token.t != tt::Identifier {
-            fatal!("Expected identifier", self.source_id, token.s, token.e);
+            fatal!("Expected Identifier", self.source_id, token.s, token.e);
         }
 
         let mut target = Target::Object(token.v);
@@ -208,15 +210,7 @@ impl Parser {
         use crate::lexer::TokenType::*;
         match item.t {
             Identifier | Integer | Float | Character | String => {
-                let Some(p) = self.peek() else {
-                    return Expression::Atom(item);
-                };
-
-                loop {
-                    match p.t {
-                        _ => return Expression::Atom(item),
-                    }
-                }
+                Expression::Atom(item)
             }
             OpenBracket => {
                 let expr = self.parse_expression(BindingPower::default());
@@ -348,6 +342,21 @@ impl Parser {
                     }
 
                     lhs = Expression::Index(Box::new(lhs), Box::new(index))
+                }
+
+                FullStop => {
+                    self.get();
+                    let post = self.get();
+                    if post.is_none() {
+                        fatal!("FullStop Followed By EOF", self.source_id, next.s, next.e+1);
+                    } 
+
+                    let post = post.unwrap();
+                    if post.t != Identifier {
+                        error!("Unexpected Token After FullStop", self.source_id, post.s, post.e)
+                    }
+
+                    lhs = Expression::Property(Box::new(lhs), Box::new(Expression::Atom(post)),)
                 }
 
                 _ => break,
@@ -488,7 +497,7 @@ impl Parser {
                     fatal!("Exceeded Maximum Depth", self.source_id, t.s, t.e)
                 }
                 self.depth = new_depth;
-                return Statement::Block(self.parse_block());
+                return Statement::Block(None, self.parse_block());
             }
 
             "}" => {
@@ -627,12 +636,106 @@ impl Parser {
                 return Statement::Return(value);
             }
 
+            "ns" => {
+                let name = self.peek();
+                let name = match name {
+                    None => None,
+                    Some(c) if c.t == OpenBrace => {
+                        None
+                    }
+                    Some(c) if c.t == Identifier => {
+                        self.get();
+                        Some(c.v)
+                    }
+                    Some(c) => {
+                        error!("Expected Identifier or \"{\"", self.source_id, c.s, c.e);
+                        return Statement::Error
+                    }
+                };
+
+                let next = self.peek();
+                if next.as_ref().is_none_or(|x| x.t != OpenBrace) {
+                    return Statement::Error;
+                }
+                self.get();
+
+                let (new_depth, err) = self.depth.overflowing_add(1);
+                if err {
+                    fatal!("Exceeded Maximum Depth", self.source_id, t.s, t.e)
+                }
+                self.depth = new_depth;
+                return Statement::Block(name, self.parse_block());
+            }
+
+            "fn" => {
+                let name = self.get();
+                if name.as_ref().is_none_or(|x| x.t != Identifier) {
+                    return Statement::Error;
+                }
+
+                let next = self.peek();
+                if next.as_ref().is_none_or(|x| x.t != OpenBracket) {
+                    return Statement::Error;
+                }
+                let next = next.unwrap();
+                self.get();
+
+                let mut args = Vec::new();
+
+                if self.peek().is_some_and(|x| x.t != CloseBracket) {
+                    loop {
+                        args.push(self.parse_expression(BindingPower::default()));
+
+                        match self.peek() {
+                            Some(t) if t.t == Comma => {
+                                self.get();
+                            }
+                            _ => break,
+                        }
+                    }
+                }
+
+                match self.get() {
+                    Some(t) if t.t == CloseBracket => {}
+                    Some(t) => {
+                        error!("Expected Closing Bracket", self.source_id, t.s, t.e);
+                        return Statement::Error;
+                    }
+                    None => {
+                        error!(
+                            "Unclosed Function Parameters",
+                            self.source_id, next.s, next.e
+                        );
+                        return Statement::Error;
+                    }
+                }
+
+                match self.peek() {
+                    Some(t) if t.t == OpenBrace => {}
+                    Some(t) if t.t == Colon => {
+                        self.get();
+                    }
+                    Some(t) => {
+                        error!("No Function Body", self.source_id, t.s, t.e);
+                        return Statement::Error;
+                    }
+                    None => {
+                        fatal!("No Function Body", self.source_id, t.s, t.e);
+                    }
+                }
+
+                let stmt = self.parse_statement();
+
+                return Statement::Function(name.unwrap().v, args, Box::new(stmt));
+            }
+
             _ => {
                 let p = self.peek();
                 if p.is_some() {
                     let p = p.unwrap();
                     match p.t {
                         Equals => {
+                            self.reverse(t);
                             let target = self.parse_target();
                             self.get();
                             return Statement::Assignment(

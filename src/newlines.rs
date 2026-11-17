@@ -19,6 +19,26 @@ fn can_end_statement(token: &tt) -> bool {
     )
 }
 
+fn continues_statement(token: &tt) -> bool {
+    matches!(
+        token,
+        tt::Plus
+            | tt::Minus
+            | tt::Multiply
+            | tt::Divide
+            | tt::Modulous
+            | tt::EqualTo
+            | tt::NotEqualTo
+            | tt::LessThan
+            | tt::GreaterThan
+            | tt::LessThanEqual
+            | tt::GreaterThanEqual
+            | tt::And
+            | tt::Not
+            | tt::Or
+    )
+}
+
 pub fn newlines(tokens: LexerResult, source_id: usize) -> LexerResult {
     let mut result = LexerResult::new();
     let mut in_brackets = 0u16;
@@ -81,10 +101,14 @@ pub fn newlines(tokens: LexerResult, source_id: usize) -> LexerResult {
         if last.t == tt::Newline {
             continue;
         }
+
         if !can_end_statement(&last.t) {
             continue;
         }
-        if iter.peek().is_some_and(|x| x.v == "else") {
+        if iter
+            .peek()
+            .is_some_and(|x| continues_statement(&x.t) || matches!(x.v.as_str(), "else"))
+        {
             continue;
         }
 
