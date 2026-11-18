@@ -54,6 +54,7 @@ pub enum TokenType {
     Semicolon,
     Comma,
     Colon,
+    DoubleColon,
     Excalmation,
     FullStop,
 }
@@ -403,8 +404,20 @@ impl Lexer {
             }
 
             ':' => {
-                self.push(token!(self, TokenType::Colon, ':'));
-                self.advance();
+                if self.peek().is_some_and(|x| x == ':') {
+                    self.push(token!(
+                        self,
+                        TokenType::DoubleColon,
+                        "::",
+                        self.index,
+                        self.index + 1
+                    ));
+                    self.advance();
+                    self.advance();
+                } else {
+                    self.push(token!(self, TokenType::Colon, ':'));
+                    self.advance();
+                }
             }
 
             '.' => {

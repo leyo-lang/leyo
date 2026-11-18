@@ -18,6 +18,7 @@ pub enum Expression {
     Call(Box<Expression>, Vec<Expression>),
     Index(Box<Expression>, Box<Expression>),
     Property(Box<Expression>, Box<Expression>),
+    NamespaceProperty(Box<Expression>, Box<Expression>),
 }
 
 #[derive(PartialEq, Clone)]
@@ -359,10 +360,37 @@ impl Parser {
                         error!(
                             "Unexpected Token After FullStop",
                             self.source_id, post.s, post.e
-                        )
+                        );
+                        return Expression::Error;
                     }
 
                     lhs = Expression::Property(Box::new(lhs), Box::new(Expression::Atom(post)))
+                }
+
+                DoubleColon => {
+                    self.get();
+                    let t = self.peek();
+                    if t.is_none() {
+                        fatal!(
+                            "Namespace Access Followed By EOF",
+                            self.source_id,
+                            next.s,
+                            next.e
+                        )
+                    }
+
+                    let t = t.unwrap();
+                    if t.t != Identifier {
+                        error!(
+                            "Unexpected Token After Namespace Access",
+                            self.source_id, t.s, t.e
+                        );
+                        return Expression::Error;
+                    }
+                    self.get();
+
+                    lhs =
+                        Expression::NamespaceProperty(Box::new(lhs), Box::new(Expression::Atom(t)))
                 }
 
                 _ => break,

@@ -125,6 +125,12 @@ fn ast_pretty_expression(
             ast_pretty_expression(property, &child_prefix, true, "Property", output);
         }
 
+        crate::parser::Expression::NamespaceProperty(object, property) => {
+            ast_pretty_expression(object, &child_prefix, false, "Namespace", output);
+
+            ast_pretty_expression(property, &child_prefix, true, "Property", output);
+        }
+
         crate::parser::Expression::Index(target, index) => {
             ast_pretty_expression(target, &child_prefix, false, "Item", output);
 
