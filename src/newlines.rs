@@ -36,12 +36,18 @@ fn continues_statement(token: &tt) -> bool {
             | tt::And
             | tt::Not
             | tt::Or
+            | tt::Xor
+            | tt::FullStop
+            | tt::DoubleColon
+            | tt::Exponent
+            | tt::Equals
     )
 }
 
 pub fn newlines(tokens: LexerResult, source_id: usize) -> LexerResult {
     let mut result = LexerResult::new();
     let mut in_brackets = 0u16;
+    let mut ends_in_newline = false;
     let mut last = Token {
         t: tt::Unknown,
         v: String::new(),
@@ -74,7 +80,7 @@ pub fn newlines(tokens: LexerResult, source_id: usize) -> LexerResult {
                         });
                     }
 
-                    if last.v != "\n" {
+                    if !ends_in_newline && last.t != tt::Unknown {
                         warn!(
                             "Stream Should End In Newline",
                             source_id,
@@ -87,10 +93,13 @@ pub fn newlines(tokens: LexerResult, source_id: usize) -> LexerResult {
                 _ => {}
             }
 
+            ends_in_newline = false;
             last = token.clone();
             result.push(token);
             continue;
         }
+
+        ends_in_newline = true;
 
         if in_brackets != 0 {
             continue;
@@ -101,7 +110,6 @@ pub fn newlines(tokens: LexerResult, source_id: usize) -> LexerResult {
         if last.t == tt::Newline {
             continue;
         }
-
         if !can_end_statement(&last.t) {
             continue;
         }

@@ -140,6 +140,19 @@ impl Parser {
         self.tokens.push(t);
     }
 
+    fn has_equals_before_semicolon(&self) -> bool {
+        use crate::lexer::TokenType::*;
+
+        for token in self.tokens.iter().rev() {
+            match token.t {
+                Equals => return true,
+                Semicolon | OpenBrace | CloseBrace | Eof => return false,
+                _ => {}
+            }
+        }
+        false
+    }
+
     fn parse_target(&mut self) -> Target {
         use crate::lexer::TokenType as tt;
         let token = self.get();
@@ -235,6 +248,8 @@ impl Parser {
                 let mut array = Vec::new();
 
                 loop {
+                    array.push(self.parse_expression(BindingPower::default()));
+
                     let next = self.peek();
                     if next.is_none() {
                         fatal!("Unclosed Square Brackets", self.source_id, item.s, item.e);
@@ -244,9 +259,13 @@ impl Parser {
                         break;
                     } else if next.t == Comma {
                         self.get();
+                    } else {
+                        error!(
+                            "Expected Comma or a Closing Square Bracket",
+                            self.source_id, next.s, next.e
+                        );
+                        return Expression::Error;
                     }
-
-                    array.push(self.parse_expression(BindingPower::default()));
                 }
                 self.get();
                 Expression::Array(array)
@@ -600,13 +619,42 @@ impl Parser {
 
                 let stmt = self.parse_statement();
 
+                let had_semicolon = if self.peek().is_some_and(|t| t.t == Semicolon) {
+                    self.get()
+                } else {
+                    None
+                };
+
                 let else_clause = if self
                     .peek()
                     .is_some_and(|x| x.t == Identifier && x.v == "else")
                 {
-                    self.get();
-                    Some(Box::new(self.parse_statement()))
+                    let err = self.get().unwrap();
+
+                    match self.peek() {
+                        Some(x) if x.t == Colon => {
+                            self.get();
+                            Some(Box::new(self.parse_statement()))
+                        }
+                        Some(x) if x.t == OpenBrace => Some(Box::new(self.parse_statement())),
+                        Some(x) if x.t == Identifier && x.v == "if" => {
+                            Some(Box::new(self.parse_statement()))
+                        }
+                        Some(x) => {
+                            error!(
+                                "Expected ':', '{', or 'if' after 'else'",
+                                self.source_id, x.s, x.e
+                            );
+                            return Statement::Error;
+                        }
+                        None => {
+                            fatal!("Else Followed By EOF", self.source_id, err.s, err.e);
+                        }
+                    }
                 } else {
+                    if had_semicolon.is_some() {
+                        self.reverse(had_semicolon.unwrap());
+                    }
                     None
                 };
 
@@ -762,26 +810,33 @@ impl Parser {
             }
 
             _ => {
-                let p = self.peek();
-                if p.is_some() {
-                    let p = p.unwrap();
-                    match p.t {
-                        Equals => {
-                            self.reverse(t);
-                            let target = self.parse_target();
-                            self.get();
-                            return Statement::Assignment(
-                                target,
-                                self.parse_expression(BindingPower::default()),
-                            );
+                self.reverse(t);
+
+                if self.has_equals_before_semicolon() {
+                    let target = self.parse_target();
+
+                    match self.get() {
+                        Some(eq) if eq.t == Equals => {
+                            let value = self.parse_expression(BindingPower::default());
+                            return Statement::Assignment(target, value);
                         }
-                        _ => {
-                            self.reverse(t);
-                            return Statement::Evaluation(
-                                self.parse_expression(BindingPower::default()),
+                        Some(other) => {
+                            error!(
+                                "Expected '=' after assignment target",
+                                self.source_id, other.s, other.e
                             );
+                            return Statement::Error;
                         }
-                    };
+                        None => {
+                            error!(
+                                "Unexpected EOF in assignment",
+                                self.source_id, self.last_token.s, self.last_token.e
+                            );
+                            return Statement::Error;
+                        }
+                    }
+                } else {
+                    return Statement::Evaluation(self.parse_expression(BindingPower::default()));
                 }
             }
         };
