@@ -1,14 +1,41 @@
-use std::fmt::Write;
+use std::{fmt::Write, time::Duration};
 
-pub fn print_lexer_result(result: &crate::lexer::LexerResult) {
+pub struct DisplayDuration(pub Duration);
+impl std::fmt::Display for DisplayDuration {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let d = self.0;
+
+        let secs = d.as_secs();
+        let millis = d.subsec_millis();
+
+        if secs >= 3600 {
+            write!(f, "{}h {}m {}s", secs / 3600, (secs % 3600) / 60, secs % 60)
+        } else if secs >= 60 {
+            write!(f, "{}m {}.{:03}s", secs / 60, secs % 60, millis)
+        } else if secs > 0 {
+            write!(f, "{:.2}s", d.as_secs_f64())
+        } else if d.as_millis() > 0 {
+            write!(f, "{:.1}ms", d.as_secs_f64() * 1000.0)
+        } else if d.as_micros() > 0 {
+            write!(f, "{}µs", d.as_micros())
+        } else {
+            write!(f, "{}ns", d.as_nanos())
+        }
+    }
+}
+
+pub fn print_lexer_result(result: &crate::lexer::LexerResult) -> String {
+    let mut output = String::new();
     for (i, token) in result.iter().enumerate() {
-        println!(
+        writeln!(
+            output,
             "{:<10} {:<20} {:<20?}",
             i,
             format!("{:?}", token.t),
-            token.v
+            token.v,
         );
     }
+    output
 }
 
 fn ast_pretty_target(

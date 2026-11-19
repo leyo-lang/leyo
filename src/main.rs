@@ -1,3 +1,6 @@
+use std::time::Instant;
+
+mod cli;
 mod debug;
 mod errors;
 mod lexer;
@@ -13,7 +16,7 @@ struct FileData {
 fn register_file(filepath: &str) -> FileData {
     let contents = std::fs::read_to_string(filepath);
     if contents.is_err() {
-        fatalns!(
+        fatal!(
             format!("Could Not Open File {filepath}").as_str(),
             "Check there is not a typo in the name and that the file exists."
         );
@@ -30,55 +33,105 @@ fn register_file(filepath: &str) -> FileData {
     FileData { contents, id }
 }
 
-fn lex(is_debug: bool, filedata: FileData) -> lexer::LexerResult {
-    let res = lexer::lex(filedata.contents, filedata.id);
+fn pipeline(o: &cli::Options, filepath: String) {
+    let start = std::time::Instant::now();
 
-    let res = newlines::newlines(res, filedata.id);
-    if is_debug {
-        std::fs::write(
-            "debug_output.leyo",
-            debug::reconstruct::token_stream(res.clone()),
-        )
-        .expect("Failed to write debug output");
+    let filedata = register_file(&filepath);
+
+    let split = Instant::now();
+
+    let lexer_result = lexer::lex(filedata.contents, filedata.id);
+
+    if o.debug.tokens {
+        debug::logging::write_log(&debug::printing::print_lexer_result(&lexer_result));
+        debug::logging::write_log(&debug::reconstruct::token_stream(&lexer_result));
     }
 
-    if errors::has_errors() {
-        fatalns!("Errors Found After Lexing");
+    if o.debug.time {
+        info!(
+            format!(
+                "Lexing: Took {}s - Split: {}s",
+                debug::printing::DisplayDuration(start.elapsed()),
+                debug::printing::DisplayDuration(split.elapsed())
+            )
+            .as_str()
+        );
     }
 
-    res
-}
-
-fn parse(tokens: lexer::LexerResult, filedata: FileData) -> parser::Program {
-    let res = parser::parse(tokens, filedata.id);
-
-    if errors::has_errors() {
-        fatalns!("Errors Found After Parsing");
+    if o.stop_at == cli::Stage::Lexing {
+        return;
     }
 
-    res
+    let split = Instant::now();
+
+    let newlines_result = newlines::newlines(lexer_result, filedata.id);
+
+    if o.debug.time {
+        info!(
+            format!(
+                "Newlines: Took {}s - Split: {}s",
+                debug::printing::DisplayDuration(start.elapsed()),
+                debug::printing::DisplayDuration(split.elapsed())
+            )
+            .as_str()
+        );
+    }
+
+    if o.stop_at == cli::Stage::Newlines {
+        return;
+    }
+
+    let split = Instant::now();
+
+    let parser_result = parser::parse(newlines_result, filedata.id);
+
+    if o.debug.time {
+        info!(
+            format!(
+                "Parsing: Took {}s - Split: {}s",
+                debug::printing::DisplayDuration(start.elapsed()),
+                debug::printing::DisplayDuration(split.elapsed())
+            )
+            .as_str()
+        );
+    }
+
+    if o.stop_at == cli::Stage::Parsing {
+        return;
+    }
+
+    let split = Instant::now();
+
+    let semantic_result = todo_semantic(parser_result);
+
+    if o.debug.time {
+        info!(
+            format!(
+                "Semantic: Took {}s - Split: {}s",
+                debug::printing::DisplayDuration(start.elapsed()),
+                debug::printing::DisplayDuration(split.elapsed())
+            )
+            .as_str()
+        );
+    }
+
+    if o.stop_at == cli::Stage::PreBuild {
+        return;
+    }
 }
 
 fn main() {
-    let mut flags = std::env::args();
-    let is_debug = flags.any(|arg| arg == "--debug");
+    let o = cli::parse();
 
-    let filepaths = vec!["example.leyo"];
+    errors::init(&o); // only needed for warnings (cli::parse only has fatals)
 
-    for filepath in filepaths {
-        let filedata = register_file(filepath);
-        let result = lex(is_debug, filedata.clone());
-        if is_debug {
-            debug::printing::print_lexer_result(&result);
-        }
+    if o.debug.any() && debug::logging::init_log("leyo_debug.log").is_err() {
+        fatal!("Could Not Initialise Log")
+    }
 
-        let result = parse(result, filedata.clone());
-        if is_debug {
-            println!("{}", debug::printing::ast_pretty_print(&result));
-        }
+    let files = o.files.clone();
 
-        if errors::has_any() {
-            errors::print_all();
-        }
+    for filepath in files {
+        pipeline(&o, filepath);
     }
 }

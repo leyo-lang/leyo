@@ -10,13 +10,14 @@ pub enum Severity {
     Info,
     Fatal,
 }
+
 impl std::fmt::Display for Severity {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let severity = match self {
-            Severity::Error => "\x1b[1;38;2;239;68;68mERROR\x1b[0m", // #EF4444
-            Severity::Warning => "\x1b[1;38;2;245;158;11mWARNING\x1b[0m", // #F59E0B
-            Severity::Info => "\x1b[1;38;2;59;130;246mINFO\x1b[0m",  // #3B82F6
-            Severity::Fatal => "\x1b[1;38;2;220;38;38mFATAL\x1b[0m", // #DC2626
+            Severity::Error => "\x1b[1;38;2;239;68;68mERROR\x1b[0m",
+            Severity::Warning => "\x1b[1;38;2;245;158;11mWARNING\x1b[0m",
+            Severity::Info => "\x1b[1;38;2;59;130;246mINFO\x1b[0m",
+            Severity::Fatal => "\x1b[1;38;2;220;38;38mFATAL\x1b[0m",
         };
 
         write!(f, "{severity}")
@@ -28,7 +29,7 @@ pub struct Diagnostic {
     pub severity: Severity,
     pub message: String,
 
-    pub file_id: usize,
+    pub file_id: Option<usize>,
     pub start: usize,
     pub end: usize,
 
@@ -45,6 +46,8 @@ pub struct SourceFile {
 
 static ERRORS: OnceLock<Mutex<Vec<Diagnostic>>> = OnceLock::new();
 static SOURCES: OnceLock<Mutex<Vec<SourceFile>>> = OnceLock::new();
+
+static PEDANTIC: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 
 fn error_pool() -> &'static Mutex<Vec<Diagnostic>> {
     ERRORS.get_or_init(|| Mutex::new(Vec::new()))
@@ -86,7 +89,7 @@ pub fn clear() {
     source_pool().lock().unwrap().clear();
 }
 
-pub fn error(message: &str, file_id: usize, start: usize, end: usize, help: Option<&str>) {
+pub fn error(message: &str, file_id: Option<usize>, start: usize, end: usize, help: Option<&str>) {
     add(Diagnostic {
         severity: Severity::Error,
         message: message.to_string(),
@@ -97,9 +100,13 @@ pub fn error(message: &str, file_id: usize, start: usize, end: usize, help: Opti
     });
 }
 
-pub fn warn(message: &str, file_id: usize, start: usize, end: usize, help: Option<&str>) {
+pub fn warn(message: &str, file_id: Option<usize>, start: usize, end: usize, help: Option<&str>) {
     add(Diagnostic {
-        severity: Severity::Warning,
+        severity: if PEDANTIC.load(std::sync::atomic::Ordering::Relaxed) {
+            Severity::Warning
+        } else {
+            Severity::Error
+        },
         message: message.to_string(),
         file_id,
         start,
@@ -108,7 +115,7 @@ pub fn warn(message: &str, file_id: usize, start: usize, end: usize, help: Optio
     });
 }
 
-pub fn info(message: &str, file_id: usize, start: usize, end: usize, help: Option<&str>) {
+pub fn info(message: &str, file_id: Option<usize>, start: usize, end: usize, help: Option<&str>) {
     add(Diagnostic {
         severity: Severity::Info,
         message: message.to_string(),
@@ -119,7 +126,13 @@ pub fn info(message: &str, file_id: usize, start: usize, end: usize, help: Optio
     });
 }
 
-pub fn fatal(message: &str, file_id: usize, start: usize, end: usize, help: Option<&str>) -> ! {
+pub fn fatal(
+    message: &str,
+    file_id: Option<usize>,
+    start: usize,
+    end: usize,
+    help: Option<&str>,
+) -> ! {
     add(Diagnostic {
         severity: Severity::Fatal,
         message: message.to_string(),
@@ -133,65 +146,67 @@ pub fn fatal(message: &str, file_id: usize, start: usize, end: usize, help: Opti
     exit(1);
 }
 
-pub fn fatal_no_source(message: &str, help: Option<&str>) -> ! {
-    print_all();
-
-    println!("{}: {}", Severity::Fatal, message);
-
-    if let Some(help) = help {
-        println!("  Help: {}", help);
-    }
-
-    exit(1);
-}
-
 #[macro_export]
 macro_rules! error {
-    ($msg:expr, $file:expr, $start:expr, $end:expr) => {
-        $crate::errors::error($msg, $file, $start, $end, None)
-    };
     ($msg:expr, $file:expr, $start:expr, $end:expr, $help:expr) => {
-        $crate::errors::error($msg, $file, $start, $end, Some($help))
+        $crate::errors::error($msg, Some($file), $start, $end, Some($help))
+    };
+    ($msg:expr, $file:expr, $start:expr, $end:expr) => {
+        $crate::errors::error($msg, Some($file), $start, $end, None)
+    };
+    ($msg:expr, $help:expr) => {
+        $crate::errors::error($msg, None, 0, 0, Some($help))
+    };
+    ($msg:expr) => {
+        $crate::errors::error($msg, None, 0, 0, None)
     };
 }
 
 #[macro_export]
 macro_rules! warn {
-    ($msg:expr, $file:expr, $start:expr, $end:expr) => {
-        $crate::errors::warn($msg, $file, $start, $end, None)
-    };
     ($msg:expr, $file:expr, $start:expr, $end:expr, $help:expr) => {
-        $crate::errors::warn($msg, $file, $start, $end, Some($help))
+        $crate::errors::warn($msg, Some($file), $start, $end, Some($help))
+    };
+    ($msg:expr, $file:expr, $start:expr, $end:expr) => {
+        $crate::errors::warn($msg, Some($file), $start, $end, None)
+    };
+    ($msg:expr, $help:expr) => {
+        $crate::errors::warn($msg, None, 0, 0, Some($help))
+    };
+    ($msg:expr) => {
+        $crate::errors::warn($msg, None, 0, 0, None)
     };
 }
 
 #[macro_export]
 macro_rules! info {
-    ($msg:expr, $file:expr, $start:expr, $end:expr) => {
-        $crate::errors::info($msg, $file, $start, $end, None)
-    };
     ($msg:expr, $file:expr, $start:expr, $end:expr, $help:expr) => {
-        $crate::errors::info($msg, $file, $start, $end, Some($help))
+        $crate::errors::info($msg, Some($file), $start, $end, Some($help))
+    };
+    ($msg:expr, $file:expr, $start:expr, $end:expr) => {
+        $crate::errors::info($msg, Some($file), $start, $end, None)
+    };
+    ($msg:expr, $help:expr) => {
+        $crate::errors::info($msg, None, 0, 0, Some($help))
+    };
+    ($msg:expr) => {
+        $crate::errors::info($msg, None, 0, 0, None)
     };
 }
 
 #[macro_export]
 macro_rules! fatal {
-    ($msg:expr, $file:expr, $start:expr, $end:expr) => {
-        $crate::errors::fatal($msg, $file, $start, $end, None)
-    };
     ($msg:expr, $file:expr, $start:expr, $end:expr, $help:expr) => {
-        $crate::errors::fatal($msg, $file, $start, $end, Some($help))
+        $crate::errors::fatal($msg, Some($file), $start, $end, Some($help))
     };
-}
-
-#[macro_export]
-macro_rules! fatalns {
-    ($msg:expr) => {
-        $crate::errors::fatal_no_source($msg, None)
+    ($msg:expr, $file:expr, $start:expr, $end:expr) => {
+        $crate::errors::fatal($msg, Some($file), $start, $end, None)
     };
     ($msg:expr, $help:expr) => {
-        $crate::errors::fatal_no_source($msg, Some($help))
+        $crate::errors::fatal($msg, None, 0, 0, Some($help))
+    };
+    ($msg:expr) => {
+        $crate::errors::fatal($msg, None, 0, 0, None)
     };
 }
 
@@ -204,7 +219,7 @@ pub fn has_errors() -> bool {
 }
 
 pub fn has_any() -> bool {
-    error_pool().lock().unwrap().iter().any(|_| true)
+    !error_pool().lock().unwrap().is_empty()
 }
 
 fn char_width(c: char) -> usize {
@@ -246,11 +261,25 @@ pub fn print_all() {
     });
 
     for diagnostic in diagnostics {
-        let Some(source) = get_source(diagnostic.file_id) else {
+        println!("{}: {}", diagnostic.severity, diagnostic.message);
+
+        let Some(file_id) = diagnostic.file_id else {
+            if let Some(help) = diagnostic.help {
+                println!("  = help: {}", help);
+            }
+
+            println!();
             continue;
         };
 
-        println!("{}: {}", diagnostic.severity, diagnostic.message);
+        let Some(source) = get_source(file_id) else {
+            if let Some(help) = diagnostic.help {
+                println!("  = help: {}", help);
+            }
+
+            println!();
+            continue;
+        };
 
         let start = diagnostic.start;
         let end = diagnostic.end;
@@ -306,5 +335,11 @@ pub fn print_all() {
         }
 
         println!();
+    }
+}
+
+pub fn init(options: &crate::cli::Options) {
+    if options.pedantic {
+        PEDANTIC.store(true, std::sync::atomic::Ordering::Relaxed);
     }
 }

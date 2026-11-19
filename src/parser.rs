@@ -841,8 +841,8 @@ impl Parser {
             }
         };
 
-        error!("Unknown Statement", self.source_id, t.s, t.e);
-        Statement::Error
+        //error!("Unknown Statement", self.source_id, t.s, t.e);
+        //Statement::Error
     }
 
     fn parse_block(&mut self) -> Vec<Statement> {

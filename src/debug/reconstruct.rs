@@ -1,6 +1,6 @@
 use crate::lexer::LexerResult;
 
-pub fn token_stream(tokens: LexerResult) -> String {
+pub fn token_stream(tokens: &LexerResult) -> String {
     let mut output = String::new();
     use crate::lexer::TokenType as tt;
 
