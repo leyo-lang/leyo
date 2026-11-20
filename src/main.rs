@@ -33,6 +33,12 @@ fn register_file(filepath: &str) -> FileData {
     FileData { contents, id }
 }
 
+fn output_timings(o: &cli::Options, stage: &str, total: Instant, split: Instant) {
+    if o.debug.time {
+        info!(format!("{}: {}s (Total: {}s)", stage, debug::printing::DisplayDuration(split.elapsed()), debug::printing::DisplayDuration(total.elapsed())).as_str());        
+    }
+}
+
 fn pipeline(o: &cli::Options, filepath: String) {
     let start = std::time::Instant::now();
 
@@ -43,22 +49,20 @@ fn pipeline(o: &cli::Options, filepath: String) {
     let lexer_result = lexer::lex(filedata.contents, filedata.id);
 
     if o.debug.tokens {
-        debug::logging::write_log(&debug::printing::print_lexer_result(&lexer_result));
-        debug::logging::write_log(&debug::reconstruct::token_stream(&lexer_result));
+        debug::logging::write_to("lexer_result", &debug::printing::print_lexer_result(&lexer_result));
+        debug::logging::write_to("lexer_reconstruct", &debug::reconstruct::token_stream(&lexer_result));
     }
 
-    if o.debug.time {
-        info!(
-            format!(
-                "Lexing: Took {}s - Split: {}s",
-                debug::printing::DisplayDuration(start.elapsed()),
-                debug::printing::DisplayDuration(split.elapsed())
-            )
-            .as_str()
-        );
+    output_timings(o, "Lexing", start, split);
+
+    if errors::has_errors() {
+        fatal!("Errors Found After Lexing")
     }
 
     if o.stop_at == cli::Stage::Lexing {
+        if errors::has_any() {
+            errors::print_all();
+        }
         return;
     }
 
@@ -66,18 +70,21 @@ fn pipeline(o: &cli::Options, filepath: String) {
 
     let newlines_result = newlines::newlines(lexer_result, filedata.id);
 
-    if o.debug.time {
-        info!(
-            format!(
-                "Newlines: Took {}s - Split: {}s",
-                debug::printing::DisplayDuration(start.elapsed()),
-                debug::printing::DisplayDuration(split.elapsed())
-            )
-            .as_str()
-        );
+    if o.debug.newlines {
+        debug::logging::write_to("newlines_result", &debug::printing::print_lexer_result(&newlines_result));
+        debug::logging::write_to("newlines_reconstruct", &debug::reconstruct::token_stream(&newlines_result));
+    }
+
+    output_timings(o, "Newlines", start, split);
+
+    if errors::has_errors() {
+        fatal!("Errors Found After Newlines")
     }
 
     if o.stop_at == cli::Stage::Newlines {
+        if errors::has_any() {
+            errors::print_all();
+        }
         return;
     }
 
@@ -85,18 +92,20 @@ fn pipeline(o: &cli::Options, filepath: String) {
 
     let parser_result = parser::parse(newlines_result, filedata.id);
 
-    if o.debug.time {
-        info!(
-            format!(
-                "Parsing: Took {}s - Split: {}s",
-                debug::printing::DisplayDuration(start.elapsed()),
-                debug::printing::DisplayDuration(split.elapsed())
-            )
-            .as_str()
-        );
+    if o.debug.ast {
+        debug::logging::write_to("parser_result", &debug::printing::ast_pretty_print(&parser_result));
+    }
+
+    output_timings(o, "Parsing", start, split);
+
+    if errors::has_errors() {
+        fatal!("Errors Found After Parsing")
     }
 
     if o.stop_at == cli::Stage::Parsing {
+        if errors::has_any() {
+            errors::print_all();
+        }
         return;
     }
 
@@ -104,18 +113,16 @@ fn pipeline(o: &cli::Options, filepath: String) {
 
     let semantic_result = todo_semantic(parser_result);
 
-    if o.debug.time {
-        info!(
-            format!(
-                "Semantic: Took {}s - Split: {}s",
-                debug::printing::DisplayDuration(start.elapsed()),
-                debug::printing::DisplayDuration(split.elapsed())
-            )
-            .as_str()
-        );
+    output_timings(o, "Semantic", start, split);
+
+    if errors::has_errors() {
+        fatal!("Errors Found After Semantic")
     }
 
     if o.stop_at == cli::Stage::PreBuild {
+        if errors::has_any() {
+            errors::print_all();
+        }
         return;
     }
 }
