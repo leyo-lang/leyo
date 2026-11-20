@@ -5,6 +5,7 @@ pub struct Config {
     pub tokens: bool,
     pub newlines: bool,
     pub ast: bool,
+    pub semantic: bool,
     pub time: bool,
 }
 
@@ -14,10 +15,11 @@ impl Config {
         self.newlines = true;
         self.ast = true;
         self.time = true;
+        self.semantic = true;
     }
 
     pub fn any(&self) -> bool {
-        self.tokens || self.newlines || self.ast
+        self.tokens || self.newlines || self.ast || self.semantic
     }
 
     pub fn enable_flag(&mut self, name: &str) {
@@ -26,6 +28,7 @@ impl Config {
             "tokens" => self.tokens = true,
             "asi" | "newlines" => self.newlines = true,
             "ast" => self.ast = true,
+            "semantic" => self.semantic = true,
             "time" | "timings" => self.time = true,
             other => {
                 fatal!(

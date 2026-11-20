@@ -6,6 +6,7 @@ mod errors;
 mod lexer;
 mod newlines;
 mod parser;
+mod semantic;
 
 #[derive(Clone)]
 struct FileData {
@@ -139,22 +140,29 @@ fn pipeline(o: &cli::Options, filepath: &String) {
         return;
     }
 
-    //let split = Instant::now();
+    let split = Instant::now();
 
-    //let semantic_result = todo_semantic(parser_result);
+    let semantic_result = semantic::analyse(parser_result, filedata.id);
 
-    //output_timings(o, filepath, "semantic", start, split);
+    if o.debug.semantic {
+        debug::logging::write_to(
+            "semantic_result",
+            &debug::printing::typed_ast_pretty_print(&semantic_result),
+        );
+    }
 
-    //if errors::has_errors() {
-    //    fatal!("Errors Found After Semantic")
-    //}
+    output_timings(o, filepath, "semantic", start, split);
 
-    //if o.stop_at == cli::Stage::PreBuild {
-    //    if errors::has_any() {
-    //        errors::print_all();
-    //    }
-    //    return;
-    //}
+    if errors::has_errors() {
+        fatal!("Errors Found After Semantic")
+    }
+
+    if o.stop_at == cli::Stage::PreBuild {
+        if errors::has_any() {
+            errors::print_all();
+        }
+        return;
+    }
 
     if o.debug.time {
         instant_info!(
