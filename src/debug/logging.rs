@@ -22,7 +22,7 @@ pub fn write_log(message: &str) {
 
 pub fn write_to(section: &str, message: &str) -> Result<(), std::io::Error> {
     use std::io::Write;
-    
+
     let mut file = std::fs::File::create(format!("leyo_debug/{section}.log"))?;
     writeln!(file, "{message}")?;
     Ok(())
