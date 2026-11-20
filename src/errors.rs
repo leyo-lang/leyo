@@ -102,7 +102,7 @@ pub fn error(message: &str, file_id: Option<usize>, start: usize, end: usize, he
 
 pub fn warn(message: &str, file_id: Option<usize>, start: usize, end: usize, help: Option<&str>) {
     add(Diagnostic {
-        severity: if PEDANTIC.load(std::sync::atomic::Ordering::Relaxed) {
+        severity: if !PEDANTIC.load(std::sync::atomic::Ordering::Relaxed) {
             Severity::Warning
         } else {
             Severity::Error
@@ -124,6 +124,28 @@ pub fn info(message: &str, file_id: Option<usize>, start: usize, end: usize, hel
         end,
         help: help.map(String::from),
     });
+}
+
+pub fn instant_info(
+    message: &str,
+    file_id: Option<usize>,
+    start: usize,
+    end: usize,
+    help: Option<&str>,
+) {
+    let diagnostic = Diagnostic {
+        severity: Severity::Info,
+        message: message.to_string(),
+        file_id,
+        start,
+        end,
+        help: help.map(String::from),
+    };
+
+    print_diagnostic(&diagnostic);
+
+    use std::io::Write;
+    let _ = std::io::stdout().flush();
 }
 
 pub fn fatal(
@@ -195,6 +217,22 @@ macro_rules! info {
 }
 
 #[macro_export]
+macro_rules! instant_info {
+    ($msg:expr, $file:expr, $start:expr, $end:expr, $help:expr) => {
+        $crate::errors::instant_info($msg, Some($file), $start, $end, Some($help))
+    };
+    ($msg:expr, $file:expr, $start:expr, $end:expr) => {
+        $crate::errors::instant_info($msg, Some($file), $start, $end, None)
+    };
+    ($msg:expr, $help:expr) => {
+        $crate::errors::instant_info($msg, None, 0, 0, Some($help))
+    };
+    ($msg:expr) => {
+        $crate::errors::instant_info($msg, None, 0, 0, None)
+    };
+}
+
+#[macro_export]
 macro_rules! fatal {
     ($msg:expr, $file:expr, $start:expr, $end:expr, $help:expr) => {
         $crate::errors::fatal($msg, Some($file), $start, $end, Some($help))
@@ -250,6 +288,77 @@ fn display_width(s: &str) -> usize {
     s.chars().map(char_width).sum()
 }
 
+fn print_diagnostic(diagnostic: &Diagnostic) {
+    println!("{}: {}", diagnostic.severity, diagnostic.message);
+
+    let Some(file_id) = diagnostic.file_id else {
+        if let Some(help) = &diagnostic.help {
+            println!("  = help: {}", help);
+        }
+        return;
+    };
+
+    let Some(source) = get_source(file_id) else {
+        if let Some(help) = &diagnostic.help {
+            println!("  = help: {}", help);
+        }
+        return;
+    };
+
+    let start = diagnostic.start;
+    let end = diagnostic.end;
+
+    let char_count = source.source.chars().count();
+
+    if start > end || end > char_count {
+        return;
+    }
+
+    let char_to_byte = |index: usize| -> usize {
+        source
+            .source
+            .char_indices()
+            .nth(index)
+            .map_or(source.source.len(), |(byte, _)| byte)
+    };
+
+    let start_byte = char_to_byte(start);
+    let end_byte = char_to_byte(end);
+
+    let line_start = source.source[..start_byte].rfind('\n').map_or(0, |i| i + 1);
+
+    let line_end = source.source[end_byte..]
+        .find('\n')
+        .map_or(source.source.len(), |i| end_byte + i);
+
+    let line = &source.source[line_start..line_end];
+
+    let line_number = source.source[..line_start].matches('\n').count() + 1;
+
+    let row = source.source[line_start..start_byte].chars().count() + 1;
+
+    println!(" --> {}:{}:{}", source.name, line_number, row);
+    println!("{:4} | {}", line_number, line);
+
+    let prefix = &source.source[line_start..start_byte];
+    let highlighted = &source.source[start_byte..end_byte];
+
+    let prefix_width = display_width(prefix);
+    let underline_width = display_width(highlighted).max(1);
+
+    println!(
+        "     | {}{}",
+        " ".repeat(prefix_width),
+        "^".repeat(underline_width)
+    );
+
+    if let Some(help) = &diagnostic.help {
+        println!("     = help: {}", help.to_lowercase());
+    }
+
+    println!();
+}
+
 pub fn print_all() {
     let mut diagnostics = get();
 
@@ -260,81 +369,8 @@ pub fn print_all() {
         Severity::Info => 3,
     });
 
-    for diagnostic in diagnostics {
-        println!("{}: {}", diagnostic.severity, diagnostic.message);
-
-        let Some(file_id) = diagnostic.file_id else {
-            if let Some(help) = diagnostic.help {
-                println!("  = help: {}", help);
-            }
-
-            println!();
-            continue;
-        };
-
-        let Some(source) = get_source(file_id) else {
-            if let Some(help) = diagnostic.help {
-                println!("  = help: {}", help);
-            }
-
-            println!();
-            continue;
-        };
-
-        let start = diagnostic.start;
-        let end = diagnostic.end;
-
-        let char_count = source.source.chars().count();
-
-        if start > end || end > char_count {
-            continue;
-        }
-
-        // Convert character indices to byte offsets.
-        let char_to_byte = |index: usize| -> usize {
-            source
-                .source
-                .char_indices()
-                .nth(index)
-                .map_or(source.source.len(), |(byte, _)| byte)
-        };
-
-        let start_byte = char_to_byte(start);
-        let end_byte = char_to_byte(end);
-
-        // Find containing line.
-        let line_start = source.source[..start_byte].rfind('\n').map_or(0, |i| i + 1);
-
-        let line_end = source.source[end_byte..]
-            .find('\n')
-            .map_or(source.source.len(), |i| end_byte + i);
-
-        let line = &source.source[line_start..line_end];
-
-        let line_number = source.source[..line_start].matches('\n').count() + 1;
-
-        let row = source.source[line_start..start_byte].chars().count() + 1;
-
-        println!(" --> {}:{}:{}", source.name, line_number, row);
-        println!("{:4} | {}", line_number, line);
-
-        let prefix = &source.source[line_start..start_byte];
-        let highlighted = &source.source[start_byte..end_byte];
-
-        let prefix_width = display_width(prefix);
-        let underline_width = display_width(highlighted).max(1);
-
-        println!(
-            "     | {}{}",
-            " ".repeat(prefix_width),
-            "^".repeat(underline_width)
-        );
-
-        if let Some(help) = diagnostic.help {
-            println!("     = help: {}", help.to_lowercase());
-        }
-
-        println!();
+    for diagnostic in &diagnostics {
+        print_diagnostic(diagnostic);
     }
 }
 

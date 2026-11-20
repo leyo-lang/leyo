@@ -17,7 +17,7 @@ impl Config {
     }
 
     pub fn any(&self) -> bool {
-        self.tokens || self.newlines || self.ast || self.time
+        self.tokens || self.newlines || self.ast
     }
 
     pub fn enable_flag(&mut self, name: &str) {

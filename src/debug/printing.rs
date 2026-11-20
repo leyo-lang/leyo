@@ -1,5 +1,7 @@
 use std::{fmt::Write, time::Duration};
 
+use crate::warn;
+
 pub struct DisplayDuration(pub Duration);
 impl std::fmt::Display for DisplayDuration {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -27,13 +29,17 @@ impl std::fmt::Display for DisplayDuration {
 pub fn print_lexer_result(result: &crate::lexer::LexerResult) -> String {
     let mut output = String::new();
     for (i, token) in result.iter().enumerate() {
-        writeln!(
+        let e = writeln!(
             output,
             "{:<10} {:<20} {:<20?}",
             i,
             format!("{:?}", token.t),
             token.v,
         );
+
+        if e.is_err() {
+            warn!("Could Not Write To Log")
+        }
     }
     output
 }

@@ -33,12 +33,19 @@ fn register_file(filepath: &str) -> FileData {
     FileData { contents, id }
 }
 
-fn output_timings(o: &cli::Options, stage: &str, total: Instant, split: Instant) {
+fn output_timings(
+    o: &cli::Options,
+    filepath: &String,
+    stage: &str,
+    total: Instant,
+    split: Instant,
+) {
     if o.debug.time {
-        info!(
+        instant_info!(
             format!(
-                "{}: {}s (Total: {}s)",
+                "Finished {} \"{}\": {} (Total: {})",
                 stage,
+                filepath,
                 debug::printing::DisplayDuration(split.elapsed()),
                 debug::printing::DisplayDuration(total.elapsed())
             )
@@ -47,7 +54,7 @@ fn output_timings(o: &cli::Options, stage: &str, total: Instant, split: Instant)
     }
 }
 
-fn pipeline(o: &cli::Options, filepath: String) {
+fn pipeline(o: &cli::Options, filepath: &String) {
     let start = std::time::Instant::now();
 
     let filedata = register_file(&filepath);
@@ -67,7 +74,7 @@ fn pipeline(o: &cli::Options, filepath: String) {
         );
     }
 
-    output_timings(o, "Lexing", start, split);
+    output_timings(o, filepath, "Lexing", start, split);
 
     if errors::has_errors() {
         fatal!("Errors Found After Lexing")
@@ -95,7 +102,7 @@ fn pipeline(o: &cli::Options, filepath: String) {
         );
     }
 
-    output_timings(o, "Newlines", start, split);
+    output_timings(o, filepath, "Newlines", start, split);
 
     if errors::has_errors() {
         fatal!("Errors Found After Newlines")
@@ -119,7 +126,7 @@ fn pipeline(o: &cli::Options, filepath: String) {
         );
     }
 
-    output_timings(o, "Parsing", start, split);
+    output_timings(o, filepath, "Parsing", start, split);
 
     if errors::has_errors() {
         fatal!("Errors Found After Parsing")
@@ -132,21 +139,32 @@ fn pipeline(o: &cli::Options, filepath: String) {
         return;
     }
 
-    let split = Instant::now();
+    //let split = Instant::now();
 
-    let semantic_result = todo_semantic(parser_result);
+    //let semantic_result = todo_semantic(parser_result);
 
-    output_timings(o, "Semantic", start, split);
+    //output_timings(o, filepath, "semantic", start, split);
 
-    if errors::has_errors() {
-        fatal!("Errors Found After Semantic")
-    }
+    //if errors::has_errors() {
+    //    fatal!("Errors Found After Semantic")
+    //}
 
-    if o.stop_at == cli::Stage::PreBuild {
-        if errors::has_any() {
-            errors::print_all();
-        }
-        return;
+    //if o.stop_at == cli::Stage::PreBuild {
+    //    if errors::has_any() {
+    //        errors::print_all();
+    //    }
+    //    return;
+    //}
+
+    if o.debug.time {
+        instant_info!(
+            format!(
+                "Finished \"{}\" in {}",
+                filepath,
+                debug::printing::DisplayDuration(start.elapsed())
+            )
+            .as_str()
+        );
     }
 }
 
@@ -154,14 +172,11 @@ fn main() {
     let o = cli::parse();
 
     errors::init(&o); // only needed for warnings (cli::parse only has fatals)
-
-    if o.debug.any() && debug::logging::init_log("leyo_debug.log").is_err() {
-        fatal!("Could Not Initialise Log")
+    if o.debug.any() {
+        debug::logging::init()
     }
 
-    let files = o.files.clone();
-
-    for filepath in files {
+    for filepath in &o.files {
         pipeline(&o, filepath);
     }
 }
