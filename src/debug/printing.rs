@@ -74,13 +74,13 @@ fn ast_pretty_target(
         crate::parser::Target::Index(parent, index) => {
             ast_pretty_target(parent, &child_prefix, false, "Target", output);
 
-            ast_pretty_expression(index, &child_prefix, true, "Index", output);
+            ast_pretty_expression(&index.k, &child_prefix, true, "Index", output);
         }
     }
 }
 
 fn ast_pretty_expression(
-    expr: &crate::parser::Expression,
+    expr: &crate::parser::ExpressionKind,
     prefix: &str,
     is_last: bool,
     label: &str,
@@ -92,15 +92,15 @@ fn ast_pretty_expression(
     let child_prefix = format!("{}{}", prefix, if is_last { "    " } else { "│   " });
 
     match expr {
-        crate::parser::Expression::Error => {
+        crate::parser::ExpressionKind::Error => {
             let _ = writeln!(output, "{}└── Error", child_prefix);
         }
 
-        crate::parser::Expression::Atom(token) => {
+        crate::parser::ExpressionKind::Atom(token) => {
             let _ = writeln!(output, "{}└── {:?}: {:?}", child_prefix, token.t, token.v);
         }
 
-        crate::parser::Expression::Array(array) => {
+        crate::parser::ExpressionKind::Array(array) => {
             let _ = writeln!(output, "{}└── Array", child_prefix);
 
             let array_prefix = format!("{}    ", child_prefix);
@@ -109,7 +109,7 @@ fn ast_pretty_expression(
                 let is_last_element = i == array.len() - 1;
 
                 ast_pretty_expression(
-                    element,
+                    &element.k,
                     &array_prefix,
                     is_last_element,
                     &format!("Element {}", i),
@@ -118,23 +118,23 @@ fn ast_pretty_expression(
             }
         }
 
-        crate::parser::Expression::Binary(lhs, op, rhs) => {
-            ast_pretty_expression(lhs, &child_prefix, false, "Left", output);
+        crate::parser::ExpressionKind::Binary(lhs, op, rhs) => {
+            ast_pretty_expression(&lhs.k, &child_prefix, false, "Left", output);
 
             let _ = writeln!(output, "{}├── Operator: {:?}", child_prefix, op.v);
 
-            ast_pretty_expression(rhs, &child_prefix, true, "Right", output);
+            ast_pretty_expression(&rhs.k, &child_prefix, true, "Right", output);
         }
 
-        crate::parser::Expression::Unary(op, rhs) => {
+        crate::parser::ExpressionKind::Unary(op, rhs) => {
             let _ = writeln!(output, "{}├── Operator: {:?}", child_prefix, op.v);
 
-            ast_pretty_expression(rhs, &child_prefix, true, "Right", output);
+            ast_pretty_expression(&rhs.k, &child_prefix, true, "Right", output);
         }
 
-        crate::parser::Expression::Call(target, params) => {
+        crate::parser::ExpressionKind::Call(target, params) => {
             ast_pretty_expression(
-                target,
+                &target.k,
                 &child_prefix,
                 if params.is_empty() { true } else { false },
                 "Callee",
@@ -143,7 +143,7 @@ fn ast_pretty_expression(
 
             for (i, param) in params.iter().enumerate() {
                 ast_pretty_expression(
-                    param,
+                    &param.k,
                     &child_prefix,
                     if i == params.len() - 1 { true } else { false },
                     &format!("Param {i}").to_string(),
@@ -152,28 +152,28 @@ fn ast_pretty_expression(
             }
         }
 
-        crate::parser::Expression::Property(object, property) => {
-            ast_pretty_expression(object, &child_prefix, false, "Object", output);
+        crate::parser::ExpressionKind::Property(object, property) => {
+            ast_pretty_expression(&object.k, &child_prefix, false, "Object", output);
 
-            ast_pretty_expression(property, &child_prefix, true, "Property", output);
+            ast_pretty_expression(&property.k, &child_prefix, true, "Property", output);
         }
 
-        crate::parser::Expression::NamespaceProperty(object, property) => {
-            ast_pretty_expression(object, &child_prefix, false, "Namespace", output);
+        crate::parser::ExpressionKind::NamespaceProperty(object, property) => {
+            ast_pretty_expression(&object.k, &child_prefix, false, "Namespace", output);
 
-            ast_pretty_expression(property, &child_prefix, true, "Property", output);
+            ast_pretty_expression(&property.k, &child_prefix, true, "Property", output);
         }
 
-        crate::parser::Expression::Index(target, index) => {
-            ast_pretty_expression(target, &child_prefix, false, "Item", output);
+        crate::parser::ExpressionKind::Index(target, index) => {
+            ast_pretty_expression(&target.k, &child_prefix, false, "Item", output);
 
-            ast_pretty_expression(index, &child_prefix, true, "Index", output);
+            ast_pretty_expression(&index.k, &child_prefix, true, "Index", output);
         }
     }
 }
 
 fn ast_pretty_statement(
-    stmt: &crate::parser::Statement,
+    stmt: &crate::parser::StatementKind,
     prefix: &str,
     is_last: bool,
     output: &mut String,
@@ -181,22 +181,26 @@ fn ast_pretty_statement(
     let branch = if is_last { "└── " } else { "├── " };
 
     let label = match stmt {
-        crate::parser::Statement::None => "None".to_string(),
-        crate::parser::Statement::End => "End".to_string(),
-        crate::parser::Statement::Error => "Error".to_string(),
-        crate::parser::Statement::Block(n, _) if n.is_none() => "Block".to_string(),
-        crate::parser::Statement::Block(n, _) => format!("Namespace: {}", n.as_ref().unwrap()),
-        crate::parser::Statement::Loop(_, _) => "Loop".to_string(),
-        crate::parser::Statement::If(_, _, _) => "If".to_string(),
-        crate::parser::Statement::Repeat(_, _, _) => "Repeat".to_string(),
-        crate::parser::Statement::VariableDeclaration(_, _) => "VariableDeclaration".to_string(),
-        crate::parser::Statement::ConstantDeclaration(_, _) => "ConstantDeclaration".to_string(),
-        crate::parser::Statement::Assignment(_, _) => "Assignment".to_string(),
-        crate::parser::Statement::Evaluation(_) => "Expression".to_string(),
-        crate::parser::Statement::Break => "Break".to_string(),
-        crate::parser::Statement::Continue => "Continue".to_string(),
-        crate::parser::Statement::Function(name, _, _) => format!("Function: {name}"),
-        crate::parser::Statement::Return(_) => "Return".to_string(),
+        crate::parser::StatementKind::None => "None".to_string(),
+        crate::parser::StatementKind::End => "End".to_string(),
+        crate::parser::StatementKind::Error => "Error".to_string(),
+        crate::parser::StatementKind::Block(n, _) if n.is_none() => "Block".to_string(),
+        crate::parser::StatementKind::Block(n, _) => format!("Namespace: {}", n.as_ref().unwrap()),
+        crate::parser::StatementKind::Loop(_, _) => "Loop".to_string(),
+        crate::parser::StatementKind::If(_, _, _) => "If".to_string(),
+        crate::parser::StatementKind::Repeat(_, _, _) => "Repeat".to_string(),
+        crate::parser::StatementKind::VariableDeclaration(_, _) => {
+            "VariableDeclaration".to_string()
+        }
+        crate::parser::StatementKind::ConstantDeclaration(_, _) => {
+            "ConstantDeclaration".to_string()
+        }
+        crate::parser::StatementKind::Assignment(_, _) => "Assignment".to_string(),
+        crate::parser::StatementKind::Evaluation(_) => "Expression".to_string(),
+        crate::parser::StatementKind::Break => "Break".to_string(),
+        crate::parser::StatementKind::Continue => "Continue".to_string(),
+        crate::parser::StatementKind::Function(name, _, _) => format!("Function: {name}"),
+        crate::parser::StatementKind::Return(_) => "Return".to_string(),
     };
 
     let _ = writeln!(output, "{}{}{}", prefix, branch, label);
@@ -204,38 +208,38 @@ fn ast_pretty_statement(
     let child_prefix = format!("{}{}", prefix, if is_last { "    " } else { "│   " });
 
     match stmt {
-        crate::parser::Statement::Evaluation(expr) => {
-            ast_pretty_expression(expr, &child_prefix, true, "Value", output);
+        crate::parser::StatementKind::Evaluation(expr) => {
+            ast_pretty_expression(&expr.k, &child_prefix, true, "Value", output);
         }
 
-        crate::parser::Statement::VariableDeclaration(target, expr)
-        | crate::parser::Statement::ConstantDeclaration(target, expr)
-        | crate::parser::Statement::Assignment(target, expr) => {
+        crate::parser::StatementKind::VariableDeclaration(target, expr)
+        | crate::parser::StatementKind::ConstantDeclaration(target, expr)
+        | crate::parser::StatementKind::Assignment(target, expr) => {
             ast_pretty_target(target, &child_prefix, false, "Target", output);
-            ast_pretty_expression(expr, &child_prefix, true, "Value", output);
+            ast_pretty_expression(&expr.k, &child_prefix, true, "Value", output);
         }
 
-        crate::parser::Statement::Block(_, statements) => {
+        crate::parser::StatementKind::Block(_, statements) => {
             for (i, stmt) in statements.iter().enumerate() {
-                ast_pretty_statement(stmt, &child_prefix, i == statements.len() - 1, output);
+                ast_pretty_statement(&stmt.k, &child_prefix, i == statements.len() - 1, output);
             }
         }
 
-        crate::parser::Statement::Loop(cond, stmt) => {
-            ast_pretty_expression(cond, &child_prefix, false, "Condition", output);
-            ast_pretty_statement(stmt, &child_prefix, true, output);
+        crate::parser::StatementKind::Loop(cond, stmt) => {
+            ast_pretty_expression(&cond.k, &child_prefix, false, "Condition", output);
+            ast_pretty_statement(&stmt.k, &child_prefix, true, output);
         }
 
-        crate::parser::Statement::If(cond, stmt, els) => {
-            ast_pretty_expression(cond, &child_prefix, false, "Condition", output);
-            ast_pretty_statement(stmt, &child_prefix, els.is_none(), output);
+        crate::parser::StatementKind::If(cond, stmt, els) => {
+            ast_pretty_expression(&cond.k, &child_prefix, false, "Condition", output);
+            ast_pretty_statement(&stmt.k, &child_prefix, els.is_none(), output);
             if els.is_some() {
-                ast_pretty_statement(&els.as_ref().unwrap(), &child_prefix, true, output);
+                ast_pretty_statement(&els.as_ref().unwrap().k, &child_prefix, true, output);
             }
         }
 
-        crate::parser::Statement::Repeat(cond, target, stmt) => {
-            ast_pretty_expression(cond, &child_prefix, false, "Count", output);
+        crate::parser::StatementKind::Repeat(cond, target, stmt) => {
+            ast_pretty_expression(&cond.k, &child_prefix, false, "Count", output);
             if target.is_some() {
                 ast_pretty_target(
                     &target.as_ref().unwrap(),
@@ -245,26 +249,26 @@ fn ast_pretty_statement(
                     output,
                 )
             };
-            ast_pretty_statement(stmt, &child_prefix, true, output);
+            ast_pretty_statement(&stmt.k, &child_prefix, true, output);
         }
 
-        crate::parser::Statement::Function(_, params, body) => {
+        crate::parser::StatementKind::Function(_, params, body) => {
             for (i, param) in params.iter().enumerate() {
                 ast_pretty_expression(
-                    param,
+                    &param.k,
                     &child_prefix,
                     false,
                     &format!("Param {i}").to_string(),
                     output,
                 );
             }
-            ast_pretty_statement(body, &child_prefix, true, output);
+            ast_pretty_statement(&body.k, &child_prefix, true, output);
         }
 
-        crate::parser::Statement::Return(value) => {
+        crate::parser::StatementKind::Return(value) => {
             if value.is_some() {
                 ast_pretty_expression(
-                    value.as_ref().unwrap(),
+                    &value.as_ref().unwrap().k,
                     &child_prefix,
                     true,
                     "Value",
@@ -281,7 +285,7 @@ pub fn ast_pretty_print(program: &crate::parser::Program) -> String {
     let mut output = String::from("Program\n");
 
     for (i, stmt) in program.iter().enumerate() {
-        ast_pretty_statement(stmt, "", i == program.len() - 1, &mut output);
+        ast_pretty_statement(&stmt.k, "", i == program.len() - 1, &mut output);
     }
 
     output

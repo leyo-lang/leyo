@@ -1,4 +1,6 @@
 use crate::{error, fatal};
+use ExpressionKind as Ek;
+use StatementKind as Sk;
 
 #[derive(PartialEq, Clone)]
 pub enum Target {
@@ -9,7 +11,7 @@ pub enum Target {
 }
 
 #[derive(PartialEq, Clone, Debug)]
-pub enum Expression {
+pub enum ExpressionKind {
     Error,
     Atom(crate::lexer::Token),
     Binary(Box<Expression>, crate::lexer::Token, Box<Expression>),
@@ -21,8 +23,29 @@ pub enum Expression {
     NamespaceProperty(Box<Expression>, Box<Expression>),
 }
 
+#[derive(PartialEq, Clone, Debug)]
+pub struct Expression {
+    pub k: ExpressionKind,
+    pub s: usize,
+    pub e: usize,
+}
+
+impl Expression {
+    fn new(k: ExpressionKind, s: usize, e: usize) -> Self {
+        Expression { k, s, e }
+    }
+
+    const fn err() -> Self {
+        Expression {
+            k: Ek::Error,
+            s: 0,
+            e: 0,
+        }
+    }
+}
+
 #[derive(PartialEq, Clone)]
-pub enum Statement {
+pub enum StatementKind {
     None,
     End,
     Error,
@@ -38,6 +61,27 @@ pub enum Statement {
     Continue,
     Function(String, Vec<Expression>, Box<Statement>),
     Return(Option<Expression>),
+}
+
+#[derive(PartialEq, Clone)]
+pub struct Statement {
+    pub k: StatementKind,
+    pub s: usize,
+    pub e: usize,
+}
+
+impl Statement {
+    fn new(k: StatementKind, s: usize, e: usize) -> Self {
+        Statement { k, s, e }
+    }
+
+    const fn err() -> Self {
+        Statement {
+            k: Sk::Error,
+            s: 0,
+            e: 0,
+        }
+    }
 }
 
 pub type Program = Vec<Statement>;
@@ -58,6 +102,15 @@ impl Default for BindingPower {
     }
 }
 
+fn is_comparison(token: &crate::lexer::Token) -> bool {
+    use crate::lexer::TokenType::*;
+
+    matches!(
+        token.t,
+        EqualTo | NotEqualTo | GreaterThan | LessThan | GreaterThanEqual | LessThanEqual
+    )
+}
+
 fn get_binding_power(token: &crate::lexer::Token) -> Option<BindingPower> {
     use crate::lexer::TokenType::*;
 
@@ -66,16 +119,16 @@ fn get_binding_power(token: &crate::lexer::Token) -> Option<BindingPower> {
         Xor => BindingPower::new(5, 6),
         And => BindingPower::new(7, 8),
 
-        EqualTo | NotEqualTo => BindingPower::new(10, 9),
-
-        GreaterThan | LessThan | GreaterThanEqual | LessThanEqual => BindingPower::new(12, 11),
+        EqualTo | NotEqualTo | GreaterThan | LessThan | GreaterThanEqual | LessThanEqual => {
+            BindingPower::new(10, 10)
+        }
 
         Plus | Minus => BindingPower::new(14, 15),
         Multiply | Divide | Modulous => BindingPower::new(16, 17),
 
-        Exponent => BindingPower::new(18, 17),
+        Exponent => BindingPower::new(19, 17),
 
-        Not => BindingPower::new(0, 19),
+        Not => BindingPower::new(0, 20),
         _ => return None,
     };
 
@@ -222,30 +275,43 @@ impl Parser {
 
     fn parse_no_sides(&mut self, item: crate::lexer::Token) -> Expression {
         use crate::lexer::TokenType::*;
+        let start = item.s;
+        let end = item.e;
         match item.t {
-            Identifier | Integer | Float | Character | String => Expression::Atom(item),
+            Identifier | Integer | Float | Character | String => {
+                Expression::new(Ek::Atom(item), start, end)
+            }
             OpenBracket => {
-                let expr = self.parse_expression(BindingPower::default());
+                let mut expr = self.parse_expression(BindingPower::default());
 
                 match self.get() {
-                    Some(token) if token.t == CloseBracket => expr,
+                    Some(token) if token.t == CloseBracket => {
+                        expr.s = start;
+                        expr.e = token.e;
+                        expr
+                    }
 
                     Some(token) => {
                         error!(
                             "Expected Closing Brackets",
                             self.source_id, token.s, token.e
                         );
-                        return Expression::Error;
+                        return Expression::err();
                     }
 
                     None => {
                         error!("Unclosed Brackets", self.source_id, item.s, item.e);
-                        return Expression::Error;
+                        return Expression::err();
                     }
                 }
             }
             OpenSquareBracket => {
                 let mut array = Vec::new();
+
+                if self.peek().is_some_and(|x| x.t == CloseSquareBracket) {
+                    let csb = self.get().unwrap();
+                    return Expression::new(Ek::Array(array), item.s, csb.e);
+                }
 
                 loop {
                     array.push(self.parse_expression(BindingPower::default()));
@@ -264,23 +330,31 @@ impl Parser {
                             "Expected Comma or a Closing Square Bracket",
                             self.source_id, next.s, next.e
                         );
-                        return Expression::Error;
+                        return Expression::err();
                     }
                 }
-                self.get();
-                Expression::Array(array)
+                let csb = self.get().unwrap();
+                Expression::new(Ek::Array(array), item.s, csb.e)
             }
-            Minus => Expression::Unary(
-                item,
-                Box::new(self.parse_expression(BindingPower::new(0, 20))),
+            Minus => Expression::new(
+                Ek::Unary(
+                    item,
+                    Box::new(self.parse_expression(BindingPower::new(0, 18))),
+                ),
+                start,
+                self.last_token.e,
             ),
-            Not => Expression::Unary(
-                item,
-                Box::new(self.parse_expression(BindingPower::new(0, 19))),
+            Not => Expression::new(
+                Ek::Unary(
+                    item,
+                    Box::new(self.parse_expression(BindingPower::new(0, 20))),
+                ),
+                start,
+                self.last_token.e,
             ),
             _ => {
                 error!("Token Unimplemented", self.source_id, item.s, item.e);
-                return Expression::Error;
+                return Expression::err();
             }
         }
     }
@@ -289,18 +363,22 @@ impl Parser {
         match get_binding_power(&op) {
             Some(c) => {
                 let rhs = self.parse_expression(c);
+                let rhse = rhs.e;
+                let lhss = lhs.s;
 
-                Expression::Binary(Box::new(lhs), op, Box::new(rhs))
+                Expression::new(Ek::Binary(Box::new(lhs), op, Box::new(rhs)), lhss, rhse)
             }
             None => {
                 error!("Unexpexted Token", self.source_id, op.s, op.e);
-                Expression::Error
+                Expression::err()
             }
         }
     }
 
     fn parse_postfix(&mut self, mut lhs: Expression) -> Expression {
         use crate::lexer::TokenType::*;
+
+        let lhss = lhs.s;
 
         loop {
             let Some(next) = self.peek() else {
@@ -326,19 +404,19 @@ impl Parser {
                         }
                     }
 
-                    match self.get() {
-                        Some(t) if t.t == CloseBracket => {}
+                    let end = match self.get() {
+                        Some(t) if t.t == CloseBracket => t.e,
                         Some(t) => {
                             error!("Expected Closing Bracket", self.source_id, t.s, t.e);
-                            return Expression::Error;
+                            return Expression::err();
                         }
                         None => {
                             error!("Unclosed Function Call", self.source_id, next.s, next.e);
-                            return Expression::Error;
+                            return Expression::err();
                         }
-                    }
+                    };
 
-                    lhs = Expression::Call(Box::new(lhs), args);
+                    lhs = Expression::new(Ek::Call(Box::new(lhs), args), lhss, end);
                 }
 
                 OpenSquareBracket => {
@@ -347,7 +425,7 @@ impl Parser {
 
                     let Some(close) = self.get() else {
                         error!("Unclosed Square Bracket", self.source_id, next.s, next.e);
-                        return Expression::Error;
+                        return Expression::err();
                     };
 
                     if close.t != CloseSquareBracket {
@@ -359,7 +437,7 @@ impl Parser {
                         );
                     }
 
-                    lhs = Expression::Index(Box::new(lhs), Box::new(index))
+                    lhs = Expression::new(Ek::Index(Box::new(lhs), Box::new(index)), lhss, close.e)
                 }
 
                 FullStop => {
@@ -380,10 +458,20 @@ impl Parser {
                             "Unexpected Token After FullStop",
                             self.source_id, post.s, post.e
                         );
-                        return Expression::Error;
+                        return Expression::err();
                     }
 
-                    lhs = Expression::Property(Box::new(lhs), Box::new(Expression::Atom(post)))
+                    let posts = post.s;
+                    let poste = post.e;
+
+                    lhs = Expression::new(
+                        Ek::Property(
+                            Box::new(lhs),
+                            Box::new(Expression::new(Ek::Atom(post), posts, poste)),
+                        ),
+                        lhss,
+                        poste,
+                    )
                 }
 
                 DoubleColon => {
@@ -404,12 +492,21 @@ impl Parser {
                             "Unexpected Token After Namespace Access",
                             self.source_id, t.s, t.e
                         );
-                        return Expression::Error;
+                        return Expression::err();
                     }
                     self.get();
 
-                    lhs =
-                        Expression::NamespaceProperty(Box::new(lhs), Box::new(Expression::Atom(t)))
+                    let ts = t.s;
+                    let te = t.e;
+
+                    lhs = Expression::new(
+                        Ek::NamespaceProperty(
+                            Box::new(lhs),
+                            Box::new(Expression::new(Ek::Atom(t), ts, te)),
+                        ),
+                        lhss,
+                        te,
+                    );
                 }
 
                 _ => break,
@@ -426,7 +523,7 @@ impl Parser {
                 format!("Expected Token After This \"{}\"", self.last_token.v).as_str(),
                 self.source_id, self.last_token.s, self.last_token.e
             );
-            return Expression::Error;
+            return Expression::err();
         }
         let mut lhs = self.parse_no_sides(lhs.unwrap());
         lhs = self.parse_postfix(lhs);
@@ -444,6 +541,20 @@ impl Parser {
 
             if op_bp.l <= bp.r {
                 break;
+            }
+
+            if is_comparison(&op)
+                && matches!(
+                    &lhs.k,
+                    Ek::Binary(_, previous, _) if is_comparison(previous)
+                )
+            {
+                error!(
+                    "Comparison Operators Cannot Be Chained",
+                    self.source_id, op.s, op.e
+                );
+
+                return Expression::err();
             }
 
             self.get();
@@ -467,12 +578,12 @@ impl Parser {
                     self.last_token.e
                 )
             }
-            return Statement::End;
+            return Statement::new(Sk::End, 0, 0);
         };
         let t = ot.unwrap();
 
         if self.is_skipable(&t) {
-            return Statement::None;
+            return Statement::new(Sk::None, 0, 0);
         };
 
         match if t.t != String { t.v.as_str() } else { "_" } {
@@ -511,11 +622,15 @@ impl Parser {
                             c.e + 1,
                             should_be_equals.e
                         );
-                        return Statement::Error;
+                        return Statement::err();
                     }
-                    return Statement::ConstantDeclaration(
-                        name,
-                        self.parse_expression(BindingPower::default()),
+                    return Statement::new(
+                        Sk::ConstantDeclaration(
+                            name,
+                            self.parse_expression(BindingPower::default()),
+                        ),
+                        t.s,
+                        self.last_token.e,
                     );
                 } else {
                     let name = self.parse_target();
@@ -535,11 +650,15 @@ impl Parser {
                             "Variable Not Defined",
                             self.source_id, c.s, should_be_equals.e
                         );
-                        return Statement::Error;
+                        return Statement::err();
                     }
-                    return Statement::VariableDeclaration(
-                        name,
-                        self.parse_expression(BindingPower::default()),
+                    return Statement::new(
+                        Sk::VariableDeclaration(
+                            name,
+                            self.parse_expression(BindingPower::default()),
+                        ),
+                        t.s,
+                        self.last_token.e,
                     );
                 }
             }
@@ -550,7 +669,7 @@ impl Parser {
                     fatal!("Exceeded Maximum Depth", self.source_id, t.s, t.e)
                 }
                 self.depth = new_depth;
-                return Statement::Block(None, self.parse_block());
+                return Statement::new(Sk::Block(None, self.parse_block()), t.s, self.last_token.e);
             }
 
             "}" => {
@@ -565,7 +684,7 @@ impl Parser {
                     )
                 }
                 self.depth = new_depth;
-                return Statement::End;
+                return Statement::new(Sk::End, 0, 0);
             }
 
             "while" => {
@@ -585,13 +704,15 @@ impl Parser {
                         "Expected While Loop Body",
                         self.source_id, opening.s, opening.e
                     );
-                    return Statement::Error;
+                    return Statement::err();
                 }
                 if opening.t == Colon {
                     self.get();
                 }
                 let stmt = self.parse_statement();
-                return Statement::Loop(expr, Box::new(stmt));
+                let stmte = stmt.e;
+
+                return Statement::new(Sk::Loop(expr, Box::new(stmt)), t.e, stmte);
             }
 
             "if" => {
@@ -614,7 +735,7 @@ impl Parser {
                         "Expected If Statement Body",
                         self.source_id, opening.s, opening.e
                     );
-                    return Statement::Error;
+                    return Statement::err();
                 }
 
                 let stmt = self.parse_statement();
@@ -645,7 +766,7 @@ impl Parser {
                                 "Expected ':', '{', or 'if' after 'else'",
                                 self.source_id, x.s, x.e
                             );
-                            return Statement::Error;
+                            return Statement::err();
                         }
                         None => {
                             fatal!("Else Followed By EOF", self.source_id, err.s, err.e);
@@ -658,7 +779,11 @@ impl Parser {
                     None
                 };
 
-                return Statement::If(expr, Box::new(stmt), else_clause);
+                return Statement::new(
+                    Sk::If(expr, Box::new(stmt), else_clause),
+                    t.s,
+                    self.last_token.e,
+                );
             }
 
             "repeat" => {
@@ -692,30 +817,34 @@ impl Parser {
                         "Expected Repeat Statement Body",
                         self.source_id, opening.s, opening.e
                     );
-                    return Statement::Error;
+                    return Statement::err();
                 }
 
                 let stmt = self.parse_statement();
+                let stmte = stmt.e;
 
-                return Statement::Repeat(count, target, Box::new(stmt));
+                return Statement::new(Sk::Repeat(count, target, Box::new(stmt)), t.s, stmte);
             }
 
             "break" => {
-                return Statement::Break;
+                return Statement::new(Sk::Break, t.s, t.e);
             }
 
             "continue" => {
-                return Statement::Continue;
+                return Statement::new(Sk::Continue, t.s, t.e);
             }
 
             "return" => {
-                let value = if self.peek().is_some_and(|x| x.t != Semicolon) {
+                let value = if self
+                    .peek()
+                    .is_some_and(|x| x.t != Semicolon || x.t != CloseBrace)
+                {
                     Some(self.parse_expression(BindingPower::default()))
                 } else {
                     None
                 };
 
-                return Statement::Return(value);
+                return Statement::new(Sk::Return(value), t.s, self.last_token.e);
             }
 
             "ns" => {
@@ -729,13 +858,23 @@ impl Parser {
                     }
                     Some(c) => {
                         error!("Expected Identifier or \"{\"", self.source_id, c.s, c.e);
-                        return Statement::Error;
+                        return Statement::err();
                     }
                 };
 
                 let next = self.peek();
-                if next.as_ref().is_none_or(|x| x.t != OpenBrace) {
-                    return Statement::Error;
+                if next.as_ref().is_none() {
+                    fatal!(
+                        "Expected \"{\"",
+                        self.source_id,
+                        self.last_token.s,
+                        self.last_token.e
+                    );
+                }
+
+                let next = next.unwrap();
+                if next.t != OpenBrace {
+                    error!("Expected \"{\"", self.source_id, next.s, next.e);
                 }
                 self.get();
 
@@ -744,18 +883,18 @@ impl Parser {
                     fatal!("Exceeded Maximum Depth", self.source_id, t.s, t.e)
                 }
                 self.depth = new_depth;
-                return Statement::Block(name, self.parse_block());
+                return Statement::new(Sk::Block(name, self.parse_block()), t.s, next.e);
             }
 
             "fn" => {
                 let name = self.get();
                 if name.as_ref().is_none_or(|x| x.t != Identifier) {
-                    return Statement::Error;
+                    return Statement::err();
                 }
 
                 let next = self.peek();
                 if next.as_ref().is_none_or(|x| x.t != OpenBracket) {
-                    return Statement::Error;
+                    return Statement::err();
                 }
                 let next = next.unwrap();
                 self.get();
@@ -779,14 +918,14 @@ impl Parser {
                     Some(t) if t.t == CloseBracket => {}
                     Some(t) => {
                         error!("Expected Closing Bracket", self.source_id, t.s, t.e);
-                        return Statement::Error;
+                        return Statement::err();
                     }
                     None => {
                         error!(
                             "Unclosed Function Parameters",
                             self.source_id, next.s, next.e
                         );
-                        return Statement::Error;
+                        return Statement::err();
                     }
                 }
 
@@ -797,7 +936,7 @@ impl Parser {
                     }
                     Some(t) => {
                         error!("No Function Body", self.source_id, t.s, t.e);
-                        return Statement::Error;
+                        return Statement::err();
                     }
                     None => {
                         fatal!("No Function Body", self.source_id, t.s, t.e);
@@ -805,11 +944,17 @@ impl Parser {
                 }
 
                 let stmt = self.parse_statement();
+                let stmte = stmt.e;
 
-                return Statement::Function(name.unwrap().v, args, Box::new(stmt));
+                return Statement::new(
+                    Sk::Function(name.unwrap().v, args, Box::new(stmt)),
+                    t.s,
+                    stmte,
+                );
             }
 
             _ => {
+                let ts = t.s;
                 self.reverse(t);
 
                 if self.has_equals_before_semicolon() {
@@ -818,31 +963,35 @@ impl Parser {
                     match self.get() {
                         Some(eq) if eq.t == Equals => {
                             let value = self.parse_expression(BindingPower::default());
-                            return Statement::Assignment(target, value);
+                            let valuee = value.e;
+                            return Statement::new(Sk::Assignment(target, value), ts, valuee);
                         }
                         Some(other) => {
                             error!(
                                 "Expected '=' after assignment target",
                                 self.source_id, other.s, other.e
                             );
-                            return Statement::Error;
+                            return Statement::err();
                         }
                         None => {
                             error!(
                                 "Unexpected EOF in assignment",
                                 self.source_id, self.last_token.s, self.last_token.e
                             );
-                            return Statement::Error;
+                            return Statement::err();
                         }
                     }
                 } else {
-                    return Statement::Evaluation(self.parse_expression(BindingPower::default()));
+                    let expr = self.parse_expression(BindingPower::default());
+                    let exprs = expr.s;
+                    let expre = expr.e;
+                    return Statement::new(Sk::Evaluation(expr), exprs, expre);
                 }
             }
         };
 
         //error!("Unknown Statement", self.source_id, t.s, t.e);
-        //Statement::Error
+        //Statement::err()
     }
 
     fn parse_block(&mut self) -> Vec<Statement> {
@@ -850,11 +999,11 @@ impl Parser {
         loop {
             let stmt = self.parse_statement();
 
-            if stmt == Statement::End {
+            if stmt.k == Sk::End {
                 break;
-            } else if stmt == Statement::None {
+            } else if stmt.k == Sk::None {
                 continue;
-            } else if stmt == Statement::Error {
+            } else if stmt.k == Sk::Error {
                 // fast forward
                 while self
                     .get()
