@@ -2,14 +2,6 @@ use crate::{error, fatal};
 use ExpressionKind as Ek;
 use StatementKind as Sk;
 
-#[derive(PartialEq, Clone)]
-pub enum Target {
-    Error,
-    Object(String),
-    Property(Box<Target>, String),
-    Index(Box<Target>, Expression),
-}
-
 #[derive(PartialEq, Clone, Debug)]
 pub enum ExpressionKind {
     Error,
@@ -50,13 +42,13 @@ pub enum StatementKind {
     End,
     Error,
     Block(Option<String>, Vec<Statement>),
-    VariableDeclaration(Target, Expression),
-    ConstantDeclaration(Target, Expression),
-    Assignment(Target, Expression),
+    VariableDeclaration(Expression, Expression),
+    ConstantDeclaration(Expression, Expression),
+    Assignment(Expression, Expression),
     Evaluation(Expression),
     Loop(Expression, Box<Statement>),
     If(Expression, Box<Statement>, Option<Box<Statement>>),
-    Repeat(Expression, Option<Target>, Box<Statement>),
+    Repeat(Expression, Option<Expression>, Box<Statement>),
     Break,
     Continue,
     Function(String, Vec<Expression>, Box<Statement>),
@@ -204,73 +196,6 @@ impl Parser {
             }
         }
         false
-    }
-
-    fn parse_target(&mut self) -> Target {
-        use crate::lexer::TokenType as tt;
-        let token = self.get();
-        if token.is_none() {
-            error!(
-                "Could Not Find Target",
-                self.source_id, self.last_token.s, self.last_token.e
-            );
-            return Target::Error;
-        }
-        let token = token.unwrap();
-
-        if token.t != tt::Identifier {
-            fatal!("Expected Identifier", self.source_id, token.s, token.e);
-        }
-
-        let mut target = Target::Object(token.v);
-
-        while let Some(next) = self.peek() {
-            if next.t == tt::FullStop {
-                let dot = self.get().unwrap();
-
-                let property = self.get();
-                if property.is_none() {
-                    error!("Could Not Find Property", self.source_id, dot.s, dot.e);
-                    return Target::Error;
-                }
-                let property = property.unwrap();
-
-                if property.t != tt::Identifier {
-                    fatal!(
-                        "Expected property name",
-                        self.source_id,
-                        property.s,
-                        property.e
-                    );
-                }
-
-                target = Target::Property(Box::new(target), property.v);
-            } else if next.t == tt::OpenSquareBracket {
-                self.get();
-
-                let index = self.parse_expression(BindingPower::default());
-
-                let Some(close) = self.get() else {
-                    error!("Unclosed Square Bracket", self.source_id, next.s, next.e);
-                    return Target::Error;
-                };
-
-                if close.t != tt::CloseSquareBracket {
-                    fatal!(
-                        "Expected closing square bracket",
-                        self.source_id,
-                        close.s,
-                        close.e
-                    );
-                }
-
-                target = Target::Index(Box::new(target), index);
-            } else {
-                break;
-            }
-        }
-
-        target
     }
 
     fn parse_no_sides(&mut self, item: crate::lexer::Token) -> Expression {
@@ -602,7 +527,7 @@ impl Parser {
 
                 if c.v == "const" {
                     self.get();
-                    let name = self.parse_target();
+                    let name = self.parse_expression(BindingPower::default());
 
                     let should_be_equals = self.get();
                     if should_be_equals.is_none() {
@@ -633,7 +558,7 @@ impl Parser {
                         self.last_token.e,
                     );
                 } else {
-                    let name = self.parse_target();
+                    let name = self.parse_expression(BindingPower::default());
                     let should_be_equals = self.get();
                     if should_be_equals.is_none() {
                         fatal!(
@@ -794,7 +719,7 @@ impl Parser {
                     .is_some_and(|x| x.t == Identifier && x.v == "as")
                 {
                     self.get();
-                    Some(self.parse_target())
+                    Some(self.parse_expression(BindingPower::default()))
                 } else {
                     None
                 };
@@ -958,7 +883,7 @@ impl Parser {
                 self.reverse(t);
 
                 if self.has_equals_before_semicolon() {
-                    let target = self.parse_target();
+                    let target = self.parse_expression(BindingPower::default());
 
                     match self.get() {
                         Some(eq) if eq.t == Equals => {

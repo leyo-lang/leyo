@@ -1,7 +1,4 @@
-use crate::{
-    error, fatal,
-    parser::{Program, Target},
-};
+use crate::{error, parser::Program, warn};
 use std::collections::HashMap;
 
 #[derive(PartialEq, Clone)]
@@ -29,6 +26,7 @@ pub struct Symbol {
     pub ty: Type,
     pub kind: SymbolKind,
     pub mutable: bool,
+    pub usages: u8,
     pub s: usize,
     pub e: usize,
 }
@@ -77,9 +75,9 @@ pub enum TypedStatementKind {
     End,
     Error,
     Block(Option<String>, Vec<TypedStatement>),
-    VariableDeclaration(Target, TypedExpression),
-    ConstantDeclaration(Target, TypedExpression),
-    Assignment(Target, TypedExpression),
+    VariableDeclaration(TypedExpression, TypedExpression),
+    ConstantDeclaration(TypedExpression, TypedExpression),
+    Assignment(TypedExpression, TypedExpression),
     Evaluation(TypedExpression),
     Loop(TypedExpression, Box<TypedStatement>),
     If(
@@ -87,7 +85,11 @@ pub enum TypedStatementKind {
         Box<TypedStatement>,
         Option<Box<TypedStatement>>,
     ),
-    Repeat(TypedExpression, Option<Target>, Box<TypedStatement>),
+    Repeat(
+        TypedExpression,
+        Option<TypedExpression>,
+        Box<TypedStatement>,
+    ),
     Break,
     Continue,
     Function(String, Vec<TypedExpression>, Box<TypedStatement>),
@@ -95,19 +97,17 @@ pub enum TypedStatementKind {
 }
 
 pub struct TypedStatement {
-    t: Type,
     k: TypedStatementKind,
     s: usize,
     e: usize,
 }
 impl TypedStatement {
-    fn new(t: Type, k: TypedStatementKind, s: usize, e: usize) -> Self {
-        Self { t, k, s, e }
+    fn new(k: TypedStatementKind, s: usize, e: usize) -> Self {
+        Self { k, s, e }
     }
 
     const fn err() -> Self {
         Self {
-            t: Type::Unknown,
             k: TypedStatementKind::Error,
             s: 0,
             e: 0,
@@ -157,6 +157,7 @@ impl Analyser {
     }
 
     fn finish(self) -> TypedProgram {
+        self.check_symbols_used();
         self.result
     }
 
@@ -246,6 +247,41 @@ impl Analyser {
 
     fn exit_scope(&mut self) {
         self.scope_stack.pop();
+    }
+
+    fn check_symbols_used(&self) {
+        for scope in &self.scopes {
+            for (_, symbol) in &scope.symbols {
+                if symbol.usages == 0 {
+                    warn!("Unused Symbol", self.source_id, symbol.s, symbol.e)
+                }
+            }
+        }
+    }
+
+    fn is_targetable(&self, texpr: &TypedExpression) -> bool {
+        use TypedExpressionKind as tek;
+        match texpr.k {
+            tek::Atom(ref t) => {
+                if t.t == crate::lexer::TokenType::Identifier {
+                    true
+                } else {
+                    false
+                }
+            }
+
+            tek::Index(ref lhs, _) => self.is_targetable(&*lhs),
+
+            tek::NamespaceProperty(ref lhs, ref rhs) => {
+                self.is_targetable(&*lhs) && self.is_targetable(&*rhs)
+            }
+
+            tek::Property(ref lhs, ref rhs) => {
+                self.is_targetable(&*lhs) && self.is_targetable(&*rhs)
+            }
+
+            _ => false,
+        }
     }
 
     fn token_to_type(&self, t: &crate::lexer::Token) -> Type {
@@ -503,17 +539,31 @@ impl Analyser {
     fn analyse_statement(&mut self, statement: crate::parser::Statement) -> TypedStatement {
         use crate::parser::StatementKind as Sk;
 
-        match statement.k {
-            Sk::Assignment(t, v) => {}
+        let typed_stmt_kind = match statement.k {
+            Sk::Assignment(target, value) => {
+                let ttarget = self.analyse_expression(target);
+                if !self.is_targetable(&ttarget) {
+                    error!(
+                        "Item Is Not Targetable",
+                        self.source_id, ttarget.s, ttarget.e
+                    )
+                }
+
+                let tvalue = self.analyse_expression(value);
+
+                TypedStatementKind::Assignment(ttarget, tvalue)
+            }
 
             _ => {
                 error!(
                     "Unknown Statement",
                     self.source_id, statement.s, statement.e
                 );
-                TypedStatement::err()
+                return TypedStatement::err();
             }
-        }
+        };
+
+        TypedStatement::new(typed_stmt_kind, statement.s, statement.e)
     }
 
     fn analyse_scope(&mut self, stmts: Vec<crate::parser::Statement>) -> Vec<TypedStatement> {
