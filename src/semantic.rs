@@ -14,13 +14,14 @@ pub enum Type {
     Unknown,
 }
 
+#[derive(Clone)]
 pub enum ObjectKind {
-    Class(HashMap<String, Object>),
     Function(Type),
     Namespace(HashMap<String, Object>),
     Item(Type),
 }
 
+#[derive(Clone)]
 pub struct Object {
     pub name: String,
     pub kind: ObjectKind,
@@ -51,10 +52,10 @@ pub enum TypedExpressionKind {
 
 #[derive(PartialEq)]
 pub struct TypedExpression {
-    t: Type,
-    k: TypedExpressionKind,
-    s: usize,
-    e: usize,
+    pub t: Type,
+    pub k: TypedExpressionKind,
+    pub s: usize,
+    pub e: usize,
 }
 impl TypedExpression {
     fn new(t: Type, k: TypedExpressionKind, s: usize, e: usize) -> Self {
@@ -98,9 +99,9 @@ pub enum TypedStatementKind {
 }
 
 pub struct TypedStatement {
-    k: TypedStatementKind,
-    s: usize,
-    e: usize,
+    pub k: TypedStatementKind,
+    pub s: usize,
+    pub e: usize,
 }
 impl TypedStatement {
     fn new(k: TypedStatementKind, s: usize, e: usize) -> Self {
@@ -119,6 +120,8 @@ impl TypedStatement {
 pub type TypedProgram = Vec<TypedStatement>;
 
 pub struct Scope {
+    pub name: Option<String>,
+    pub exported: bool,
     pub objects: HashMap<String, Object>,
 }
 
@@ -138,7 +141,6 @@ impl Analyser {
     }
 
     fn finish(self) -> TypedProgram {
-        self.check_symbols_used();
         self.result
     }
 
@@ -170,7 +172,7 @@ impl Analyser {
         Some(result)
     }
 
-    fn get_object(&self, expr: &crate::parser::Expression) -> Option<&Object> {
+    fn get_object(&self, expr: &crate::parser::Expression) -> Option<Object> {
         let flat_vec = self.flatten_expr(expr)?;
         let mut flat = flat_vec.iter().rev().peekable();
 
@@ -181,11 +183,15 @@ impl Analyser {
                 continue;
             };
 
-            let Some(mut obj) = scope.objects.get(first) else {
+            let Some(obj) = scope.objects.get(first) else {
                 continue;
             };
 
+            let mut obj = obj.clone();
+
             loop {
+                obj.usages = obj.usages.saturating_add(1);
+
                 match &obj.kind {
                     ObjectKind::Item(_) => {
                         if flat.peek().is_some() {
@@ -194,19 +200,6 @@ impl Analyser {
                         }
 
                         return Some(obj);
-                    }
-
-                    ObjectKind::Class(children) => {
-                        let Some(next) = flat.next() else {
-                            return Some(obj);
-                        };
-
-                        let Some(child) = children.get(next) else {
-                            error!("Does Not Contain This Field", self.source_id, obj.s, obj.e);
-                            return None;
-                        };
-
-                        obj = child;
                     }
 
                     ObjectKind::Namespace(children) => {
@@ -219,7 +212,7 @@ impl Analyser {
                             return None;
                         };
 
-                        obj = child;
+                        obj = child.clone();
                     }
 
                     ObjectKind::Function(_) => {
@@ -266,9 +259,11 @@ impl Analyser {
         }
     }
 
-    fn enter_scope(&mut self) {
+    fn enter_scope(&mut self, name: Option<String>, exported: bool) {
         self.scopes.push(Scope {
+            name,
             objects: HashMap::new(),
+            exported,
         });
     }
 
@@ -277,17 +272,46 @@ impl Analyser {
             error!("No More Scopes To Exit", self.source_id, s, e);
             return;
         };
-        let scp_objs = scp.objects;
 
-        let new_last = self.scopes.last();
-        let nl = new_last.is_some();
+        let scp_objs = scp.objects;
+        let name = scp.name;
+        let mut add_to = HashMap::new();
 
         for (n, obj) in scp_objs {
-            if obj.exported && nl {
-                new_last_unwraped.objects.insert(n, obj);
+            if obj.exported {
+                if name.is_some() {
+                    add_to.insert(n, obj);
+                } else {
+                    warn!("Export In Unnamed Scope", self.source_id, obj.s, obj.e);
+                }
+
                 continue;
             }
+
+            if obj.usages == 0 {}
         }
+
+        if !add_to.is_empty() {
+            let name = name.unwrap();
+            let Some(parent) = self.scopes.last_mut() else {
+                error!("Export In Global");
+                return;
+            };
+
+            parent.objects.insert(
+                name.clone(),
+                Object {
+                    name: name,
+                    kind: ObjectKind::Namespace(HashMap::new()),
+                    typed: None,
+                    mutable: false,
+                    exported: scp.exported,
+                    usages: 0,
+                    s,
+                    e,
+                },
+            );
+        };
     }
 
     fn is_targetable(&self, texpr: &TypedExpression) -> bool {
@@ -315,19 +339,24 @@ impl Analyser {
         }
     }
 
-    fn token_to_type(&self, t: &crate::lexer::Token) -> Type {
+    /// please ensure that `t` is an Atom
+    fn token_to_type(&self, t: &crate::parser::Expression) -> Type {
         use crate::lexer::TokenType::*;
 
-        match t.t {
+        let crate::parser::ExpressionKind::Atom(ref tok) = t.k else {
+            panic!()
+        };
+
+        match tok.t {
             String => Type::String,
             Integer => Type::Integer,
             Float => Type::Float,
             Character => Type::Character,
-            Identifier if t.v == "true" || t.v == "false" => Type::Bool,
-            Identifier if t.v == "nil" => Type::Void,
+            Identifier if tok.v == "true" || tok.v == "false" => Type::Bool,
+            Identifier if tok.v == "nil" => Type::Void,
             Identifier => {
-                if let Some(sym) = self.get_symbol(&t.v) {
-                    sym.ty.clone()
+                if let Some(obj) = self.get_object(t) {
+                    obj.typed.unwrap()
                 } else {
                     error!("Unknown Identifier Object", self.source_id, t.s, t.e);
                     Type::Unknown
@@ -387,9 +416,9 @@ impl Analyser {
         use crate::parser::ExpressionKind::*;
 
         let (typed_expr_kind, typed) = match expr.k {
-            Atom(a) => {
-                let tt = self.token_to_type(&a);
-                (TypedExpressionKind::Atom(a), tt)
+            Atom(ref a) => {
+                let tt = self.token_to_type(&expr);
+                (TypedExpressionKind::Atom(a.clone()), tt)
             }
 
             Binary(lhs, op, rhs) => {
@@ -582,7 +611,7 @@ impl Analyser {
 
                 let tvalue = self.analyse_expression(value);
 
-                if &tvalue.t != todo!() {}
+                //if &tvalue.t != self.
 
                 TypedStatementKind::Assignment(ttarget, tvalue)
             }
@@ -599,24 +628,39 @@ impl Analyser {
         TypedStatement::new(typed_stmt_kind, statement.s, statement.e)
     }
 
-    fn analyse_scope(&mut self, stmts: Vec<crate::parser::Statement>) -> Vec<TypedStatement> {
-        let mut result = Vec::<TypedStatement>::new();
+    fn analyse_scope(
+        &mut self,
+        stmts: Vec<crate::parser::Statement>,
+        name: Option<String>,
+        exported: bool,
+    ) -> Vec<TypedStatement> {
+        let mut result = Vec::new();
 
-        let sid = self.create_scope(None);
-        self.enter_scope(sid);
+        if stmts.is_empty() {
+            return result;
+        }
+
+        let amount_on_enter = self.scopes.len();
+        self.enter_scope(name, exported);
 
         for stmt in stmts {
             let t = self.analyse_statement(stmt);
             result.push(t);
         }
 
-        self.exit_scope();
+        let s = result.last().unwrap().s;
+        let e = result.last().unwrap().e;
+
+        self.exit_scope(s, e);
+        if amount_on_enter != self.scopes.len() {
+            error!("Scope Has Been Overtaken", self.source_id, s, e)
+        }
         result
     }
 }
 
 pub fn analyse(program: Program, id: usize) -> TypedProgram {
     let mut analyser = Analyser::new(id);
-    analyser.result = analyser.analyse_scope(program);
+    analyser.result = analyser.analyse_scope(program, Some("global".to_string()), false);
     analyser.finish()
 }
