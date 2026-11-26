@@ -14,18 +14,19 @@ pub enum Type {
     Unknown,
 }
 
-pub enum SymbolKind {
-    Variable,
-    Constant,
-    Function,
-    Parameter,
+pub enum ObjectKind {
+    Class(HashMap<String, Object>),
+    Function(Type),
+    Namespace(HashMap<String, Object>),
+    Item(Type),
 }
 
-pub struct Symbol {
+pub struct Object {
     pub name: String,
-    pub ty: Type,
-    pub kind: SymbolKind,
+    pub kind: ObjectKind,
+    pub typed: Option<Type>,
     pub mutable: bool,
+    pub exported: bool,
     pub usages: u8,
     pub s: usize,
     pub e: usize,
@@ -118,32 +119,13 @@ impl TypedStatement {
 pub type TypedProgram = Vec<TypedStatement>;
 
 pub struct Scope {
-    id: usize,
-    parent: Option<usize>,
-    symbols: HashMap<String, Symbol>,
-    children: HashMap<String, usize>,
-}
-
-impl Scope {
-    pub fn define(&mut self, name: String, symbol: Symbol) -> bool {
-        if self.symbols.contains_key(&name) {
-            return false;
-        }
-
-        self.symbols.insert(name, symbol);
-        true
-    }
-
-    pub fn get(&self, name: &str) -> Option<&Symbol> {
-        self.symbols.get(name)
-    }
+    pub objects: HashMap<String, Object>,
 }
 
 struct Analyser {
     result: TypedProgram,
     source_id: usize,
     scopes: Vec<Scope>,
-    scope_stack: Vec<usize>,
 }
 
 impl Analyser {
@@ -152,7 +134,6 @@ impl Analyser {
             result: TypedProgram::new(),
             source_id: id,
             scopes: Vec::new(),
-            scope_stack: Vec::new(),
         };
     }
 
@@ -161,18 +142,99 @@ impl Analyser {
         self.result
     }
 
-    fn get_symbol(&self, name: &str) -> Option<&Symbol> {
-        let mut current = *self.scope_stack.last()?;
+    fn flatten_expr(&self, expr: &crate::parser::Expression) -> Option<Vec<String>> {
+        use crate::parser::ExpressionKind;
 
-        loop {
-            let scope = &self.scopes[current];
+        let mut result = Vec::new();
+        match &expr.k {
+            ExpressionKind::Atom(t) => {
+                if t.t != crate::lexer::TokenType::Identifier {
+                    error!("Unknown Atom In Object", self.source_id, expr.s, expr.e);
+                    return None;
+                }
 
-            if let Some(symbol) = scope.symbols.get(name) {
-                return Some(symbol);
+                result.push(t.v.clone());
             }
 
-            current = scope.parent?;
+            ExpressionKind::Property(lhs, rhs) | ExpressionKind::NamespaceProperty(lhs, rhs) => {
+                result.append(&mut self.flatten_expr(&lhs)?);
+                result.append(&mut self.flatten_expr(&rhs)?);
+            }
+
+            _ => {
+                error!("Bad Expression", self.source_id, expr.s, expr.e);
+                return None;
+            }
         }
+
+        Some(result)
+    }
+
+    fn get_object(&self, expr: &crate::parser::Expression) -> Option<&Object> {
+        let flat_vec = self.flatten_expr(expr)?;
+        let mut flat = flat_vec.iter().rev().peekable();
+
+        let scope_iter = self.scopes.iter().rev();
+
+        for scope in scope_iter {
+            let Some(first) = flat.next() else {
+                continue;
+            };
+
+            let Some(mut obj) = scope.objects.get(first) else {
+                continue;
+            };
+
+            loop {
+                match &obj.kind {
+                    ObjectKind::Item(_) => {
+                        if flat.peek().is_some() {
+                            error!("Does Not Have Further Fields", self.source_id, obj.s, obj.e);
+                            return None;
+                        }
+
+                        return Some(obj);
+                    }
+
+                    ObjectKind::Class(children) => {
+                        let Some(next) = flat.next() else {
+                            return Some(obj);
+                        };
+
+                        let Some(child) = children.get(next) else {
+                            error!("Does Not Contain This Field", self.source_id, obj.s, obj.e);
+                            return None;
+                        };
+
+                        obj = child;
+                    }
+
+                    ObjectKind::Namespace(children) => {
+                        let Some(next) = flat.next() else {
+                            return Some(obj);
+                        };
+
+                        let Some(child) = children.get(next) else {
+                            error!("Does Not Contain This Field", self.source_id, obj.s, obj.e);
+                            return None;
+                        };
+
+                        obj = child;
+                    }
+
+                    ObjectKind::Function(_) => {
+                        if flat.peek().is_some() {
+                            error!("Does Not Have Further Fields", self.source_id, obj.s, obj.e);
+                            return None;
+                        }
+
+                        return Some(obj);
+                    }
+                }
+            }
+        }
+
+        None
     }
 
     fn expression_to_path(&self, expr: &crate::parser::Expression) -> Option<Vec<String>> {
@@ -194,67 +256,36 @@ impl Analyser {
         })
     }
 
-    fn resolve_symbol(&self, expr: crate::parser::Expression) -> Option<&Symbol> {
-        let path = self.expression_to_path(&expr)?;
-        let (first, rest) = path.split_first()?;
-
-        let mut current = *self.scope_stack.last()?;
-
-        loop {
-            let scope = &self.scopes[current];
-
-            if scope.symbols.contains_key(first) || scope.children.contains_key(first) {
-                break;
-            }
-
-            current = scope.parent?;
-        }
-
-        for part in rest.iter().take(rest.len().saturating_sub(1)) {
-            current = *self.scopes[current].children.get(part)?;
-        }
-
-        self.scopes[current]
-            .symbols
-            .get(rest.last().unwrap_or(first))
-    }
-
-    fn define_symbol(&mut self, symbol: Symbol) -> bool {
+    fn new_object(&mut self, obj: Object) -> bool {
         if let Some(scope) = self.scopes.last_mut() {
-            let name = symbol.name.clone();
-            scope.define(name, symbol)
+            scope.objects.insert(obj.name.clone(), obj);
+            true
         } else {
+            error!("Not In Scope", self.source_id, obj.s, obj.e);
             false
         }
     }
 
-    fn create_scope(&mut self, parent: Option<usize>) -> usize {
-        let id = self.scopes.len();
-
+    fn enter_scope(&mut self) {
         self.scopes.push(Scope {
-            id,
-            parent,
-            symbols: HashMap::new(),
-            children: HashMap::new(),
+            objects: HashMap::new(),
         });
-
-        id
     }
 
-    fn enter_scope(&mut self, id: usize) {
-        self.scope_stack.push(id);
-    }
+    fn exit_scope(&mut self, s: usize, e: usize) {
+        let Some(scp) = self.scopes.pop() else {
+            error!("No More Scopes To Exit", self.source_id, s, e);
+            return;
+        };
+        let scp_objs = scp.objects;
 
-    fn exit_scope(&mut self) {
-        self.scope_stack.pop();
-    }
+        let new_last = self.scopes.last();
+        let nl = new_last.is_some();
 
-    fn check_symbols_used(&self) {
-        for scope in &self.scopes {
-            for (_, symbol) in &scope.symbols {
-                if symbol.usages == 0 {
-                    warn!("Unused Symbol", self.source_id, symbol.s, symbol.e)
-                }
+        for (n, obj) in scp_objs {
+            if obj.exported && nl {
+                new_last_unwraped.objects.insert(n, obj);
+                continue;
             }
         }
     }
@@ -550,6 +581,8 @@ impl Analyser {
                 }
 
                 let tvalue = self.analyse_expression(value);
+
+                if &tvalue.t != todo!() {}
 
                 TypedStatementKind::Assignment(ttarget, tvalue)
             }
