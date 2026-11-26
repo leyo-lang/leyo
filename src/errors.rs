@@ -38,7 +38,6 @@ pub struct Diagnostic {
 
 #[derive(Debug, Clone)]
 pub struct SourceFile {
-    pub id: usize,
     pub name: String,
     pub path: Option<String>,
     pub source: String,
@@ -70,12 +69,7 @@ pub fn add_source(name: String, path: Option<String>, source: String) -> usize {
 
     let id = files.len();
 
-    files.push(SourceFile {
-        id,
-        name,
-        path,
-        source,
-    });
+    files.push(SourceFile { name, path, source });
 
     id
 }
@@ -84,10 +78,10 @@ pub fn get_source(id: usize) -> Option<SourceFile> {
     source_pool().lock().unwrap().get(id).cloned()
 }
 
-pub fn clear() {
-    error_pool().lock().unwrap().clear();
-    source_pool().lock().unwrap().clear();
-}
+//pub fn clear() {
+//    error_pool().lock().unwrap().clear();
+//    source_pool().lock().unwrap().clear();
+//}
 
 pub fn error(message: &str, file_id: Option<usize>, start: usize, end: usize, help: Option<&str>) {
     add(Diagnostic {

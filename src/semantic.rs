@@ -133,11 +133,11 @@ struct Analyser {
 
 impl Analyser {
     fn new(id: usize) -> Self {
-        return Analyser {
+        Analyser {
             result: TypedProgram::new(),
             source_id: id,
             scopes: Vec::new(),
-        };
+        }
     }
 
     fn finish(self) -> TypedProgram {
@@ -159,8 +159,8 @@ impl Analyser {
             }
 
             ExpressionKind::Property(lhs, rhs) | ExpressionKind::NamespaceProperty(lhs, rhs) => {
-                result.append(&mut self.flatten_expr(&lhs)?);
-                result.append(&mut self.flatten_expr(&rhs)?);
+                result.append(&mut self.flatten_expr(lhs)?);
+                result.append(&mut self.flatten_expr(rhs)?);
             }
 
             _ => {
@@ -237,8 +237,8 @@ impl Analyser {
             Atom(token) => vec![token.v.clone()],
 
             NamespaceProperty(lhs, rhs) | Property(lhs, rhs) => {
-                let mut path = self.expression_to_path(&**lhs)?;
-                path.extend(self.expression_to_path(&**rhs)?);
+                let mut path = self.expression_to_path(lhs)?;
+                path.extend(self.expression_to_path(rhs)?);
                 path
             }
 
@@ -301,7 +301,7 @@ impl Analyser {
             parent.objects.insert(
                 name.clone(),
                 Object {
-                    name: name,
+                    name,
                     kind: ObjectKind::Namespace(HashMap::new()),
                     typed: None,
                     mutable: false,
@@ -317,23 +317,15 @@ impl Analyser {
     fn is_targetable(&self, texpr: &TypedExpression) -> bool {
         use TypedExpressionKind as tek;
         match texpr.k {
-            tek::Atom(ref t) => {
-                if t.t == crate::lexer::TokenType::Identifier {
-                    true
-                } else {
-                    false
-                }
-            }
+            tek::Atom(ref t) => t.t == crate::lexer::TokenType::Identifier,
 
-            tek::Index(ref lhs, _) => self.is_targetable(&*lhs),
+            tek::Index(ref lhs, _) => self.is_targetable(lhs),
 
             tek::NamespaceProperty(ref lhs, ref rhs) => {
-                self.is_targetable(&*lhs) && self.is_targetable(&*rhs)
+                self.is_targetable(lhs) && self.is_targetable(rhs)
             }
 
-            tek::Property(ref lhs, ref rhs) => {
-                self.is_targetable(&*lhs) && self.is_targetable(&*rhs)
-            }
+            tek::Property(ref lhs, ref rhs) => self.is_targetable(lhs) && self.is_targetable(rhs),
 
             _ => false,
         }

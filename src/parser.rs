@@ -85,7 +85,7 @@ struct BindingPower {
 }
 impl BindingPower {
     const fn new(l: u8, r: u8) -> Self {
-        BindingPower { l: l, r: r }
+        BindingPower { l, r }
     }
 }
 impl Default for BindingPower {
@@ -139,7 +139,7 @@ impl Parser {
     fn new(tokens: crate::lexer::LexerResult, id: usize) -> Self {
         let mut tokens = tokens;
         tokens.reverse();
-        return Parser {
+        Parser {
             tokens,
             result: Program::new(),
             source_id: id,
@@ -150,7 +150,7 @@ impl Parser {
                 s: 0,
                 e: 0,
             },
-        };
+        }
     }
 
     fn finish(self) -> Program {
@@ -168,11 +168,11 @@ impl Parser {
 
     fn get(&mut self) -> Option<crate::lexer::Token> {
         let t = self.tokens.pop();
-        if t.is_some() {
-            if t.as_ref().unwrap().t == crate::lexer::TokenType::Eof {
+        if let Some(t) = &t {
+            if t.t == crate::lexer::TokenType::Eof {
                 return None;
             };
-            self.last_token = t.clone().unwrap();
+            self.last_token = t.clone();
         };
         t
     }
@@ -221,12 +221,12 @@ impl Parser {
                             "Expected Closing Brackets",
                             self.source_id, token.s, token.e
                         );
-                        return Expression::err();
+                        Expression::err()
                     }
 
                     None => {
                         error!("Unclosed Brackets", self.source_id, item.s, item.e);
-                        return Expression::err();
+                        Expression::err()
                     }
                 }
             }
@@ -279,7 +279,7 @@ impl Parser {
             ),
             _ => {
                 error!("Token Unimplemented", self.source_id, item.s, item.e);
-                return Expression::err();
+                Expression::err()
             }
         }
     }
@@ -305,11 +305,7 @@ impl Parser {
 
         let lhss = lhs.s;
 
-        loop {
-            let Some(next) = self.peek() else {
-                break;
-            };
-
+        while let Some(next) = self.peek() {
             match next.t {
                 OpenBracket => {
                     self.get();
@@ -453,12 +449,7 @@ impl Parser {
         let mut lhs = self.parse_no_sides(lhs.unwrap());
         lhs = self.parse_postfix(lhs);
 
-        loop {
-            let op = match self.peek() {
-                Some(op) => op,
-                None => break,
-            };
-
+        while let Some(op) = self.peek() {
             let op_bp = match get_binding_power(&op) {
                 Some(bp) => bp,
                 None => break,
@@ -549,14 +540,14 @@ impl Parser {
                         );
                         return Statement::err();
                     }
-                    return Statement::new(
+                    Statement::new(
                         Sk::ConstantDeclaration(
                             name,
                             self.parse_expression(BindingPower::default()),
                         ),
                         t.s,
                         self.last_token.e,
-                    );
+                    )
                 } else {
                     let name = self.parse_expression(BindingPower::default());
                     let should_be_equals = self.get();
@@ -577,14 +568,14 @@ impl Parser {
                         );
                         return Statement::err();
                     }
-                    return Statement::new(
+                    Statement::new(
                         Sk::VariableDeclaration(
                             name,
                             self.parse_expression(BindingPower::default()),
                         ),
                         t.s,
                         self.last_token.e,
-                    );
+                    )
                 }
             }
 
@@ -594,7 +585,7 @@ impl Parser {
                     fatal!("Exceeded Maximum Depth", self.source_id, t.s, t.e)
                 }
                 self.depth = new_depth;
-                return Statement::new(Sk::Block(None, self.parse_block()), t.s, self.last_token.e);
+                Statement::new(Sk::Block(None, self.parse_block()), t.s, self.last_token.e)
             }
 
             "}" => {
@@ -609,7 +600,7 @@ impl Parser {
                     )
                 }
                 self.depth = new_depth;
-                return Statement::new(Sk::End, 0, 0);
+                Statement::new(Sk::End, 0, 0)
             }
 
             "while" => {
@@ -637,7 +628,7 @@ impl Parser {
                 let stmt = self.parse_statement();
                 let stmte = stmt.e;
 
-                return Statement::new(Sk::Loop(expr, Box::new(stmt)), t.e, stmte);
+                Statement::new(Sk::Loop(expr, Box::new(stmt)), t.e, stmte)
             }
 
             "if" => {
@@ -698,17 +689,17 @@ impl Parser {
                         }
                     }
                 } else {
-                    if had_semicolon.is_some() {
-                        self.reverse(had_semicolon.unwrap());
+                    if let Some(hs) = had_semicolon {
+                        self.reverse(hs);
                     }
                     None
                 };
 
-                return Statement::new(
+                Statement::new(
                     Sk::If(expr, Box::new(stmt), else_clause),
                     t.s,
                     self.last_token.e,
-                );
+                )
             }
 
             "repeat" => {
@@ -748,16 +739,12 @@ impl Parser {
                 let stmt = self.parse_statement();
                 let stmte = stmt.e;
 
-                return Statement::new(Sk::Repeat(count, target, Box::new(stmt)), t.s, stmte);
+                Statement::new(Sk::Repeat(count, target, Box::new(stmt)), t.s, stmte)
             }
 
-            "break" => {
-                return Statement::new(Sk::Break, t.s, t.e);
-            }
+            "break" => Statement::new(Sk::Break, t.s, t.e),
 
-            "continue" => {
-                return Statement::new(Sk::Continue, t.s, t.e);
-            }
+            "continue" => Statement::new(Sk::Continue, t.s, t.e),
 
             "return" => {
                 let value = if self
@@ -769,7 +756,7 @@ impl Parser {
                     None
                 };
 
-                return Statement::new(Sk::Return(value), t.s, self.last_token.e);
+                Statement::new(Sk::Return(value), t.s, self.last_token.e)
             }
 
             "ns" => {
@@ -808,7 +795,7 @@ impl Parser {
                     fatal!("Exceeded Maximum Depth", self.source_id, t.s, t.e)
                 }
                 self.depth = new_depth;
-                return Statement::new(Sk::Block(name, self.parse_block()), t.s, next.e);
+                Statement::new(Sk::Block(name, self.parse_block()), t.s, next.e)
             }
 
             "fn" => {
@@ -871,11 +858,11 @@ impl Parser {
                 let stmt = self.parse_statement();
                 let stmte = stmt.e;
 
-                return Statement::new(
+                Statement::new(
                     Sk::Function(name.unwrap().v, args, Box::new(stmt)),
                     t.s,
                     stmte,
-                );
+                )
             }
 
             _ => {
@@ -889,31 +876,31 @@ impl Parser {
                         Some(eq) if eq.t == Equals => {
                             let value = self.parse_expression(BindingPower::default());
                             let valuee = value.e;
-                            return Statement::new(Sk::Assignment(target, value), ts, valuee);
+                            Statement::new(Sk::Assignment(target, value), ts, valuee)
                         }
                         Some(other) => {
                             error!(
                                 "Expected '=' after assignment target",
                                 self.source_id, other.s, other.e
                             );
-                            return Statement::err();
+                            Statement::err()
                         }
                         None => {
                             error!(
                                 "Unexpected EOF in assignment",
                                 self.source_id, self.last_token.s, self.last_token.e
                             );
-                            return Statement::err();
+                            Statement::err()
                         }
                     }
                 } else {
                     let expr = self.parse_expression(BindingPower::default());
                     let exprs = expr.s;
                     let expre = expr.e;
-                    return Statement::new(Sk::Evaluation(expr), exprs, expre);
+                    Statement::new(Sk::Evaluation(expr), exprs, expre)
                 }
             }
-        };
+        }
 
         //error!("Unknown Statement", self.source_id, t.s, t.e);
         //Statement::err()

@@ -58,7 +58,7 @@ fn output_timings(
 fn pipeline(o: &cli::Options, filepath: &String) {
     let start = std::time::Instant::now();
 
-    let filedata = register_file(&filepath);
+    let filedata = register_file(filepath);
 
     let split = Instant::now();
 

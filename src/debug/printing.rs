@@ -101,7 +101,7 @@ fn ast_pretty_expression(
             ast_pretty_expression(
                 &target.k,
                 &child_prefix,
-                if params.is_empty() { true } else { false },
+                params.is_empty(),
                 "Callee",
                 output,
             );
@@ -110,7 +110,7 @@ fn ast_pretty_expression(
                 ast_pretty_expression(
                     &param.k,
                     &child_prefix,
-                    if i == params.len() - 1 { true } else { false },
+                    i == params.len() - 1,
                     &format!("Param {i}").to_string(),
                     output,
                 );
@@ -224,16 +224,14 @@ fn ast_pretty_statement(
             ast_pretty_statement(&body.k, &child_prefix, true, output);
         }
 
-        crate::parser::StatementKind::Return(value) => {
-            if value.is_some() {
-                ast_pretty_expression(
-                    &value.as_ref().unwrap().k,
-                    &child_prefix,
-                    true,
-                    "Value",
-                    output,
-                );
-            }
+        crate::parser::StatementKind::Return(value) if value.is_some() => {
+            ast_pretty_expression(
+                &value.as_ref().unwrap().k,
+                &child_prefix,
+                true,
+                "Value",
+                output,
+            );
         }
 
         _ => {}
@@ -432,15 +430,15 @@ fn typed_ast_pretty_statement(
 
     match &stmt.k {
         crate::semantic::TypedStatementKind::Evaluation(expr) => {
-            typed_ast_pretty_expression(&expr, &child_prefix, true, "Value", output);
+            typed_ast_pretty_expression(expr, &child_prefix, true, "Value", output);
         }
 
         crate::semantic::TypedStatementKind::VariableDeclaration(target, expr)
         | crate::semantic::TypedStatementKind::ConstantDeclaration(target, expr)
         | crate::semantic::TypedStatementKind::Assignment(target, expr) => {
-            typed_ast_pretty_expression(&target, &child_prefix, false, "Target", output);
+            typed_ast_pretty_expression(target, &child_prefix, false, "Target", output);
 
-            typed_ast_pretty_expression(&expr, &child_prefix, true, "Value", output);
+            typed_ast_pretty_expression(expr, &child_prefix, true, "Value", output);
         }
 
         crate::semantic::TypedStatementKind::Block(_, statements) => {
@@ -450,29 +448,29 @@ fn typed_ast_pretty_statement(
         }
 
         crate::semantic::TypedStatementKind::Loop(cond, body) => {
-            typed_ast_pretty_expression(&cond, &child_prefix, false, "Condition", output);
+            typed_ast_pretty_expression(cond, &child_prefix, false, "Condition", output);
 
-            typed_ast_pretty_statement(&body, &child_prefix, true, output);
+            typed_ast_pretty_statement(body, &child_prefix, true, output);
         }
 
         crate::semantic::TypedStatementKind::If(cond, body, els) => {
-            typed_ast_pretty_expression(&cond, &child_prefix, false, "Condition", output);
+            typed_ast_pretty_expression(cond, &child_prefix, false, "Condition", output);
 
-            typed_ast_pretty_statement(&body, &child_prefix, els.is_none(), output);
+            typed_ast_pretty_statement(body, &child_prefix, els.is_none(), output);
 
             if let Some(els) = els {
-                typed_ast_pretty_statement(&els, &child_prefix, true, output);
+                typed_ast_pretty_statement(els, &child_prefix, true, output);
             }
         }
 
         crate::semantic::TypedStatementKind::Repeat(count, target, body) => {
-            typed_ast_pretty_expression(&count, &child_prefix, target.is_none(), "Count", output);
+            typed_ast_pretty_expression(count, &child_prefix, target.is_none(), "Count", output);
 
             if let Some(target) = target {
-                typed_ast_pretty_expression(&target, &child_prefix, false, "Target", output);
+                typed_ast_pretty_expression(target, &child_prefix, false, "Target", output);
             }
 
-            typed_ast_pretty_statement(&body, &child_prefix, true, output);
+            typed_ast_pretty_statement(body, &child_prefix, true, output);
         }
 
         crate::semantic::TypedStatementKind::Function(_, params, body) => {
@@ -486,13 +484,11 @@ fn typed_ast_pretty_statement(
                 );
             }
 
-            typed_ast_pretty_statement(&body, &child_prefix, true, output);
+            typed_ast_pretty_statement(body, &child_prefix, true, output);
         }
 
-        crate::semantic::TypedStatementKind::Return(value) => {
-            if let Some(value) = value {
-                typed_ast_pretty_expression(&value, &child_prefix, true, "Value", output);
-            }
+        crate::semantic::TypedStatementKind::Return(Some(value)) => {
+            typed_ast_pretty_expression(value, &child_prefix, true, "Value", output);
         }
 
         _ => {}
