@@ -234,6 +234,9 @@ macro_rules! fatal {
     ($msg:expr, $file:expr, $start:expr, $end:expr) => {
         $crate::errors::fatal($msg, Some($file), $start, $end, None)
     };
+    ($msg:expr, source: $file:expr) => {
+        $crate::errors::fatal($msg, Some($file), 0, 0, None)
+    };
     ($msg:expr, $help:expr) => {
         $crate::errors::fatal($msg, None, 0, 0, Some($help))
     };

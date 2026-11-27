@@ -145,18 +145,18 @@ impl Lexer {
 
     fn current_unicode_escaped(&self) -> Option<char> {
         match self.current() {
-            Some('\\') => return Some('\\'),
-            Some('"') => return Some('"'),
-            Some('n') => return Some('\n'),
-            Some('r') => return Some('\r'),
-            Some('t') => return Some('\t'),
-            Some('0') => return Some('\0'),
-            Some('b') => return Some('\x08'),
-            Some('f') => return Some('\x0C'),
+            Some('\\') => Some('\\'),
+            Some('"') => Some('"'),
+            Some('n') => Some('\n'),
+            Some('r') => Some('\r'),
+            Some('t') => Some('\t'),
+            Some('0') => Some('\0'),
+            Some('b') => Some('\x08'),
+            Some('f') => Some('\x0C'),
             Some(_) => {
                 error!("Invalid Escape", self.source_id, self.index - 1, self.index);
 
-                return Some('\0');
+                Some('\0')
             }
             None => {
                 fatal!(
@@ -171,11 +171,7 @@ impl Lexer {
     }
 
     fn push(&mut self, tok: Token) {
-        if tok.t == TokenType::Semicolon {
-            self.last_was_semicolon = true;
-        } else {
-            self.last_was_semicolon = false;
-        }
+        self.last_was_semicolon = tok.t == TokenType::Semicolon;
         self.stream_out.push(tok);
     }
 
@@ -602,7 +598,7 @@ impl Lexer {
 pub fn lex(stream: String, id: usize) -> LexerResult {
     let mut lexer = Lexer::new(id, stream);
 
-    while let Some(_) = lexer.current() {
+    while lexer.current().is_some() {
         match lexer.mode {
             LexerMode::Normal => lexer.handle_normal(),
             LexerMode::String => lexer.handle_string(),

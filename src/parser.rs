@@ -41,9 +41,9 @@ pub enum StatementKind {
     None,
     End,
     Error,
-    Block(Option<String>, Vec<Statement>),
-    VariableDeclaration(Expression, Expression),
-    ConstantDeclaration(Expression, Expression),
+    Block(Option<String>, Vec<Statement>, bool),
+    VariableDeclaration(Expression, Expression, bool),
+    ConstantDeclaration(Expression, Expression, bool),
     Assignment(Expression, Expression),
     Evaluation(Expression),
     Loop(Expression, Box<Statement>),
@@ -51,7 +51,7 @@ pub enum StatementKind {
     Repeat(Expression, Option<Expression>, Box<Statement>),
     Break,
     Continue,
-    Function(String, Vec<Expression>, Box<Statement>),
+    Function(String, Vec<Expression>, Box<Statement>, bool),
     Return(Option<Expression>),
 }
 
@@ -515,9 +515,18 @@ impl Parser {
                     )
                 }
                 let c = c.unwrap();
+                self.get();
+
+                let Some(t) = self.peek() else {
+                    fatal!("Declaration Followed By EOF", self.source_id, t.s, t.e)
+                };
+
+                let export = t.t == Identifier && t.v == "export";
+                if export {
+                    self.get();
+                };
 
                 if c.v == "const" {
-                    self.get();
                     let name = self.parse_expression(BindingPower::default());
 
                     let should_be_equals = self.get();
@@ -544,18 +553,21 @@ impl Parser {
                         Sk::ConstantDeclaration(
                             name,
                             self.parse_expression(BindingPower::default()),
+                            export,
                         ),
                         t.s,
                         self.last_token.e,
                     )
                 } else {
+                    let cs = c.s;
+                    self.reverse(c);
                     let name = self.parse_expression(BindingPower::default());
                     let should_be_equals = self.get();
                     if should_be_equals.is_none() {
                         fatal!(
                             "Variable Declaration Followed By EOF",
                             self.source_id,
-                            c.s,
+                            cs,
                             self.last_token.e
                         )
                     }
@@ -564,7 +576,7 @@ impl Parser {
                     if should_be_equals.t != Equals {
                         error!(
                             "Variable Not Defined",
-                            self.source_id, c.s, should_be_equals.e
+                            self.source_id, cs, should_be_equals.e
                         );
                         return Statement::err();
                     }
@@ -572,6 +584,7 @@ impl Parser {
                         Sk::VariableDeclaration(
                             name,
                             self.parse_expression(BindingPower::default()),
+                            export,
                         ),
                         t.s,
                         self.last_token.e,
@@ -585,7 +598,11 @@ impl Parser {
                     fatal!("Exceeded Maximum Depth", self.source_id, t.s, t.e)
                 }
                 self.depth = new_depth;
-                Statement::new(Sk::Block(None, self.parse_block()), t.s, self.last_token.e)
+                Statement::new(
+                    Sk::Block(None, self.parse_block(), false),
+                    t.s,
+                    self.last_token.e,
+                )
             }
 
             "}" => {
@@ -760,6 +777,21 @@ impl Parser {
             }
 
             "ns" => {
+                let Some(t) = self.peek() else {
+                    fatal!(
+                        "NS Keyword Followed By EOF",
+                        self.source_id,
+                        t.s,
+                        t.e,
+                        "Consider Removing This Keyword"
+                    )
+                };
+
+                let export = t.t == Identifier && t.v == "export";
+                if export {
+                    self.get();
+                };
+
                 let name = self.peek();
                 let name = match name {
                     None => None,
@@ -795,10 +827,25 @@ impl Parser {
                     fatal!("Exceeded Maximum Depth", self.source_id, t.s, t.e)
                 }
                 self.depth = new_depth;
-                Statement::new(Sk::Block(name, self.parse_block()), t.s, next.e)
+                Statement::new(Sk::Block(name, self.parse_block(), export), t.s, next.e)
             }
 
             "fn" => {
+                let Some(t) = self.peek() else {
+                    fatal!(
+                        "Keyword Followed By EOF",
+                        self.source_id,
+                        t.s,
+                        t.e,
+                        "Consider Removing This Keyword"
+                    )
+                };
+
+                let export = t.t == Identifier && t.v == "export";
+                if export {
+                    self.get();
+                };
+
                 let name = self.get();
                 if name.as_ref().is_none_or(|x| x.t != Identifier) {
                     return Statement::err();
@@ -859,7 +906,7 @@ impl Parser {
                 let stmte = stmt.e;
 
                 Statement::new(
-                    Sk::Function(name.unwrap().v, args, Box::new(stmt)),
+                    Sk::Function(name.unwrap().v, args, Box::new(stmt), export),
                     t.s,
                     stmte,
                 )

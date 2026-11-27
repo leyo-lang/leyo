@@ -149,22 +149,24 @@ fn ast_pretty_statement(
         crate::parser::StatementKind::None => "None".to_string(),
         crate::parser::StatementKind::End => "End".to_string(),
         crate::parser::StatementKind::Error => "Error".to_string(),
-        crate::parser::StatementKind::Block(n, _) if n.is_none() => "Block".to_string(),
-        crate::parser::StatementKind::Block(n, _) => format!("Namespace: {}", n.as_ref().unwrap()),
+        crate::parser::StatementKind::Block(n, _, _) if n.is_none() => "Block".to_string(),
+        crate::parser::StatementKind::Block(n, _, _) => {
+            format!("Namespace: {}", n.as_ref().unwrap())
+        }
         crate::parser::StatementKind::Loop(_, _) => "Loop".to_string(),
         crate::parser::StatementKind::If(_, _, _) => "If".to_string(),
         crate::parser::StatementKind::Repeat(_, _, _) => "Repeat".to_string(),
-        crate::parser::StatementKind::VariableDeclaration(_, _) => {
+        crate::parser::StatementKind::VariableDeclaration(_, _, _) => {
             "VariableDeclaration".to_string()
         }
-        crate::parser::StatementKind::ConstantDeclaration(_, _) => {
+        crate::parser::StatementKind::ConstantDeclaration(_, _, _) => {
             "ConstantDeclaration".to_string()
         }
         crate::parser::StatementKind::Assignment(_, _) => "Assignment".to_string(),
         crate::parser::StatementKind::Evaluation(_) => "Expression".to_string(),
         crate::parser::StatementKind::Break => "Break".to_string(),
         crate::parser::StatementKind::Continue => "Continue".to_string(),
-        crate::parser::StatementKind::Function(name, _, _) => format!("Function: {name}"),
+        crate::parser::StatementKind::Function(name, _, _, _) => format!("Function: {name}"),
         crate::parser::StatementKind::Return(_) => "Return".to_string(),
     };
 
@@ -177,14 +179,14 @@ fn ast_pretty_statement(
             ast_pretty_expression(&expr.k, &child_prefix, true, "Value", output);
         }
 
-        crate::parser::StatementKind::VariableDeclaration(target, expr)
-        | crate::parser::StatementKind::ConstantDeclaration(target, expr)
+        crate::parser::StatementKind::VariableDeclaration(target, expr, _)
+        | crate::parser::StatementKind::ConstantDeclaration(target, expr, _)
         | crate::parser::StatementKind::Assignment(target, expr) => {
             ast_pretty_expression(&target.k, &child_prefix, false, "Target", output);
             ast_pretty_expression(&expr.k, &child_prefix, true, "Value", output);
         }
 
-        crate::parser::StatementKind::Block(_, statements) => {
+        crate::parser::StatementKind::Block(_, statements, _) => {
             for (i, stmt) in statements.iter().enumerate() {
                 ast_pretty_statement(&stmt.k, &child_prefix, i == statements.len() - 1, output);
             }
@@ -211,7 +213,7 @@ fn ast_pretty_statement(
             ast_pretty_statement(&stmt.k, &child_prefix, true, output);
         }
 
-        crate::parser::StatementKind::Function(_, params, body) => {
+        crate::parser::StatementKind::Function(_, params, body, _) => {
             for (i, param) in params.iter().enumerate() {
                 ast_pretty_expression(
                     &param.k,
@@ -484,7 +486,9 @@ fn typed_ast_pretty_statement(
                 );
             }
 
-            typed_ast_pretty_statement(body, &child_prefix, true, output);
+            for (i, stmt) in body.iter().enumerate() {
+                typed_ast_pretty_statement(stmt, &child_prefix, i == body.len() - 1, output);
+            }
         }
 
         crate::semantic::TypedStatementKind::Return(Some(value)) => {

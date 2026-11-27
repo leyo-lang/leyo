@@ -1,4 +1,4 @@
-use crate::{error, parser::Program, warn};
+use crate::{error, fatal, parser::Program, warn};
 use std::collections::HashMap;
 
 #[derive(PartialEq, Clone)]
@@ -28,7 +28,7 @@ pub struct Object {
     pub typed: Option<Type>,
     pub mutable: bool,
     pub exported: bool,
-    pub usages: u8,
+    pub usages: std::cell::Cell<u8>,
     pub s: usize,
     pub e: usize,
 }
@@ -94,7 +94,7 @@ pub enum TypedStatementKind {
     ),
     Break,
     Continue,
-    Function(String, Vec<TypedExpression>, Box<TypedStatement>),
+    Function(String, Vec<TypedExpression>, Vec<TypedStatement>),
     Return(Option<TypedExpression>),
 }
 
@@ -144,6 +144,23 @@ impl Analyser {
         self.result
     }
 
+    fn is_name_keyword(&self, name: &str) -> bool {
+        matches!(
+            name,
+            "new"
+                | "const"
+                | "export"
+                | "repeat"
+                | "while"
+                | "if"
+                | "break"
+                | "continue"
+                | "return"
+                | "ns"
+                | "fn"
+        )
+    }
+
     fn flatten_expr(&self, expr: &crate::parser::Expression) -> Option<Vec<String>> {
         use crate::parser::ExpressionKind;
 
@@ -173,38 +190,32 @@ impl Analyser {
     }
 
     fn get_object(&self, expr: &crate::parser::Expression) -> Option<Object> {
-        let flat_vec = self.flatten_expr(expr)?;
-        let mut flat = flat_vec.iter().rev().peekable();
+        let path = self.flatten_expr(expr)?;
+        let mut flat = path.iter().rev();
 
-        let scope_iter = self.scopes.iter().rev();
+        let first = flat.next()?;
 
-        for scope in scope_iter {
-            let Some(first) = flat.next() else {
+        for scope in self.scopes.iter().rev() {
+            let Some(mut obj) = scope.objects.get(first) else {
                 continue;
             };
-
-            let Some(obj) = scope.objects.get(first) else {
-                continue;
-            };
-
-            let mut obj = obj.clone();
 
             loop {
-                obj.usages = obj.usages.saturating_add(1);
+                obj.usages.set(obj.usages.get().saturating_add(1));
 
                 match &obj.kind {
-                    ObjectKind::Item(_) => {
-                        if flat.peek().is_some() {
+                    ObjectKind::Item(_) | ObjectKind::Function(_) => {
+                        if flat.next().is_some() {
                             error!("Does Not Have Further Fields", self.source_id, obj.s, obj.e);
                             return None;
                         }
 
-                        return Some(obj);
+                        return Some(obj.clone());
                     }
 
                     ObjectKind::Namespace(children) => {
                         let Some(next) = flat.next() else {
-                            return Some(obj);
+                            return Some(obj.clone());
                         };
 
                         let Some(child) = children.get(next) else {
@@ -212,16 +223,7 @@ impl Analyser {
                             return None;
                         };
 
-                        obj = child.clone();
-                    }
-
-                    ObjectKind::Function(_) => {
-                        if flat.peek().is_some() {
-                            error!("Does Not Have Further Fields", self.source_id, obj.s, obj.e);
-                            return None;
-                        }
-
-                        return Some(obj);
+                        obj = child;
                     }
                 }
             }
@@ -267,7 +269,7 @@ impl Analyser {
         });
     }
 
-    fn exit_scope(&mut self, s: usize, e: usize) {
+    fn exit_scope(&mut self, s: usize, e: usize, allow_exports: bool) {
         let Some(scp) = self.scopes.pop() else {
             error!("No More Scopes To Exit", self.source_id, s, e);
             return;
@@ -279,6 +281,10 @@ impl Analyser {
 
         for (n, obj) in scp_objs {
             if obj.exported {
+                if !allow_exports {
+                    warn!("Exports Are Disallowed Here", self.source_id, obj.s, obj.e);
+                    continue;
+                }
                 if name.is_some() {
                     add_to.insert(n, obj);
                 } else {
@@ -288,7 +294,9 @@ impl Analyser {
                 continue;
             }
 
-            if obj.usages == 0 {}
+            if obj.usages.get() == 0 {
+                warn!("Unused Object", self.source_id, obj.s, obj.e)
+            }
         }
 
         if !add_to.is_empty() {
@@ -306,7 +314,7 @@ impl Analyser {
                     typed: None,
                     mutable: false,
                     exported: scp.exported,
-                    usages: 0,
+                    usages: std::cell::Cell::from(0),
                     s,
                     e,
                 },
@@ -331,33 +339,32 @@ impl Analyser {
         }
     }
 
-    /// please ensure that `t` is an Atom
-    fn token_to_type(&self, t: &crate::parser::Expression) -> Type {
-        use crate::lexer::TokenType::*;
+    fn get_expression_type(&self, expr: &crate::parser::Expression) -> Option<Type> {
+        use crate::parser::ExpressionKind::*;
 
-        let crate::parser::ExpressionKind::Atom(ref tok) = t.k else {
-            panic!()
-        };
+        match &expr.k {
+            Atom(token) => match token.t {
+                crate::lexer::TokenType::Identifier => match token.v.as_str() {
+                    "true" | "false" => Some(Type::Bool),
+                    "nil" => Some(Type::Void),
+                    _ => self
+                        .get_object(expr)
+                        .map(|obj| obj.typed.unwrap_or(Type::Unknown)),
+                },
 
-        match tok.t {
-            String => Type::String,
-            Integer => Type::Integer,
-            Float => Type::Float,
-            Character => Type::Character,
-            Identifier if tok.v == "true" || tok.v == "false" => Type::Bool,
-            Identifier if tok.v == "nil" => Type::Void,
-            Identifier => {
-                if let Some(obj) = self.get_object(t) {
-                    obj.typed.unwrap()
-                } else {
-                    error!("Unknown Identifier Object", self.source_id, t.s, t.e);
-                    Type::Unknown
-                }
-            }
-            _ => {
-                error!("Invalid Type", self.source_id, t.s, t.e);
-                Type::Unknown
-            }
+                crate::lexer::TokenType::Integer => Some(Type::Integer),
+                crate::lexer::TokenType::Float => Some(Type::Float),
+                crate::lexer::TokenType::String => Some(Type::String),
+                crate::lexer::TokenType::Character => Some(Type::Character),
+
+                _ => None,
+            },
+
+            Property(_, _) | NamespaceProperty(_, _) => self
+                .get_object(expr)
+                .map(|obj| obj.typed.unwrap_or(Type::Unknown)),
+
+            _ => None,
         }
     }
 
@@ -404,18 +411,25 @@ impl Analyser {
         }
     }
 
-    fn analyse_expression(&mut self, expr: crate::parser::Expression) -> TypedExpression {
+    fn analyse_expression(&mut self, expr: &crate::parser::Expression) -> TypedExpression {
         use crate::parser::ExpressionKind::*;
 
-        let (typed_expr_kind, typed) = match expr.k {
-            Atom(ref a) => {
-                let tt = self.token_to_type(&expr);
+        let (typed_expr_kind, typed) = match &expr.k {
+            Atom(a) => {
+                let tt = match self.get_expression_type(expr) {
+                    Some(t) => t,
+                    None => {
+                        error!("Unknown Identifier Object", self.source_id, expr.s, expr.e);
+                        return TypedExpression::err();
+                    }
+                };
+
                 (TypedExpressionKind::Atom(a.clone()), tt)
             }
 
             Binary(lhs, op, rhs) => {
-                let tlhs = self.analyse_expression(*lhs);
-                let trhs = self.analyse_expression(*rhs);
+                let tlhs = self.analyse_expression(lhs);
+                let trhs = self.analyse_expression(rhs);
 
                 if tlhs.t != trhs.t {
                     error!("Unmatched Types", self.source_id, tlhs.s, trhs.e);
@@ -424,7 +438,7 @@ impl Analyser {
 
                 let t = tlhs.t.clone();
 
-                if !self.is_op_safe(&op, &t) {
+                if !self.is_op_safe(op, &t) {
                     error!(
                         "Operator Cannot Be Used On This Type",
                         self.source_id, tlhs.s, trhs.e
@@ -433,17 +447,17 @@ impl Analyser {
                 }
 
                 (
-                    TypedExpressionKind::Binary(Box::new(tlhs), op, Box::new(trhs)),
+                    TypedExpressionKind::Binary(Box::new(tlhs), op.clone(), Box::new(trhs)),
                     t,
                 )
             }
 
             Unary(op, rhs) => {
                 // not or minus
-                let trhs = self.analyse_expression(*rhs);
+                let trhs = self.analyse_expression(rhs);
                 let t = trhs.t.clone();
 
-                if !self.is_op_safe(&op, &t) {
+                if !self.is_op_safe(op, &t) {
                     error!(
                         "Operator Cannot Be Used On This Type",
                         self.source_id, op.s, trhs.e
@@ -451,7 +465,7 @@ impl Analyser {
                     return TypedExpression::err();
                 }
 
-                (TypedExpressionKind::Unary(op, Box::new(trhs)), t)
+                (TypedExpressionKind::Unary(op.clone(), Box::new(trhs)), t)
             }
 
             Array(values) => {
@@ -463,13 +477,13 @@ impl Analyser {
                 } else {
                     let mut values = values.iter();
 
-                    let first = self.analyse_expression(values.next().unwrap().to_owned()); // assume as values isnt empty
+                    let first = self.analyse_expression(values.next().unwrap()); // assume as values isnt empty
                     let t = first.t.clone();
 
                     let mut typed_values = Vec::from([first]);
 
                     for value in values {
-                        let new = self.analyse_expression(value.to_owned());
+                        let new = self.analyse_expression(value);
 
                         if new.t != t {
                             error!("Incompatable Array Types", self.source_id, value.s, value.e);
@@ -490,7 +504,7 @@ impl Analyser {
                 let ns = name.s;
                 let ne = name.e;
 
-                let tname = self.analyse_expression(*name);
+                let tname = self.analyse_expression(name);
 
                 let mut tparams = Vec::new();
                 for param in params {
@@ -526,8 +540,8 @@ impl Analyser {
             }
 
             Index(lhs, loc) => {
-                let tlhs = self.analyse_expression(*lhs);
-                let tloc = self.analyse_expression(*loc);
+                let tlhs = self.analyse_expression(lhs);
+                let tloc = self.analyse_expression(loc);
 
                 let data_t = match &tlhs.t {
                     Type::Array(item_t) => (**item_t).clone(),
@@ -553,10 +567,16 @@ impl Analyser {
             }
 
             Property(lhs, rhs) => {
-                let tlhs = self.analyse_expression(*lhs);
-                let trhs = self.analyse_expression(*rhs);
+                let t = match self.get_expression_type(expr) {
+                    Some(t) => t,
+                    None => {
+                        error!("Unknown Property Object", self.source_id, expr.s, expr.e);
+                        return TypedExpression::err();
+                    }
+                };
 
-                let t = trhs.t.clone();
+                let tlhs = self.analyse_expression(lhs);
+                let trhs = self.analyse_expression(rhs);
 
                 (
                     TypedExpressionKind::Property(Box::new(tlhs), Box::new(trhs)),
@@ -565,10 +585,16 @@ impl Analyser {
             }
 
             NamespaceProperty(lhs, rhs) => {
-                let tlhs = self.analyse_expression(*lhs);
-                let trhs = self.analyse_expression(*rhs);
+                let t = match self.get_expression_type(expr) {
+                    Some(t) => t,
+                    None => {
+                        error!("Unknown Namespace Object", self.source_id, expr.s, expr.e);
+                        return TypedExpression::err();
+                    }
+                };
 
-                let t = trhs.t.clone();
+                let tlhs = self.analyse_expression(lhs);
+                let trhs = self.analyse_expression(rhs);
 
                 (
                     TypedExpressionKind::NamespaceProperty(Box::new(tlhs), Box::new(trhs)),
@@ -593,7 +619,7 @@ impl Analyser {
 
         let typed_stmt_kind = match statement.k {
             Sk::Assignment(target, value) => {
-                let ttarget = self.analyse_expression(target);
+                let ttarget = self.analyse_expression(&target);
                 if !self.is_targetable(&ttarget) {
                     error!(
                         "Item Is Not Targetable",
@@ -601,11 +627,76 @@ impl Analyser {
                     )
                 }
 
-                let tvalue = self.analyse_expression(value);
+                let tvalue = self.analyse_expression(&value);
 
-                //if &tvalue.t != self.
+                let Some(obj) = self.get_object(&value) else {
+                    error!(
+                        "No Object Found With This Name",
+                        self.source_id, tvalue.s, tvalue.e
+                    );
+                    return TypedStatement::err();
+                };
+
+                match obj.kind {
+                    ObjectKind::Item(t) if tvalue.t == t => {}
+                    ObjectKind::Function(r) if tvalue.t == r => {}
+                    _ => {
+                        error!("Mismatched Types", self.source_id, obj.s, obj.e);
+                    }
+                }
 
                 TypedStatementKind::Assignment(ttarget, tvalue)
+            }
+
+            Sk::Block(name, stmts, exported) => TypedStatementKind::Block(
+                name.clone(),
+                self.analyse_scope(stmts, name.clone(), exported, name.is_some())
+                    .0,
+            ),
+
+            Sk::Break => TypedStatementKind::Break,
+
+            Sk::Continue => TypedStatementKind::Continue,
+
+            Sk::Return(value) => {
+                let tvalue = if let Some(v) = value {
+                    let texpr = self.analyse_expression(&v);
+                    Some(texpr)
+                } else {
+                    None
+                };
+
+                TypedStatementKind::Return(tvalue)
+            }
+
+            Sk::Function(name, params, body, exported) => {
+                if self.is_name_keyword(&name) {
+                    error!("Shadows Keyword", self.source_id, statement.s, statement.e)
+                }
+
+                let mut tparams = Vec::new();
+                for param in params {
+                    tparams.push(self.analyse_expression(&param));
+                }
+
+                let crate::parser::StatementKind::Block(_, stmts, _) = body.k else {
+                    panic!()
+                };
+
+                let (tbody, ret) = self.analyse_scope(stmts, None, false, false);
+
+                self.new_object(Object {
+                    name: name.clone(),
+                    kind: ObjectKind::Function(ret.clone().unwrap_or(Type::Void)),
+                    typed: ret,
+                    mutable: false,
+                    exported,
+                    usages: 0.into(),
+                    s: body.s,
+                    e: body.e,
+                });
+
+                TypedStatementKind::Function(name, tparams, tbody)
             }
 
             _ => {
@@ -625,34 +716,66 @@ impl Analyser {
         stmts: Vec<crate::parser::Statement>,
         name: Option<String>,
         exported: bool,
-    ) -> Vec<TypedStatement> {
+        allow_exports: bool,
+    ) -> (Vec<TypedStatement>, Option<Type>) {
         let mut result = Vec::new();
 
         if stmts.is_empty() {
-            return result;
+            return (result, None);
         }
 
         let amount_on_enter = self.scopes.len();
         self.enter_scope(name, exported);
 
+        let mut ret_type = None;
+
         for stmt in stmts {
             let t = self.analyse_statement(stmt);
+
+            if let TypedStatementKind::Return(ref rs) = t.k {
+                let worked = match ret_type {
+                    Some(ref t) => rs.as_ref().is_some_and(|x| &x.t == t),
+                    None => {
+                        if let Some(t) = rs {
+                            ret_type = Some(t.t.clone())
+                        } else {
+                            ret_type = Some(Type::Void)
+                        }
+
+                        true
+                    }
+                };
+
+                if !worked {
+                    error!("Mismatched Return Types", self.source_id, t.s, t.e)
+                }
+            }
+
             result.push(t);
         }
 
         let s = result.last().unwrap().s;
         let e = result.last().unwrap().e;
 
-        self.exit_scope(s, e);
+        self.exit_scope(s, e, allow_exports);
         if amount_on_enter != self.scopes.len() {
             error!("Scope Has Been Overtaken", self.source_id, s, e)
         }
-        result
+
+        (result, ret_type)
+    }
+
+    fn analyse_program(&mut self, program: Program) -> TypedProgram {
+        let (res, ret) = self.analyse_scope(program, Some("global".to_string()), false, false);
+        if ret.is_some() {
+            fatal!("Cannot Return From Program", source: self.source_id)
+        }
+        res
     }
 }
 
 pub fn analyse(program: Program, id: usize) -> TypedProgram {
     let mut analyser = Analyser::new(id);
-    analyser.result = analyser.analyse_scope(program, Some("global".to_string()), false);
+    analyser.result = analyser.analyse_program(program);
     analyser.finish()
 }
